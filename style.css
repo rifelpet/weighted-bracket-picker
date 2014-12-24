@@ -1,0 +1,18 @@
+#sliders > span {
+  width:120px;
+  height:10px;
+  float:left;
+  margin:10px;
+  display:block;
+}
+
+#sliders {
+  /*-webkit-column-count: 3; /* Chrome, Safari, Opera */
+  /*-moz-column-count: 3; /* Firefox */
+  /*column-count: 3;  */
+}
+
+#sliders > label {
+    float:left;
+    display:block;
+}
