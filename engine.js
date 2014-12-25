@@ -1,12 +1,14 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert*/
 var currentWeights = {};
-var attributes = {"conf": "Conference", "dd": "# of DD players", "fgp": "Field-Goal Percentage", "sm": "Scoring Margin", "sd": "Scoring Defense", "atr": "Assists/Turnover Ratio", "tm": "Turnover Margin", "ftp": "Free-Throw Percentage", "or": "Offensive Rebounds", "rm": "Rebound Margin", "seed": "Seed", "pr": "Power Ranking"};
+var attributes = {"conf": "Conference", "dd": "# of DD players", "fgp": "Field-Goal Percentage", "sm": "Scoring Margin", "sd": "Scoring Defense", "atr": "Assists/Turnover Ratio", "tm": "Turnover Margin", "ftp": "Free-Throw Percentage", "or": "Offensive Rebounds", "rm": "Rebound Margin", "seed": "Seed", "pr": "Power Ranking", "r": "Random"};
 var teamData = {};
 $(function() {
     $.each(attributes, function(id, name) {
+        if(id == "conf") return true;
+        
         currentWeights[id] = 0;
-        $('#sliders').append('<label for="' + id + '">' + name + '</label><span id="' + id + '"></span>');
+        $('#sliders').append('<li><label for="' + id + '">' + name + '</label><div id="' + id + '"></div></li>');
         $('#' + id).slider({
             value: 0,
             range: "min",
@@ -34,12 +36,15 @@ $(function() {
 function submit() {
     var totalWeight = 0;
     $.each(attributes, function(param, name) {
+            if(param == "conf") return true;
+
         totalWeight += currentWeights[param];
     });
     relativeWeights = {};
     $.each(currentWeights, function(param) {
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    console.log(relativeWeights);
+    /*console.log(relativeWeights);*/
+    $('#teams').text(JSON.stringify(relativeWeights));
 }
 
