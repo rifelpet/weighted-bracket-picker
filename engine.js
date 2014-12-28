@@ -23,12 +23,16 @@ $(function() {
       var lines = data.split("\n");
       var result = [];
       headers = lines[0].trim().split(",");
+      for(var headerId in headers) {
+          headers[headerId] = attrToId(headers[headerId]);
+      }
       for (var i = 1; i < lines.length; i++) {
         var currentLine = lines[i].split(",");
         var team = {};
         for (var j = 0; j < headers.length; j++) {
           team[headers[j]] = currentLine[j];
         }
+        team['Random'] = Math.random() * 100; // TODO: make this on submit() rather than page load
         teamsByName[team['Name']] = team;
         teamsById[team['Id']] = team;
         teamsByRegion[team['Region']].push(team);
@@ -39,12 +43,12 @@ $(function() {
             firstFours.push([team, teamsByRegionAndSeed[team['Region']][team['Seed']]]);
         } else {
             team['FirstFour'] = false;            
-            teamsByRegionAndSeed[team['Region']][team['Seed']] = team;
-        
+            teamsByRegionAndSeed[team['Region']][team['Seed']] = team;        
         }
+        
       }
-              console.log(firstFours);
 
+      headers.push('Random');
       $.each(headers, function(i, name) {
         id = attrToId(name);
         if(id == "Region" || id == "Name" || id == "Id") return true;
@@ -100,8 +104,21 @@ function setupInitialMatches() {
  * Determine the winner of a matchup based on weight. 
  * Return the team object for the winning team.
  */
-function getWinner(team1, team2) {
-    
+function getWinner(weights, team1, team2) {
+    team1Total = 0;
+    team2Total = 0;
+    for(weightName in weights) {
+        weight = weights[weightName];
+        if(weightName == 'Seed') {
+            // Higher seeds are worse, so invert the value range
+            team1Total += (17 - team1[weightName]) * weight;
+            team2Total += (17 - team2[weightName]) * weight;
+        } else {
+            team1Total += team1[weightName] * weight;
+            team2Total += team2[weightName] * weight;
+        }
+    }
+    return team1Total > team2Total ? team1 : team2;
 }
 
 function submit() {
@@ -115,7 +132,13 @@ function submit() {
     $.each(currentWeights, function(param) {
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    $('#bracket').text(JSON.stringify(relativeWeights));
+    $('#bracket').text(JSON.stringify(relativeWeights, undefined, 2));
+    
+    
+    var team1 = teamsById[0];
+    var team2 = teamsById[1];
+    var winner = getWinner(relativeWeights, team1, team2);
+    console.log("winner between " + team1['Name'] + " and " + team2['Name'] + ": " + winner['Name']);
 }
 
 
