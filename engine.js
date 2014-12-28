@@ -11,7 +11,6 @@ var regions = ["South", "East", "West", "Midwest"];
 
 /* This logic will need to be rewritten for 2015. Currently using 2014's First Four placement */
 var firstFours = [];
-var firstRoundMatchUps = [[16, 1], [15, 2], [14, 3], [13, 4], [12, 5], [11, 6], [10, 7], [9, 8]];
 
 
 $(function() {
@@ -23,20 +22,18 @@ $(function() {
       var lines = data.split("\n");
       var result = [];
       headers = lines[0].trim().split(",");
-      for(var headerId in headers) {
-          headers[headerId] = attrToId(headers[headerId]);
-      }
+
       for (var i = 1; i < lines.length; i++) {
         var currentLine = lines[i].split(",");
         var team = {};
         for (var j = 0; j < headers.length; j++) {
-          team[headers[j]] = currentLine[j];
+          team[attrToID(headers[j])] = currentLine[j];
         }
         team['Random'] = Math.random() * 100; // TODO: make this on submit() rather than page load
         teamsByName[team['Name']] = team;
         teamsById[team['Id']] = team;
         teamsByRegion[team['Region']].push(team);
-
+        //console.log(team);
         if(team['Seed'] in teamsByRegionAndSeed[team['Region']]) {
             team['FirstFour'] = true;
             teamsByRegionAndSeed[team['Region']][team['Seed']]['FirstFour'] = true;
@@ -49,12 +46,12 @@ $(function() {
       }
 
       headers.push('Random');
-      $.each(headers, function(i, name) {
-        id = attrToId(name);
+      $.each(headers, function(i, param) {
+        var id = attrToID(param);
         if(id == "Region" || id == "Name" || id == "Id") return true;
         
         currentWeights[id] = 0;
-        $('#sliders').append('<li><label for="' + id + '">' + name + '</label><div id="' + id + '"></div></li>');
+        $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
         $('#' + id).slider({
             value: 0,
             range: "min",
@@ -79,7 +76,7 @@ function setupInitialMatches() {
 
   for(var matchupId in firstFours) {
     matchup = firstFours[matchupId];
-    $('#first-four').append('<li>' + regions[matchup[0]['Region']] + ': ' + matchup[0]['Name'] + ' vs ' + matchup[1]['Name'] + '</li>');
+    $('#first-four').append('<li id="FirstFour' + matchupId + '">' + regions[matchup[0]['Region']] + ' (' + matchup[0]['Seed'] + '): ' + matchup[0]['Name'] + ' vs ' + matchup[1]['Name'] + '<div id="FirstFour' + matchupId + 'Result" style="font-weight:bold;display:inline;"></div></li>');
   }
 
     
@@ -123,25 +120,28 @@ function getWinner(weights, team1, team2) {
 
 function submit() {
     var totalWeight = 0;
-    $.each(headers, function(i, name) {
-        param = attrToId(name);
-        if(param == "Region" || param == "Name" || param == "Id") return true;
-        totalWeight += currentWeights[param];
+    $.each(headers, function(i, param) {
+        var id = attrToID(param);
+        if(id == "Region" || id == "Name" || id == "Id") return true;
+        totalWeight += currentWeights[id];
     });
     relativeWeights = {};
     $.each(currentWeights, function(param) {
+        var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
     $('#bracket').text(JSON.stringify(relativeWeights, undefined, 2));
     
     
+    for(matchupID in firstFours) {
+        $('#FirstFour' + matchupID + 'Result').text("Winner: " + getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1])['Name']);
+    }
     var team1 = teamsById[0];
     var team2 = teamsById[1];
     var winner = getWinner(relativeWeights, team1, team2);
     console.log("winner between " + team1['Name'] + " and " + team2['Name'] + ": " + winner['Name']);
 }
 
-
-function attrToId(attribute) {
-    return attribute.replace(/ /g, "");
+function attrToID(attr) {
+    return attr.replace(/ /g, "");
 }
