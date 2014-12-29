@@ -3,6 +3,10 @@
 var currentWeights = {};
 var teamsByName = {};
 var teamsByRegion = [[], [], [], []];
+
+// array of regions, each representing hashmaps representing seed numbers
+// Does not contain losers of first-four matchups.
+var bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
 var teamsById = {};
 var headers = [];
 
@@ -16,9 +20,7 @@ var firstFours = [];
 $(function() {
     
     $.get("2015-data.csv", function(data) {
-      // array of regions, each representing hashmaps representing seed numbers
-      // used for determining first four matchups.
-      var teamsByRegionAndSeed = [{}, {}, {}, {}];
+
       var lines = data.split("\n");
       var result = [];
       headers = lines[0].trim().split(",");
@@ -33,14 +35,11 @@ $(function() {
         teamsByName[team['Name']] = team;
         teamsById[team['Id']] = team;
         teamsByRegion[team['Region']].push(team);
-        //console.log(team);
-        if(team['Seed'] in teamsByRegionAndSeed[team['Region']]) {
-            team['FirstFour'] = true;
-            teamsByRegionAndSeed[team['Region']][team['Seed']]['FirstFour'] = true;
-            firstFours.push([team, teamsByRegionAndSeed[team['Region']][team['Seed']]]);
+        if(team['Seed'] in bracketTeamsByRegionAndSeed[team['Region']]) {
+            firstFours.push([team, bracketTeamsByRegionAndSeed[team['Region']][team['Seed']]]);
+            delete bracketTeamsByRegionAndSeed[team['Region']][team['Seed']];
         } else {
-            team['FirstFour'] = false;            
-            teamsByRegionAndSeed[team['Region']][team['Seed']] = team;        
+            bracketTeamsByRegionAndSeed[team['Region']][team['Seed']] = team;        
         }
         
       }
@@ -83,13 +82,19 @@ function setupInitialMatches() {
   for(var regionID = 0; regionID < regions.length; regionID++) {
       region = regions[regionID];
       var list = $('<ul/>');
+      regionTeams = bracketTeamsByRegionAndSeed[regionID];
       
-      for(var teamId in teamsByRegion[regionID]) {
-        team = teamsByRegion[regionID][teamId];
-        if(!team['FirstFour']) {
-            list.append('<li>' + team['Seed'] + ': ' + team['Name'] + '</li>');
+      for(var seed = 1; seed < 9; seed++) {
+        var high = regionTeams[seed];
+        var lowString = '';
+        if((17 - seed) in regionTeams) {
+            var lowTeam = regionTeams[17 - seed];
+            lowString = '(' + lowTeam['Seed'] + ') ' + lowTeam['Name'];
+        } else {
+            lowString = ' <i>First-Four winner</i>';
         }
-          
+        
+        list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs ' + lowString + '</li>');
       }
       
       $('#teams').append('<h4>' + region + '</h4>');
@@ -130,16 +135,31 @@ function submit() {
         var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    $('#bracket').text(JSON.stringify(relativeWeights, undefined, 2));
+    //$('#bracket').text(JSON.stringify(relativeWeights, undefined, 2));
     
     
     for(matchupID in firstFours) {
-        $('#FirstFour' + matchupID + 'Result').text("Winner: " + getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1])['Name']);
+        var winner = getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1]);
+        bracketTeamsByRegionAndSeed[winner['Region']][winner['Seed']] = winner;
+        $('#FirstFour' + matchupID + 'Result').text("Winner: " + winner['Name']);
     }
-    var team1 = teamsById[0];
-    var team2 = teamsById[1];
-    var winner = getWinner(relativeWeights, team1, team2);
-    console.log("winner between " + team1['Name'] + " and " + team2['Name'] + ": " + winner['Name']);
+    
+    for(regionID in regions) {
+    
+        var currentRegion = bracketTeamsByRegionAndSeed[regionID];
+        var list = $('<ul/>');
+
+        for(var seed = 1; seed < 9; seed++) {
+            console.log(currentRegion[seed]['Name'] + " vs " + currentRegion[17 - seed]['Name']);
+            var high = currentRegion[seed];
+            var low = currentRegion[17 - seed];
+            list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs (' + low['Seed'] + ') ' + low['Name'] + '</li>');
+        }
+        //$('#teams').append('<h4>' + region + '</h4>');
+        //$('#teams').append(list);
+    }
+    
+    
 }
 
 function attrToID(attr) {
