@@ -62,6 +62,10 @@ $(function() {
       });
       setupInitialMatches();
       
+      
+      
+      
+      
     });
     
 });
@@ -123,6 +127,12 @@ function getWinner(weights, team1, team2) {
     return team1Total > team2Total ? team1 : team2;
 }
 
+function render_bracket_team(container, data, score) {
+  if (!data['Name'])
+    return;
+  container.append(data['Name']);
+}
+
 function submit() {
     var totalWeight = 0;
     $.each(headers, function(i, param) {
@@ -149,18 +159,36 @@ function submit() {
         var currentRegion = bracketTeamsByRegionAndSeed[regionID];
         var list = $('<ul/>');
 
+        var bracketData = {teams: []};
+
+
         for(var seed = 1; seed < 9; seed++) {
             console.log(currentRegion[seed]['Name'] + " vs " + currentRegion[17 - seed]['Name']);
             var high = currentRegion[seed];
             var low = currentRegion[17 - seed];
             list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs (' + low['Seed'] + ') ' + low['Name'] + '</li>');
+            bracketData.teams.push(['(' + high['Seed'] + ') ' + high['Name'], '(' + low['Seed'] + ') ' + low['Name']]);
         }
         //$('#teams').append('<h4>' + region + '</h4>');
         //$('#teams').append(list);
+        var orientation = regionID >= 2 ? 'rl' : 'lr';
+        console.log(bracketData);
+        $('div#bracket' + regionID).bracket({
+            skipConsolationRound: true,
+            init: bracketData,
+            save: function(){}, /* without save() labels are disabled */
+            /*decorator: {
+                render: render_bracket_team
+                }*/
+            dir: orientation
+        });
+        
     }
     
     
 }
+
+
 
 function attrToID(attr) {
     return attr.replace(/ /g, "");
