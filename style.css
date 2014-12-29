@@ -27,6 +27,14 @@
 }
 
 li {
-    list-style-type: none;
-    
+    list-style-type: none;    
+}
+
+#first-four > li {
+    display: inline;
+    padding: 10px;
+}
+
+.jQBracket > .tools {
+    display: none;
 }
