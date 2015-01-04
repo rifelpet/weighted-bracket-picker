@@ -178,6 +178,12 @@ function submit() {
             
             var winner = getWinner(relativeWeights, high, low);
             gameWinners['game' + String(seed)] = winner;
+            document.getElementById(region + 'seed' + winner['Seed']).className += " winner";
+            if(high == winner) {
+                document.getElementById(region + 'seed' + low['Seed']).className += " loser";    
+            } else {
+                document.getElementById(region + 'seed' + high['Seed']).className += " loser";
+            }
             $('#' + region + 'game' + seed).text('(' + winner['Seed'] + ') ' + winner['Name']);
         }
         
@@ -189,6 +195,15 @@ function submit() {
             var winner = getWinner(relativeWeights, high, low);
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner['Seed'] + ') ' + winner['Name']);
+            
+            if(high == winner) {
+                document.getElementById(region + 'game' + String(game - gameDiff)).className += " winner";    
+                document.getElementById(region + 'game' + String(game + 1 - gameDiff)).className += " loser";
+            } else {
+                document.getElementById(region + 'game' + String(game - gameDiff)).className += " loser";    
+                document.getElementById(region + 'game' + String(game + 1 - gameDiff)).className += " winner";
+            }
+            
             gameDiff--;
         }  
     }
@@ -197,10 +212,21 @@ function submit() {
     var regionID = 0;
     var sides = ["left", "right"];
     for(side in sides) {
-        var team1 = gameWinnerRegions[regionID++]["game15"];
-        var team2 = gameWinnerRegions[regionID++]["game15"];
+        var region1 = regionID;
+        var region2 = regionID + 1;
+        var team1 = gameWinnerRegions[region1]["game15"];
+        var team2 = gameWinnerRegions[region2]["game15"];
         var winner = getWinner(relativeWeights, team1, team2);
         $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
+        
+        if(team1 == winner) {
+            document.getElementById(regions[region1].toLowerCase() + 'game15').className += " winner";    
+            document.getElementById(regions[region2].toLowerCase() + 'game15').className += " loser";
+        } else {
+            document.getElementById(regions[region1].toLowerCase() + 'game15').className += " loser";    
+            document.getElementById(regions[region2].toLowerCase() + 'game15').className += " winner";
+        }
+        regionID += 2;
     }
     
     

@@ -57,13 +57,15 @@ li {
     float: right;
 }
 
-.ltor > div,
-.ltor > div > div,
-.ltor > div > div > div,
-.ltor > div > div > div > div,
-.ltor > div > div > div > div > div {
-    /*border-right: 1px solid #000;    
-*/}
+.winner {
+    color: green;
+}
+
+.loser {
+    text-decoration: line-through;
+    color: grey;
+}
+
 
 .bracket-container {
     width:1500px;
