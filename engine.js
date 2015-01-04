@@ -66,9 +66,9 @@ $(function() {
 function setupInitialMatches() {
     for (var matchupId in firstFours) {
         matchup = firstFours[matchupId];
-        $('#ff' + matchupId + '-region').text(regions[matchup[0]['Region']] + ' (' + matchup[0]['Seed'] + '):');
-        $('#ff' + matchupId + '-team1').text(matchup[0]['Name']);
-        $('#ff' + matchupId + '-team2').text(matchup[1]['Name']);
+        $('#matchup' + matchupId + ' > .region').text(regions[matchup[0]['Region']] + ' (' + matchup[0]['Seed'] + '):');
+        $('#matchup' + matchupId + ' > .team1').text(matchup[0]['Name']);
+        $('#matchup' + matchupId + ' > .team2').text(matchup[1]['Name']);
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
         var region = regions[regionID];
@@ -129,14 +129,13 @@ function submit() {
     for (matchupID in firstFours) {
         var winner = getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1]);
         if(winner = firstFours[matchupID][0]) {
-            $('#ff' + matchupID + '-team1').removeClass('loser').addClass('winner');
-            $('#ff' + matchupID + '-team2').removeClass('winner').addClass('loser');
+            $('#matchup' + matchupID + ' > .team1').removeClass('loser').addClass('winner');
+            $('#matchup' + matchupID + ' > .team2').removeClass('winner').addClass('loser');
         } else {
-            $('#ff' + matchupID + '-team1').removeClass('winner').addClass('loser');
-            $('#ff' + matchupID + '-team2').removeClass('loser').addClass('winner');            
+            $('#matchup' + matchupID + ' > .team1').removeClass('winner').addClass('loser');
+            $('#matchup' + matchupID + ' > .team2').removeClass('loser').addClass('winner');            
         }
         bracketTeamsByRegionAndSeed[winner['Region']][winner['Seed']] = winner;
-        //console.log('#' + regions[winner['Region']].toLowerCase() + 'seed' + winner['Seed']);
         $('#' + regions[winner['Region']].toLowerCase() + 'seed' + winner['Seed']).text('(' + winner['Seed'] + ') ' + winner['Name']);
         $('#FirstFour' + matchupID + 'Result').text("Winner: " + winner['Name']);
     }
