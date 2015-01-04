@@ -178,11 +178,11 @@ function submit() {
             
             var winner = getWinner(relativeWeights, high, low);
             gameWinners['game' + String(seed)] = winner;
-            document.getElementById(region + 'seed' + winner['Seed']).className += " winner";
+            $('#' + region + 'seed' + winner['Seed']).removeClass('loser').addClass('winner');
             if(high == winner) {
-                document.getElementById(region + 'seed' + low['Seed']).className += " loser";    
+                $('#' + region + 'seed' + low['Seed']).removeClass('winner').addClass('loser');    
             } else {
-                document.getElementById(region + 'seed' + high['Seed']).className += " loser";
+                $('#' + region + 'seed' + high['Seed']).removeClass('winner').addClass('loser');
             }
             $('#' + region + 'game' + seed).text('(' + winner['Seed'] + ') ' + winner['Name']);
         }
@@ -197,11 +197,11 @@ function submit() {
             $('#' + region + 'game' + game).text('(' + winner['Seed'] + ') ' + winner['Name']);
             
             if(high == winner) {
-                document.getElementById(region + 'game' + String(game - gameDiff)).className += " winner";    
-                document.getElementById(region + 'game' + String(game + 1 - gameDiff)).className += " loser";
+                $('#' + region + 'game' + String(game - gameDiff)).removeClass('loser').addClass('winner');    
+                $('#' + region + 'game' + String(game + 1 - gameDiff)).removeClass('winner').addClass('loser');
             } else {
-                document.getElementById(region + 'game' + String(game - gameDiff)).className += " loser";    
-                document.getElementById(region + 'game' + String(game + 1 - gameDiff)).className += " winner";
+                $('#' + region + 'game' + String(game - gameDiff)).removeClass('winner').addClass('loser');    
+                $('#' + region + 'game' + String(game + 1 - gameDiff)).removeClass('loser').addClass('winner');
             }
             
             gameDiff--;
@@ -220,11 +220,11 @@ function submit() {
         $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
         
         if(team1 == winner) {
-            document.getElementById(regions[region1].toLowerCase() + 'game15').className += " winner";    
-            document.getElementById(regions[region2].toLowerCase() + 'game15').className += " loser";
+            $('#' + regions[region1].toLowerCase() + 'game15').removeClass('loser').addClass('winner');    
+            $('#' + regions[region2].toLowerCase() + 'game15').removeClass('winner').addClass('loser');    
         } else {
-            document.getElementById(regions[region1].toLowerCase() + 'game15').className += " loser";    
-            document.getElementById(regions[region2].toLowerCase() + 'game15').className += " winner";
+            $('#' + regions[region1].toLowerCase() + 'game15').removeClass('loser').addClass('winner');    
+            $('#' + regions[region2].toLowerCase() + 'game15').removeClass('winner').addClass('loser');    
         }
         regionID += 2;
     }

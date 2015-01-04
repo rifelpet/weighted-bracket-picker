@@ -6,6 +6,10 @@
   display:inline-block;
 }
 
+* {
+  font-family: sans-serif   
+}
+
 #sliders {
   /*-webkit-column-count: 3; /* Chrome, Safari, Opera */
   /*-moz-column-count: 3; /* Firefox */
