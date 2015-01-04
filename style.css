@@ -34,7 +34,8 @@ li {
     list-style-type: none;    
 }
 
-#first-four > li {
+#first-four > li,
+#first-four > li > div {
     display: inline;
     padding: 10px;
 }
