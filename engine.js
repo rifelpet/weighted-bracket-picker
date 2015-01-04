@@ -43,6 +43,7 @@ $(function() {
         }
         
       }
+      //console.log(teamsByRegion);
 
       headers.push('Random');
       $.each(headers, function(i, param) {
@@ -84,7 +85,7 @@ function setupInitialMatches() {
 
     
   for(var regionID = 0; regionID < regions.length; regionID++) {
-      region = regions[regionID];
+      var region = regions[regionID];
       var list = $('<ul/>');
       regionTeams = bracketTeamsByRegionAndSeed[regionID];
       
@@ -94,15 +95,16 @@ function setupInitialMatches() {
         if((17 - seed) in regionTeams) {
             var lowTeam = regionTeams[17 - seed];
             lowString = '(' + lowTeam['Seed'] + ') ' + lowTeam['Name'];
+            $('#' + region.toLowerCase() + 'seed' + lowTeam['Seed']).text('(' + lowTeam['Seed'] + ') ' + lowTeam['Name']);    
         } else {
-            lowString = ' <i>First-Four winner</i>';
+            $('#' + region.toLowerCase() + 'seed' + (17 - seed)).html('(' + (17 - seed) + ') <i>First 4 winner</i>');
         }
-        
-        list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs ' + lowString + '</li>');
+        $('#' + region.toLowerCase() + 'seed' + high['Seed']).text('(' + high['Seed'] + ') ' + high['Name']);
+        //list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs ' + lowString + '</li>');
       }
       
-      $('#teams').append('<h4>' + region + '</h4>');
-      $('#teams').append(list);
+      //$('#teams').append('<h4>' + region + '</h4>');
+      //$('#teams').append(list);
   }
 }
 
@@ -145,44 +147,62 @@ function submit() {
         var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    //$('#bracket').text(JSON.stringify(relativeWeights, undefined, 2));
     
     
     for(matchupID in firstFours) {
         var winner = getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1]);
         bracketTeamsByRegionAndSeed[winner['Region']][winner['Seed']] = winner;
+        //console.log('#' + regions[winner['Region']].toLowerCase() + 'seed' + winner['Seed']);
+        $('#' + regions[winner['Region']].toLowerCase() + 'seed' + winner['Seed']).text('(' + winner['Seed'] + ') ' + winner['Name']); 
         $('#FirstFour' + matchupID + 'Result').text("Winner: " + winner['Name']);
     }
     
+    var gameWinnerRegions = [{}, {}, {}, {}];
     for(regionID in regions) {
     
         var currentRegion = bracketTeamsByRegionAndSeed[regionID];
-        var list = $('<ul/>');
-
-        var bracketData = {teams: []};
-
-
+        var gameWinners = gameWinnerRegions[regionID];
+        var bracketData = {teams: [],
+            scores: []
+        };
+        
+        var region = regions[regionID].toLowerCase();
+        
+        // First round of 64
         for(var seed = 1; seed < 9; seed++) {
-            console.log(currentRegion[seed]['Name'] + " vs " + currentRegion[17 - seed]['Name']);
+            
             var high = currentRegion[seed];
             var low = currentRegion[17 - seed];
-            list.append('<li>(' + high['Seed'] + ') ' + high['Name'] + ' vs (' + low['Seed'] + ') ' + low['Name'] + '</li>');
             bracketData.teams.push(['(' + high['Seed'] + ') ' + high['Name'], '(' + low['Seed'] + ') ' + low['Name']]);
+            
+            var winner = getWinner(relativeWeights, high, low);
+            gameWinners['game' + String(seed)] = winner;
+            $('#' + region + 'game' + seed).text('(' + winner['Seed'] + ') ' + winner['Name']);
         }
-        //$('#teams').append('<h4>' + region + '</h4>');
-        //$('#teams').append(list);
-        var orientation = regionID >= 2 ? 'rl' : 'lr';
-        console.log(bracketData);
-        $('div#bracket' + regionID).bracket({
-            skipConsolationRound: true,
-            init: bracketData,
-            save: function(){}, /* without save() labels are disabled */
-            /*decorator: {
-                render: render_bracket_team
-                }*/
-            dir: orientation
-        });
         
+        // Round of 32 through the Elite 8
+        var gameDiff = 8;
+        for(var game = 9; game < 16; game++) {
+            var high = gameWinners['game' + String(game - gameDiff)];
+            var low = gameWinners['game' + String(game + 1 - gameDiff)];
+            var winner = getWinner(relativeWeights, high, low);
+            gameWinners['game' + String(game)] = winner;
+            $('#' + region + 'game' + game).text('(' + winner['Seed'] + ') ' + winner['Name']);
+            gameDiff--;
+        }  
+    }
+    
+    // Final four and championship game
+    var regionID = 0;
+    var sides = ["left", "right"];
+    for(side in sides) {
+        console.log(gameWinnerRegions);
+        console.log(regionID);
+        var team1 = gameWinnerRegions[regionID++]["game15"];
+        var team2 = gameWinnerRegions[regionID++]["game15"];
+        var winner = getWinner(relativeWeights, team1, team2);
+        console.log('#' + sides[side] + 'game');
+        $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
     }
     
     
