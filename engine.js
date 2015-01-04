@@ -58,6 +58,7 @@ $(function() {
             animate: true,
             slide: function(event, ui) {
                 currentWeights[$(this).attr('id')] = ui.value;
+                submit();
             }
         });
       });
@@ -196,12 +197,9 @@ function submit() {
     var regionID = 0;
     var sides = ["left", "right"];
     for(side in sides) {
-        console.log(gameWinnerRegions);
-        console.log(regionID);
         var team1 = gameWinnerRegions[regionID++]["game15"];
         var team2 = gameWinnerRegions[regionID++]["game15"];
         var winner = getWinner(relativeWeights, team1, team2);
-        console.log('#' + sides[side] + 'game');
         $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
     }
     
