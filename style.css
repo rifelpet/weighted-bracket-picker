@@ -6,6 +6,10 @@
   display:inline-block;
 }
 
+* {
+  font-family: sans-serif   
+}
+
 #sliders {
   /*-webkit-column-count: 3; /* Chrome, Safari, Opera */
   /*-moz-column-count: 3; /* Firefox */
@@ -30,11 +34,222 @@ li {
     list-style-type: none;    
 }
 
-#first-four > li {
+#first-four > li,
+#first-four > li > div {
     display: inline;
     padding: 10px;
 }
 
 .jQBracket > .tools {
     display: none;
+}
+
+
+.rtol {
+    /*border-left: 1px solid #000;*/
+    float: right;
+}
+
+.ltor {
+    float: left;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.winner {
+    color: green;
+}
+
+.loser {
+    text-decoration: line-through;
+    color: grey;
+}
+
+
+.bracket-container {
+    width:1500px;
+}
+
+
+.tournament4-wrap, .tournament8-wrap, .tournament16-wrap, .tournament32-wrap {
+	text-align: center;
+}
+
+/****** round 1 ******/
+.round1-top, .round1-bottom {
+	/*float: left;*/
+	width: 125px;
+	height: 2em;
+}
+
+.round1-top {
+	line-height: 2.5em;
+}
+
+.round2-topwrap .round1-bottom {
+	width: 124px;
+	border-top: 1px solid #000;
+}
+
+.round2-bottomwrap .round1-top {
+	width: 124px;
+	border-bottom: 1px solid #000;
+}
+
+/****** round 2 ******/
+
+.round2-top, .round2-bottom {
+	/*float: right;*/
+	width: 125px;
+	height: 4em;
+}
+
+.round2-top {
+	line-height: 6.5em;
+}
+
+
+.round3-topwrap .round2-bottom {
+	width: 124px;
+	border-top: 1px solid #000;
+}
+
+.round3-bottomwrap .round2-top {
+	width: 124px;
+	border-bottom: 1px solid #000;
+}
+
+.tournament4-wrap .round2-top {
+	border-bottom: 1px solid #000;
+}
+
+.round2-topwrap, .round2-bottomwrap {
+	/*float: left;*/
+	width: 250px;
+	height: 4em;
+}
+
+/****** round 3 ******/
+
+.round3-top, .round3-bottom {
+	/*float: right;*/
+	width: 125px;
+	height: 8em;
+}
+
+.round3-top {
+	line-height: 14.5em;
+}
+
+.round4-topwrap .round3-bottom {
+	width: 124px;
+	border-top: 1px solid #000;
+}
+
+.round4-bottomwrap .round3-top {
+	width: 124px;
+	border-bottom: 1px solid #000;
+}
+
+.tournament8-wrap .round3-top {
+	border-bottom: 1px solid #000;
+}
+
+.round3-topwrap, .round3-bottomwrap {
+	/*float: left;*/
+	width: 375px;
+	height: 8em;
+}
+
+/****** round 4 ******/
+
+.round4-top, .round4-bottom {
+	/*float: right;*/
+	width: 125px;
+	height: 16em;
+}
+
+.round4-top {
+	line-height: 30.5em;
+}
+
+
+.round5-topwrap .round4-bottom {
+	width: 124px;
+	border-top: 1px solid #000;
+}
+
+.round5-bottomwrap .round4-top {
+	width: 124px;
+	border-bottom: 1px solid #000;
+}
+
+.round4-topwrap, .round4-bottomwrap {
+	/*float: left;*/
+	width: 500px;
+}
+
+.tournament16-wrap .round4-top {
+	border-bottom: 1px solid #000;
+}
+
+/****** round 5 ******/
+
+.round5-top, .round5-bottom {
+	/*float: right;*/
+	width: 125px;
+	height: 32em;
+}
+
+.round5-top {
+	line-height: 62.5em;
+}
+
+.tournament32-wrap .round5-top {
+	border-bottom: 1px solid #000;
+}
+
+.round5-topwrap, .round5-bottomwrap, .tournament16-wrap {
+	/*float: left;*/
+	width: 625px;
+}
+
+/****** round 6 ******/
+
+.round6-top, .round6-bottom {
+	/*float: right;*/
+	width: 125px;
+	height: 32em;
+}
+
+.tournament32-wrap {
+	width: 750px;
+}
+
+/****** styles for the winner column ******/
+.winner3, .winner4, .winner5, .winner6 {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.winner3 {
+	line-height: 8em;
+}
+
+.winner4 {
+	line-height: 16em;
+}
+
+.winner5 {
+	line-height: 32em;
+}
+
+.winner6 {
+	line-height: 64em;
 }
