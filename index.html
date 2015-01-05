@@ -1,305 +1,353 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
+
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
+
     <title>2015 March Madness - Weighted Bracket Chooser</title>
+    <script type="text/javascript" src="jquery.min.js">
+</script>
+    <script type="text/javascript" src="jquery-ui.min.js">
+</script>
+    <script type="text/javascript" src="engine.js">
+</script>
+    <link type="text/css" rel="stylesheet" href="jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="style.css">
+</head>
 
-    <script src="jquery.min.js"></script>
-	<script src="jquery-ui.min.js"></script>
-	<script src="engine.js"></script>
+<body>
+    <h3>Data (<a href="2015-data.csv">Raw CSV</a>)</h3>
 
-    <link rel="stylesheet" href="jquery-ui.css" />
-	<link rel="stylesheet" href="style.css" />
-  </head>
-  
-  <body>
-  <h3>Data (<a href="2015-data.csv">Raw CSV</a>)</h3>
-  <div id="teams">
-    <h4>First Four</h4>
-    <ul id="first-four">
-        <li id="matchup0"><div class="region"></div><div class="team1"></div><div class="team2"></div></li>
-        <li id="matchup1"><div class="region"></div><div class="team1"></div><div class="team2"></div></li>
-        <li id="matchup2"><div class="region"></div><div class="team1"></div><div class="team2"></div></li>
-        <li id="matchup3"><div class="region"></div><div class="team1"></div><div class="team2"></div></li>
-    </ul>
-    <table>
-        <tr>
-        <td>
-    <div id="bracket0"></div>
-        </td><td>        
-            <div id="bracket2"></div>
-        </td></tr>
-        <tr>
-        <td>
-    <div id="bracket1"></div>
-        </td><td>        
-            <div id="bracket3"></div>
-        </td></tr>
-        
-    </table>
+    <div id="teams">
+        <h4>First Four</h4>
 
+        <ul id="first-four">
+            <li id="matchup0">
+                <div class="region"></div>
+                <div class="team1"></div> vs 
+                <div class="team2"></div>
+            </li>
 
-    <div class="bracket-container">
-    <div class="tournament32-wrap ltor fl">
-		<div class="round6-top winner6 fr" id="leftgame"></div>
-		<div class="round5-topwrap fl">
-			<div class="round5-top fr" id="southgame15"></div>
-			<div class="round4-topwrap fl">
-				<div class="round4-top fr" id="southgame13"></div>
-				<div class="round3-topwrap fl">
-					<div class="round3-top fr" id="southgame9"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="southgame1"></div>
-						<div class="round1-top fl" id="southseed1">South #1</div>
-						<div class="round1-bottom fl" id="southseed16">South #16</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="southgame2"></div>
-						<div class="round1-top fl" id="southseed2">South #2</div>
-						<div class="round1-bottom fl" id="southseed15">South #15</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fl">
-					<div class="round3-bottom fr" id="southgame10"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="southgame3"></div>
-						<div class="round1-top fl" id="southseed3">South #3</div>
-						<div class="round1-bottom fl" id="southseed14">South #14</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="southgame4"></div>
-						<div class="round1-top fl" id="southseed4">South #4</div>
-						<div class="round1-bottom fl" id="southseed13">South #13</div>
-					</div>
-				</div>
-			</div>
-			<div class="round4-bottomwrap fl">
-				<div class="round4-bottom fr" id="southgame14"></div>
-				<div class="round3-topwrap fl">
-					<div class="round3-top fr" id="southgame11"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="southgame5"></div>
-						<div class="round1-top fl" id="southseed5">South #5</div>
-						<div class="round1-bottom fl" id="southseed12">South #12</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="southgame6"></div>
-						<div class="round1-top fl" id="southseed6">South #6</div>
-						<div class="round1-bottom fl" id="southseed11">South #11</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fl">
-					<div class="round3-bottom fr" id="southgame12"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="southgame7"></div>
-						<div class="round1-top fl" id="southseed7">South #7</div>
-						<div class="round1-bottom fl" id="southseed10">South #10</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="southgame8"></div>
-						<div class="round1-top fl" id="southseed8">South #8</div>
-						<div class="round1-bottom fl" id="southseed9">South #9</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="round5-bottomwrap fl">
-			<div class="round5-bottom fr" id="eastgame15"></div>
-			<div class="round4-topwrap fl">
-				<div class="round4-top fr" id="eastgame13"></div>
-				<div class="round3-topwrap fl">
-					<div class="round3-top fr" id="eastgame9"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="eastgame1"></div>
-						<div class="round1-top fl" id="eastseed1">East #1</div>
-						<div class="round1-bottom fl" id="eastseed16">East #16</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="eastgame2"></div>
-						<div class="round1-top fl" id="eastseed2">East #2</div>
-						<div class="round1-bottom fl" id="eastseed15">East #15</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fl">
-					<div class="round3-bottom fr" id="eastgame10"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="eastgame3"></div>
-						<div class="round1-top fl" id="eastseed3">East #3</div>
-						<div class="round1-bottom fl" id="eastseed14">East #14</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="eastgame4"></div>
-						<div class="round1-top fl" id="eastseed4">East #4</div>
-						<div class="round1-bottom fl" id="eastseed13"> East #13</div>
-					</div>
-				</div>
-			</div>
-			<div class="round4-bottomwrap fl">
-				<div class="round4-bottom fr" id="eastgame14"></div>
-				<div class="round3-topwrap fl">
-					<div class="round3-top fr" id="eastgame11"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="eastgame5"></div>
-						<div class="round1-top fl" id="eastseed5">East #5</div>
-						<div class="round1-bottom fl" id="eastseed12">East #12</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="eastgame6"></div>
-						<div class="round1-top fl" id="eastseed6">East #6</div>
-						<div class="round1-bottom fl" id="eastseed11">East #11</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fl">
-					<div class="round3-bottom fr" id="eastgame12"></div>
-					<div class="round2-topwrap fl">
-						<div class="round2-top fr" id="eastgame7"></div>
-						<div class="round1-top fl" id="eastseed7">East #7</div>
-						<div class="round1-bottom fl" id="eastseed10">East #10</div>
-					</div>
-					<div class="round2-bottomwrap fl">
-						<div class="round2-bottom fr" id="eastgame8"></div>
-						<div class="round1-top fl" id="eastseed8">East #8</div>
-						<div class="round1-bottom fl" id="eastseed9">East #9</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-    <div class="tournament32-wrap rtol fr">
-		<div class="round6-top winner6 fl" id="rightgame"></div>
-		<div class="round5-topwrap fr">
-			<div class="round5-top fl" id="westgame15"></div>
-			<div class="round4-topwrap fr">
-				<div class="round4-top fl" id="westgame13"></div>
-				<div class="round3-topwrap fr">
-					<div class="round3-top fl" id="westgame9"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="westgame1"></div>
-						<div class="round1-top fr" id="westseed1">West #1</div>
-						<div class="round1-bottom fr" id="westseed16">West #16</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="westgame2"></div>
-						<div class="round1-top fr" id="westseed2">West #2</div>
-						<div class="round1-bottom fr" id="westseed15">West #15</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fr">
-					<div class="round3-bottom fl" id="westgame10"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="westgame3"></div>
-						<div class="round1-top fr" id="westseed3">West #3</div>
-						<div class="round1-bottom fr" id="westseed14">West #14</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="westgame4"></div>
-						<div class="round1-top fr" id="westseed4">West #4</div>
-						<div class="round1-bottom fr" id="westseed13">West #13</div>
-					</div>
-				</div>
-			</div>
-			<div class="round4-bottomwrap fr">
-				<div class="round4-bottom fl" id="westgame14"></div>
-				<div class="round3-topwrap fr">
-					<div class="round3-top fl" id="westgame11"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="westgame5"></div>
-						<div class="round1-top fr" id="westseed5">West #5</div>
-						<div class="round1-bottom fr" id="westseed12">West #12</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="westgame6"></div>
-						<div class="round1-top fr" id="westseed6">West #6</div>
-						<div class="round1-bottom fr" id="westseed11">West #11</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fr">
-					<div class="round3-bottom fl" id="westgame12"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="westgame7"></div>
-						<div class="round1-top fr" id="westseed7">West #7</div>
-						<div class="round1-bottom fr" id="westseed10">West #10</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="westgame8"></div>
-						<div class="round1-top fr" id="westseed8">West #8</div>
-						<div class="round1-bottom fr" id="westseed9">West #9</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="round5-bottomwrap fr">
-			<div class="round5-bottom fl" id="midwestgame15"></div>
-			<div class="round4-topwrap fr">
-				<div class="round4-top fl" id="midwestgame13"></div>
-				<div class="round3-topwrap fr">
-					<div class="round3-top fl" id="midwestgame9"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="midwestgame1"></div>
-						<div class="round1-top fr" id="midwestseed1">Midwest #1</div>
-						<div class="round1-bottom fr" id="midwestseed16">Midwest #16</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="midwestgame2"></div>
-						<div class="round1-top fr" id="midwestseed2">Midwest #2</div>
-						<div class="round1-bottom fr" id="midwestseed15">Midwest #15</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fr">
-					<div class="round3-bottom fl" id="midwestgame10"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="midwestgame3"></div>
-						<div class="round1-top fr" id="midwestseed3">Midwest #3</div>
-						<div class="round1-bottom fr" id="midwestseed14">Midwest #14</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="midwestgame4"></div>
-						<div class="round1-top fr" id="midwestseed4">Midwest #4</div>
-						<div class="round1-bottom fr" id="midwestseed13">Midwest #13</div>
-					</div>
-				</div>
-			</div>
-			<div class="round4-bottomwrap fr">
-				<div class="round4-bottom fl" id="midwestgame14"></div>
-				<div class="round3-topwrap fr">
-					<div class="round3-top fl" id="midwestgame11"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="midwestgame5"></div>
-						<div class="round1-top fr" id="midwestseed5">Midwest #5</div>
-						<div class="round1-bottom fr" id="midwestseed12">Midwest #12</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="midwestgame6"></div>
-						<div class="round1-top fr" id="midwestseed6">Midwest #6</div>
-						<div class="round1-bottom fr" id="midwestseed11">Midwest #11</div>
-					</div>
-				</div>
-				<div class="round3-bottomwrap fr">
-					<div class="round3-bottom fl" id="midwestgame12"></div>
-					<div class="round2-topwrap fr">
-						<div class="round2-top fl" id="midwestgame7"></div>
-						<div class="round1-top fr" id="midwestseed7">Midwest #7</div>
-						<div class="round1-bottom fr" id="midwestseed10">Midwest #10</div>
-					</div>
-					<div class="round2-bottomwrap fr">
-						<div class="round2-bottom fl" id="midwestgame8"></div>
-						<div class="round1-top fr" id="midwestseed8">Midwest #8</div>
-						<div class="round1-bottom fr" id="midwestseed9">Midwest #9</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <li id="matchup1">
+                <div class="region"></div>
+                <div class="team1"></div> vs 
+                <div class="team2"></div>
+            </li>
+
+            <li id="matchup2">
+                <div class="region"></div>
+                <div class="team1"></div> vs 
+                <div class="team2"></div>
+            </li>
+
+            <li id="matchup3">
+                <div class="region"></div>
+                <div class="team1"></div> vs 
+                <div class="team2"></div>
+            </li>
+        </ul>
+
+        <div class="bracket-container">
+            <div class="tournament32-wrap ltor fl">
+                <div class="round6-top winner6 fr" id="leftgame"></div>
+
+                <div class="round5-topwrap fl">
+                    <div class="round5-top fr" id="southgame15"></div>
+
+                    <div class="round4-topwrap fl">
+                        <div class="round4-top fr" id="southgame13"></div>
+
+                        <div class="round3-topwrap fl">
+                            <div class="round3-top fr" id="southgame9"></div>
+
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="southgame1"></div>
+                                <div class="round1-top fl" id="southseed1"></div>
+                                <div class="round1-bottom fl" id="southseed16"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="southgame2"></div>
+                                <div class="round1-top fl" id="southseed2"></div>
+                                <div class="round1-bottom fl" id="southseed15"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fl">
+                            <div class="round3-bottom fr" id="southgame10"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="southgame3"></div>
+                                <div class="round1-top fl" id="southseed3"></div>
+                                <div class="round1-bottom fl" id="southseed14"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="southgame4"></div>
+                                <div class="round1-top fl" id="southseed4"></div>
+                                <div class="round1-bottom fl" id="southseed13"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="round4-bottomwrap fl">
+                        <div class="round4-bottom fr" id="southgame14"></div>
+
+                        <div class="round3-topwrap fl">
+                            <div class="round3-top fr" id="southgame11"></div>
+
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="southgame5"></div>
+                                <div class="round1-top fl" id="southseed5"></div>
+                                <div class="round1-bottom fl" id="southseed12"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="southgame6"></div>
+                                <div class="round1-top fl" id="southseed6"></div>
+                                <div class="round1-bottom fl" id="southseed11"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fl">
+                            <div class="round3-bottom fr" id="southgame12"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="southgame7"></div>
+                                <div class="round1-top fl" id="southseed7"></div>
+                                <div class="round1-bottom fl" id="southseed10"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="southgame8"></div>
+                                <div class="round1-top fl" id="southseed8"></div>
+                                <div class="round1-bottom fl" id="southseed9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="round5-bottomwrap fl">
+                    <div class="round5-bottom fr" id="eastgame15"></div>
+
+                    <div class="round4-topwrap fl">
+                        <div class="round4-top fr" id="eastgame13"></div>
+
+                        <div class="round3-topwrap fl">
+                            <div class="round3-top fr" id="eastgame9"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="eastgame1"></div>
+                                <div class="round1-top fl" id="eastseed1"></div>
+                                <div class="round1-bottom fl" id="eastseed16"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="eastgame2"></div>
+                                <div class="round1-top fl" id="eastseed2"></div>
+                                <div class="round1-bottom fl" id="eastseed15"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fl">
+                            <div class="round3-bottom fr" id="eastgame10"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="eastgame3"></div>
+                                <div class="round1-top fl" id="eastseed3"></div>
+                                <div class="round1-bottom fl" id="eastseed14"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="eastgame4"></div>
+                                <div class="round1-top fl" id="eastseed4"></div>
+                                <div class="round1-bottom fl" id="eastseed13"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="round4-bottomwrap fl">
+                        <div class="round4-bottom fr" id="eastgame14"></div>
+
+                        <div class="round3-topwrap fl">
+                            <div class="round3-top fr" id="eastgame11"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="eastgame5"></div>
+                                <div class="round1-top fl" id="eastseed5"></div>
+                                <div class="round1-bottom fl" id="eastseed12"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="eastgame6"></div>
+                                <div class="round1-top fl" id="eastseed6"></div>
+                                <div class="round1-bottom fl" id="eastseed11"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fl">
+                            <div class="round3-bottom fr" id="eastgame12"></div>
+                            <div class="round2-topwrap fl">
+                                <div class="round2-top fr" id="eastgame7"></div>
+                                <div class="round1-top fl" id="eastseed7"></div>
+                                <div class="round1-bottom fl" id="eastseed10"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fl">
+                                <div class="round2-bottom fr" id="eastgame8"></div>
+                                <div class="round1-top fl" id="eastseed8"></div>
+                                <div class="round1-bottom fl" id="eastseed9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tournament32-wrap rtol fr">
+                <div class="round6-top winner6 fl" id="rightgame"></div>
+                
+                <div class="round5-topwrap fr">
+                    <div class="round5-top fl" id="westgame15"></div>
+
+                    <div class="round4-topwrap fr">                    
+                        <div class="round4-top fl" id="westgame13"></div>
+                        <div class="round3-topwrap fr">
+                            <div class="round3-top fl" id="westgame9"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="westgame1"></div>
+                                <div class="round1-top fr" id="westseed1"></div>
+                                <div class="round1-bottom fr" id="westseed16"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="westgame2"></div>
+                                <div class="round1-top fr" id="westseed2"></div>
+                                <div class="round1-bottom fr" id="westseed15"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fr">
+                            <div class="round3-bottom fl" id="westgame10"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="westgame3"></div>
+                                <div class="round1-top fr" id="westseed3"></div>
+                                <div class="round1-bottom fr" id="westseed14"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="westgame4"></div>
+                                <div class="round1-top fr" id="westseed4"></div>
+                                <div class="round1-bottom fr" id="westseed13"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="round4-bottomwrap fr">
+                        <div class="round4-bottom fl" id="westgame14"></div>
+                        <div class="round3-topwrap fr">
+                            <div class="round3-top fl" id="westgame11"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="westgame5"></div>
+                                <div class="round1-top fr" id="westseed5"></div>
+                                <div class="round1-bottom fr" id="westseed12"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="westgame6"></div>
+                                <div class="round1-top fr" id="westseed6"></div>
+                                <div class="round1-bottom fr" id="westseed11"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fr">
+                            <div class="round3-bottom fl" id="westgame12"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="westgame7"></div>
+                                <div class="round1-top fr" id="westseed7"></div>
+                                <div class="round1-bottom fr" id="westseed10"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="westgame8"></div>
+                                <div class="round1-top fr" id="westseed8"></div>
+                                <div class="round1-bottom fr" id="westseed9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="round5-bottomwrap fr">
+                    <div class="round5-bottom fl" id="midwestgame15"></div>
+
+                    <div class="round4-topwrap fr">
+                        <div class="round4-top fl" id="midwestgame13"></div>
+
+                        <div class="round3-topwrap fr">
+                            <div class="round3-top fl" id="midwestgame9"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="midwestgame1"></div>
+                                <div class="round1-top fr" id="midwestseed1"></div>
+                                <div class="round1-bottom fr" id="midwestseed16"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="midwestgame2"></div>
+                                <div class="round1-top fr" id="midwestseed2"></div>
+                                <div class="round1-bottom fr" id="midwestseed15"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fr">
+                            <div class="round3-bottom fl" id="midwestgame10"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="midwestgame3"></div>
+                                <div class="round1-top fr" id="midwestseed3"></div>
+                                <div class="round1-bottom fr" id="midwestseed14"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="midwestgame4"></div>
+                                <div class="round1-top fr" id="midwestseed4"></div>
+                                <div class="round1-bottom fr" id="midwestseed13"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="round4-bottomwrap fr">
+                        <div class="round4-bottom fl" id="midwestgame14"></div>
+
+                        <div class="round3-topwrap fr">
+                            <div class="round3-top fl" id="midwestgame11"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="midwestgame5"></div>
+                                <div class="round1-top fr" id="midwestseed5"></div>
+                                <div class="round1-bottom fr" id="midwestseed12"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="midwestgame6"></div>
+                                <div class="round1-top fr" id="midwestseed6"></div>
+                                <div class="round1-bottom fr" id="midwestseed11"></div>
+                            </div>
+                        </div>
+
+                        <div class="round3-bottomwrap fr">
+                            <div class="round3-bottom fl" id="midwestgame12"></div>
+                            <div class="round2-topwrap fr">
+                                <div class="round2-top fl" id="midwestgame7"></div>
+                                <div class="round1-top fr" id="midwestseed7"></div>
+                                <div class="round1-bottom fr" id="midwestseed10"></div>
+                            </div>
+
+                            <div class="round2-bottomwrap fr">
+                                <div class="round2-bottom fl" id="midwestgame8"></div>
+                                <div class="round1-top fr" id="midwestseed8"></div>
+                                <div class="round1-bottom fr" id="midwestseed9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <div id="bracket"></div>
-  
+
     <h3>Input</h3>
-  
-  <ul id="sliders">
-    
-  </ul>
-  <button id="submit" onclick="submit()">Submit</button>
-  </body>
+
+    <ul id="sliders"></ul><button id="submit" onclick="submit()">Submit</button>
+</body>
 </html>
