@@ -198,8 +198,8 @@ function submit() {
             $('#' + regions[region1].toLowerCase() + 'game15').removeClass('loser').addClass('winner');
             $('#' + regions[region2].toLowerCase() + 'game15').removeClass('winner').addClass('loser');
         } else {
-            $('#' + regions[region1].toLowerCase() + 'game15').removeClass('loser').addClass('winner');
-            $('#' + regions[region2].toLowerCase() + 'game15').removeClass('winner').addClass('loser');
+            $('#' + regions[region1].toLowerCase() + 'game15').removeClass('winner').addClass('loser');
+            $('#' + regions[region2].toLowerCase() + 'game15').removeClass('loser').addClass('winner');
         }
         regionID += 2;
     }
