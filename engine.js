@@ -187,12 +187,14 @@ function submit() {
     // Final four and championship game
     var regionID = 0;
     var sides = ["left", "right"];
+    var championship = {};
     for (side in sides) {
         var region1 = regionID;
         var region2 = regionID + 1;
         var team1 = gameWinnerRegions[region1]["game15"];
         var team2 = gameWinnerRegions[region2]["game15"];
         var winner = getWinner(relativeWeights, team1, team2);
+        championship[sides[side]] = winner;
         $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
         if (team1 == winner) {
             $('#' + regions[region1].toLowerCase() + 'game15').removeClass('loser').addClass('winner');
@@ -203,6 +205,18 @@ function submit() {
         }
         regionID += 2;
     }
+    
+    var winner = getWinner(relativeWeights, championship["left"], championship["right"]);
+    $('#championship').text('(' + winner['Seed'] + ') ' + winner['Name']);
+    if (championship["left"] == winner) {
+        $('#leftgame').removeClass('loser').addClass('winner');
+        $('#rightgame').removeClass('winner').addClass('loser');
+    } else {
+        $('#leftgame').removeClass('winner').addClass('loser');
+        $('#rightgame').removeClass('loser').addClass('winner');
+    }
+    
+    
 }
 
 function attrToID(attr) {
