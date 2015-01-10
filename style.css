@@ -73,7 +73,17 @@ li {
 	width:1500px;
 }
 
-.tournament4-wrap,.tournament8-wrap,.tournament16-wrap,.tournament32-wrap {
+#championship {
+    position: absolute;
+    left: 51%;
+    right: 41%;
+    text-align: center;
+    line-height: 58em;
+    border-bottom: 1px solid black;
+    height: 30em;
+}
+
+.tournament32-wrap {
 	text-align:center;
 }
 
