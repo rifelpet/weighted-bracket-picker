@@ -18,7 +18,7 @@ var regions = ["South", "East", "West", "Midwest"];
 var firstFours = [];
 $(function() {
     $.get("2015-data.csv", function(data) {
-        var lines = data.split("\n");
+        var lines = data.trim().split("\n");
         var result = [];
         headers = lines[0].trim().split(",");
         for (var i = 1; i < lines.length; i++) {
@@ -49,6 +49,7 @@ $(function() {
                 value: 0,
                 range: "min",
                 animate: true,
+                step: 20,
                 slide: function(event, ui) {
                     currentWeights[$(this).attr('id')] = ui.value;
                     submit();
