@@ -45,16 +45,19 @@ $(function() {
           var key = item.split("=")[0];
           urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
         })
-
+        var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
             var id = attrToID(param);
             var initialVal = 0;
             if (id in urlParams) {
-              initialVal = urlParams[id];    
+              initialVal = urlParams[id];
+              initialSubmit = true;
             }
+            currentWeights[id] = initialVal;
+
             if (id == "Region" || id == "Name" || id == "Id") return true;
-            currentWeights[id] = 0;
+            
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
             $('#' + id).slider({
                 value: initialVal,
@@ -68,7 +71,7 @@ $(function() {
             });
         });
         setupInitialMatches();
-        //$('#share').val(document.URL);
+        if (initialSubmit) submit();
     });
 });
 /*
