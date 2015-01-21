@@ -131,8 +131,7 @@ function submit() {
     
     // Create the URL
     
-    var path = document.URL.match(".*\\?") + queryString;
-    console.log(path);
+    var path = document.URL.split("?")[0] + "?" + queryString;
     $('#share').val(path);
     
     relativeWeights = {};
@@ -234,9 +233,6 @@ function submit() {
 }
 
 function attrToID(attr) {
-    if(['Region', 'Name', 'Id', 'Seed'].indexOf(attr) != -1) {
-      console.log("skipping attribute " + attr);
-      return attr;
-    }
+    if(['Region', 'Name', 'Id', 'Seed'].indexOf(attr) != -1) return attr;
     return attr.replace(/[ a-z]/g, "");
 }
