@@ -38,15 +38,26 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team['Region']][team['Seed']] = team;
             }
         }
-        //console.log(teamsByRegion);
+        
+        // Grab values from the url if any
+        urlParams = {};
+        location.search.substr(1).split("&").forEach(function(item) {
+          var key = item.split("=")[0];
+          urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
+        })
+
         headers.push('Random');
         $.each(headers, function(i, param) {
             var id = attrToID(param);
+            var initialVal = 0;
+            if (id in urlParams) {
+              initialVal = urlParams[id];    
+            }
             if (id == "Region" || id == "Name" || id == "Id") return true;
             currentWeights[id] = 0;
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
             $('#' + id).slider({
-                value: 0,
+                value: initialVal,
                 range: "min",
                 animate: true,
                 step: 20,
