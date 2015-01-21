@@ -27,7 +27,6 @@ $(function() {
             for (var j = 0; j < headers.length; j++) {
                 team[attrToID(headers[j])] = currentLine[j];
             }
-            team['Random'] = Math.random() * 100; // TODO: make this on submit() rather than page load
             teamsByName[team['Name']] = team;
             teamsById[team['Id']] = team;
             teamsByRegion[team['Region']].push(team);
@@ -54,10 +53,10 @@ $(function() {
               initialVal = urlParams[id];
               initialSubmit = true;
             }
+            
+            if (id == "Region" || id == "Name" || id == "Id") return true;
             currentWeights[id] = initialVal;
 
-            if (id == "Region" || id == "Name" || id == "Id") return true;
-            
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
             $('#' + id).slider({
                 value: initialVal,
@@ -109,11 +108,11 @@ function setupInitialMatches() {
  * Determine the winner of a matchup based on weight.
  * Return the team object for the winning team.
  */
-function getWinner(weights, team1, team2) {
+function getWinner(team1, team2) {
     team1Total = 0;
     team2Total = 0;
-    for (weightName in weights) {
-        weight = weights[weightName];
+    for (weightName in currentWeights) {
+        weight = currentWeights[weightName];
         if (weightName == 'Seed') {
             // Higher seeds are worse, so invert the value range
             team1Total += (17 - team1[weightName]) * weight;
@@ -153,8 +152,17 @@ function submit() {
         var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
+    
+    // Set the 'random weight' value
+    for(regionID in bracketTeamsByRegionAndSeed) {
+        var region = bracketTeamsByRegionAndSeed[regionID];
+        for(seed in region) {
+            region[seed]['R'] = Math.random() * 100;
+        }
+    }
+    
     for (matchupID in firstFours) {
-        var winner = getWinner(relativeWeights, firstFours[matchupID][0], firstFours[matchupID][1]);
+        var winner = getWinner(firstFours[matchupID][0], firstFours[matchupID][1]);
         if(winner = firstFours[matchupID][0]) {
             $('#matchup' + matchupID + ' > .team1').removeClass('loser').addClass('winner');
             $('#matchup' + matchupID + ' > .team2').removeClass('winner').addClass('loser');
@@ -181,7 +189,7 @@ function submit() {
             var high = currentRegion[seed];
             var low = currentRegion[17 - seed];
             bracketData.teams.push(['(' + high['Seed'] + ') ' + high['Name'], '(' + low['Seed'] + ') ' + low['Name']]);
-            var winner = getWinner(relativeWeights, high, low);
+            var winner = getWinner(high, low);
             gameWinners['game' + String(seed)] = winner;
             $('#' + region + 'seed' + winner['Seed']).removeClass('loser').addClass('winner');
             if (high == winner) {
@@ -197,7 +205,7 @@ function submit() {
         for (var game = 9; game < 16; game++) {
             var high = gameWinners['game' + String(game - gameDiff)];
             var low = gameWinners['game' + String(game + 1 - gameDiff)];
-            var winner = getWinner(relativeWeights, high, low);
+            var winner = getWinner(high, low);
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner['Seed'] + ') ' + winner['Name']);
             if (high == winner) {
@@ -220,7 +228,7 @@ function submit() {
         var region2 = regionID + 1;
         var team1 = gameWinnerRegions[region1]["game15"];
         var team2 = gameWinnerRegions[region2]["game15"];
-        var winner = getWinner(relativeWeights, team1, team2);
+        var winner = getWinner(team1, team2);
         championship[sides[side]] = winner;
         $('#' + sides[side] + 'game').text('(' + winner['Seed'] + ') ' + winner['Name']);
         if (team1 == winner) {
@@ -233,7 +241,7 @@ function submit() {
         regionID += 2;
     }
     
-    var winner = getWinner(relativeWeights, championship["left"], championship["right"]);
+    var winner = getWinner(championship["left"], championship["right"]);
     $('#championship').text('(' + winner['Seed'] + ') ' + winner['Name']);
     if (championship["left"] == winner) {
         $('#leftgame').removeClass('loser').addClass('winner');
