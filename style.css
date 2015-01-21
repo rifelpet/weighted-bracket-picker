@@ -37,6 +37,10 @@ li {
     font-size: 10px;
 }
 
+#data-headline, #share-div {
+    display: inline;
+}
+
 #first-four > li,#first-four > li > div {
 	display:inline;
 	padding:10px;

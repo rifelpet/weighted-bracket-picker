@@ -57,6 +57,7 @@ $(function() {
             });
         });
         setupInitialMatches();
+        //$('#share').val(document.URL);
     });
 });
 /*
@@ -117,11 +118,23 @@ function getWinner(weights, team1, team2) {
  */
 function submit() {
     var totalWeight = 0;
+    var queryString = ""
     $.each(headers, function(i, param) {
         var id = attrToID(param);
         if (id == "Region" || id == "Name" || id == "Id") return true;
         totalWeight += currentWeights[id];
+        if(currentWeights[id] != 0) {
+          if (queryString != "") queryString += "&";
+          queryString = queryString + id + "=" + currentWeights[id];
+        }
     });
+    
+    // Create the URL
+    
+    var path = document.URL.match(".*\\?") + queryString;
+    console.log(path);
+    $('#share').val(path);
+    
     relativeWeights = {};
     $.each(currentWeights, function(param) {
         var id = attrToID(param);
@@ -221,5 +234,9 @@ function submit() {
 }
 
 function attrToID(attr) {
-    return attr.replace(/ /g, "");
+    if(['Region', 'Name', 'Id', 'Seed'].indexOf(attr) != -1) {
+      console.log("skipping attribute " + attr);
+      return attr;
+    }
+    return attr.replace(/[ a-z]/g, "");
 }

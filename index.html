@@ -16,8 +16,11 @@
 </head>
 
 <body>
-    <h3>Data (<a href="2015-data.csv">Raw CSV</a>)</h3>
-
+    <h3 id="data-headline">Data (<a href="2015-data.csv">Raw CSV</a>)</h3>
+    <div id="share-div">
+        <label for="share">Share:</label>
+        <input id="share" />
+    </div>
     <div id="teams">
         <h4>First Four</h4>
 
@@ -348,7 +351,6 @@
     </div>
 
     <h3>Input</h3>
-
     <ul id="sliders"></ul><button id="submit" onclick="submit()">Submit</button>
 </body>
 </html>
