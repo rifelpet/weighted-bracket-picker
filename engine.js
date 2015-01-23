@@ -52,7 +52,7 @@ $(function() {
               initialSubmit = true;
             }
             
-            if (id == "Region" || id == "Name" || id == "Id") return true;
+            if (id == "Region" || id == "Name" || id == "Rank") return true;
             currentWeights[id] = initialVal;
 
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
@@ -105,6 +105,7 @@ function setupInitialMatches() {
 /*
  * Determine the winner of a matchup based on weight.
  * Return the team object for the winning team.
+ * Tie breaker is the higher overall rank
  */
 function getWinner(team1, team2) {
     team1Total = 0;
@@ -120,6 +121,9 @@ function getWinner(team1, team2) {
             team2Total += team2[weightName] * weight;
         }
     }
+    if (team1Total == team2Total){
+        return parseInt(team1.Rank) < parseInt(team2.Rank) ? team1 : team2;
+    }
     return team1Total > team2Total ? team1 : team2;
 }
 
@@ -132,7 +136,7 @@ function submit() {
     var queryString = "";
     $.each(headers, function(i, param) {
         var id = attrToID(param);
-        if (id == "Region" || id == "Name" || id == "Id") return true;
+        if (id == "Region" || id == "Name" || id == "Rank") return true;
         totalWeight += currentWeights[id];
         if(currentWeights[id] !== 0) {
           if (queryString !== "") queryString += "&";
@@ -253,6 +257,6 @@ function submit() {
 }
 
 function attrToID(attr) {
-    if(['Region', 'Name', 'Id', 'Seed'].indexOf(attr) != -1) return attr;
+    if(['Region', 'Name', 'Rank', 'Seed'].indexOf(attr) != -1) return attr;
     return attr.replace(/[ a-z]/g, "");
 }
