@@ -16,7 +16,7 @@ var headers = [];
 var regions = ["South", "East", "West", "Midwest"];
 var firstFours = [];
 $(function() {
-    $.get("2015-data.csv", function(data) {
+    $.get("2014-data.csv", function(data) {
         var lines = data.trim().split("\n");
         var result = [];
         headers = lines[0].trim().split(",");
