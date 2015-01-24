@@ -1,7 +1,7 @@
 #sliders > li > div {
 	width:120px;
-	height:10px;
-	margin:10px;
+	height: 7px;
+	margin: 10px 10px 2px;
 	display:inline-block;
 }
 
@@ -37,6 +37,7 @@
 
 li {
 	list-style-type:none;
+	height: 38px;
 }
 
 #teams {
