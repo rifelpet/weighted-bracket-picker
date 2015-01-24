@@ -258,5 +258,5 @@ function submit() {
 
 function attrToID(attr) {
     if(['Region', 'Name', 'Rank', 'Seed'].indexOf(attr) != -1) return attr;
-    return attr.replace(/[ a-z]/g, "");
+    return attr.replace(/[ a-z%\/]/g, "");
 }

@@ -1,4 +1,4 @@
-Rank,Name,Region,Seed,Win Loss Pct,Scoring Offense,Scoring Defense,Scoring Margin,FG Pct,FG Pct Defense,3pt FG per Game,3pt FG Pct,3pt FG Defense,Free Throw Pct,Rebound Margin,Assists per Game,Assist Turnover Ratio,Blocked Shots per Game,Steals per Game,Turnovers per Game,Turnover Margin,Person Fouls per Game,Offensive Rebounds per Game,Defensive Rebounds per Game
+Rank,Name,Region,Seed,Win Loss %,Scoring Off,Scoring Def,Scoring Margin,FG %,FG % Def,3pt FG / Game,3pt FG %,3pt FG Def,Free Throw %,Rebound Margin,Assists / Game,Assist Turnover Ratio,Blocked Shots / Game,Steals / Game,Turnovers / Game,Turnover Margin,Person Fouls / Game,Off Rebounds / Game,Def Rebounds / Game
 1,Florida,0,1,92.3,69.9,57.8,12.2,46,40.2,6.5,35.9,33,66.8,5,13.1,1.18,3,7,11.1,2.4,15.7,11.54,23.97
 2,Arizona,2,1,86.8,72.9,58.6,14.3,46.9,38,5.4,36.4,32,65.9,7.1,15.1,1.48,4.6,5.9,10.2,2.2,16.6,12.24,25.89
 3,Wichita St.,3,1,97.2,75.2,59.5,15.7,46.2,39,6.9,35.1,30.8,72.5,7.4,13.6,1.31,5.1,6.9,10.4,1.7,17,11.64,26.75
