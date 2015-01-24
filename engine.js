@@ -55,14 +55,15 @@ $(function() {
             if (id == "Region" || id == "Name" || id == "Rank") return true;
             currentWeights[id] = initialVal;
 
-            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div></li>');
+            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div><div class="value" id="' + id + '-val">0</div></li>');
             $('#' + id).slider({
                 value: initialVal,
                 range: "min",
                 animate: true,
-                step: 20,
+                step: 10,
                 slide: function(event, ui) {
                     currentWeights[$(this).attr('id')] = ui.value;
+                    $('#' + id + '-val').text(ui.value);
                     submit();
                 }
             });

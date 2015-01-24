@@ -29,6 +29,12 @@
 	column-gap:20px;
 }
 
+#sliders > li > div.value {
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+
 li {
 	list-style-type:none;
 }
