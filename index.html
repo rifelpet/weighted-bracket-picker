@@ -28,10 +28,22 @@
 </head>
 
 <body>
-    <h3 id="data-headline">Data (<a href="2014-data.csv">Raw CSV</a>)</h3>
-    <div id="share-div">
-        <label for="share">Share:</label>
-        <input onClick="this.select();" id="share" />
+    <div id="top-bar">
+        <h3 id="data-headline">Data (<a href="2014-data.csv">Raw CSV</a>)</h3>
+        <div id="year-div">
+            <form action="" method="GET" id="year-form">
+                <label for="year">Year:</label>
+                <select id="year">
+                    <option>2014</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                    <option>2011</option>
+                </select>
+        </div>
+        <div id="share-div">
+            <label for="share">Share:</label>
+            <input onClick="this.select();" id="share" />
+        </div>
     </div>
     <div id="teams">
         <h4>First Four</h4>

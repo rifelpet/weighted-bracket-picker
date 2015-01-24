@@ -37,8 +37,8 @@ li {
     font-size: 10px;
 }
 
-#data-headline, #share-div {
-    display: inline;
+#data-headline, #share-div, #year-div, #top-bar {
+    display: inline-block;
 }
 
 #first-four > li,#first-four > li > div {
