@@ -64,6 +64,7 @@ $(function() {
                 slide: function(event, ui) {
                     currentWeights[$(this).attr('id')] = ui.value;
                     $('#' + id + '-val').text(ui.value);
+                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
                     submit();
                 }
             });
