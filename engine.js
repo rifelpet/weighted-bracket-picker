@@ -15,6 +15,7 @@ var headers = [];
 // RegionIDs in the csv are the 'regions' indeces
 var regions = ["South", "East", "West", "Midwest"];
 var firstFours = [];
+var year = "2014";
 $(function() {
 
     // Grab values from the url if any
@@ -23,7 +24,6 @@ $(function() {
         var key = item.split("=")[0];
         urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
     });
-    var year = "2014";
     if("year" in urlParams) {
         year = urlParams["year"];
         $('select[name="year"]').val(year);
@@ -149,8 +149,9 @@ function submit() {
             queryString = queryString + id + "=" + currentWeights[id];
         }
     });
+    
     // Create the URL
-    var path = document.URL.split("?")[0] + "?" + queryString;
+    var path = document.URL.split("?")[0] + "?" + "year=" + year + "&" + queryString;
     $('#share').val(path);
     relativeWeights = {};
     $.each(currentWeights, function(param) {
