@@ -28,6 +28,7 @@ $(function() {
         year = urlParams.year;
         $('select[name="year"]').val(year);
     }
+    $('#raw').attr('href', year + '-data.csv');
     $.get(year + "-data.csv", function(data) {
         var lines = data.trim().split("\n");
         var result = [];

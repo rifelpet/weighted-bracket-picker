@@ -48,6 +48,10 @@ li {
     display: inline-block;
 }
 
+#share-div, #year-div {
+    padding-left: 20px;
+}
+
 #first-four > li,#first-four > li > div {
 	display:inline;
 	padding:10px;
