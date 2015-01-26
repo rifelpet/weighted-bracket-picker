@@ -84,9 +84,8 @@ $(function() {
 function setupInitialMatches() {
     for (var matchupID in firstFours) {
         matchup = firstFours[matchupID];
-        $('#matchup' + matchupID + ' > .region').text(regions[matchup[0].Region] + ' (' + matchup[0].Seed + '):');
-        $('#matchup' + matchupID + ' > .team1').text(matchup[0].Name);
-        $('#matchup' + matchupID + ' > .team2').text(matchup[1].Name);
+        $('#first-four').append('<li id="matchup' + matchupID + '"><div class="region">' + regions[matchup[0].Region] + ' (' + matchup[0].Seed +
+        '):</div><div class="team1">' + matchup[0].Name + '</div> vs <div class="team2">' + matchup[1].Name + '</div></li>');
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
         var region = regions[regionID];
