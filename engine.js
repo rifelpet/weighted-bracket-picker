@@ -16,16 +16,16 @@ var headers = [];
 var regions = ["South", "East", "West", "Midwest"];
 var firstFours = [];
 var year = "2014";
+var invertStats = ["FGD", "3FGD", "PFG"];
 $(function() {
-
     // Grab values from the url if any
     var urlParams = {};
     location.search.substr(1).split("&").forEach(function(item) {
         var key = item.split("=")[0];
         urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
     });
-    if("year" in urlParams) {
-        year = urlParams["year"];
+    if ("year" in urlParams) {
+        year = urlParams.year;
         $('select[name="year"]').val(year);
     }
     $.get(year + "-data.csv", function(data) {
@@ -47,7 +47,6 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.Seed] = team;
             }
         }
-
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
@@ -122,6 +121,9 @@ function getWinner(team1, team2) {
             // Higher seeds are worse, so invert the value range
             team1Total += (17 - team1[weightName]) * weight;
             team2Total += (17 - team2[weightName]) * weight;
+        } else if (invertStats.indexOf(weightName) > -1) {
+            team1Total -= team1[weightName] * weight;
+            team2Total -= team2[weightName] * weight;
         } else {
             team1Total += team1[weightName] * weight;
             team2Total += team2[weightName] * weight;
@@ -149,7 +151,6 @@ function submit() {
             queryString = queryString + id + "=" + currentWeights[id];
         }
     });
-    
     // Create the URL
     var path = document.URL.split("?")[0] + "?" + "year=" + year + "&" + queryString;
     $('#share').val(path);
