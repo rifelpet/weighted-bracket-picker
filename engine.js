@@ -35,12 +35,11 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.Seed] = team;
             }
         }
-        
         // Grab values from the url if any
         urlParams = {};
         location.search.substr(1).split("&").forEach(function(item) {
-          var key = item.split("=")[0];
-          urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
+            var key = item.split("=")[0];
+            urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
         });
         var initialSubmit = false;
         headers.push('Random');
@@ -48,13 +47,11 @@ $(function() {
             var id = attrToID(param);
             var initialVal = 0;
             if (id in urlParams) {
-              initialVal = urlParams[id];
-              initialSubmit = true;
+                initialVal = urlParams[id];
+                initialSubmit = true;
             }
-            
             if (id == "Region" || id == "Name" || id == "Rank") return true;
             currentWeights[id] = initialVal;
-
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div><div class="value" id="' + id + '-val">0</div></li>');
             $('#' + id).slider({
                 value: initialVal,
@@ -79,8 +76,8 @@ $(function() {
  */
 
 function setupInitialMatches() {
-    for (var matchupId in firstFours) {
-        matchup = firstFours[matchupId];
+    for (var matchupID in firstFours) {
+        matchup = firstFours[matchupID];
         $('#matchup' + matchupId + ' > .region').text(regions[matchup[0].Region] + ' (' + matchup[0].Seed + '):');
         $('#matchup' + matchupId + ' > .team1').text(matchup[0].Name);
         $('#matchup' + matchupId + ' > .team2').text(matchup[1].Name);
@@ -103,12 +100,12 @@ function setupInitialMatches() {
         }
     }
 }
-
 /*
  * Determine the winner of a matchup based on weight.
  * Return the team object for the winning team.
  * Tie breaker is the higher overall rank
  */
+
 function getWinner(team1, team2) {
     team1Total = 0;
     team2Total = 0;
@@ -123,16 +120,16 @@ function getWinner(team1, team2) {
             team2Total += team2[weightName] * weight;
         }
     }
-    if (team1Total == team2Total){
+    if (team1Total == team2Total) {
         return parseInt(team1.Rank) < parseInt(team2.Rank) ? team1 : team2;
     }
     return team1Total > team2Total ? team1 : team2;
 }
-
 /*
  * Loop through the list of weights, calculating the relative values.
  * Then loop through each matchup, determining the winner and updating the bracket
  */
+
 function submit() {
     var totalWeight = 0;
     var queryString = "";
@@ -140,39 +137,34 @@ function submit() {
         var id = attrToID(param);
         if (id == "Region" || id == "Name" || id == "Rank") return true;
         totalWeight += currentWeights[id];
-        if(currentWeights[id] !== 0) {
-          if (queryString !== "") queryString += "&";
-          queryString = queryString + id + "=" + currentWeights[id];
+        if (currentWeights[id] !== 0) {
+            if (queryString !== "") queryString += "&";
+            queryString = queryString + id + "=" + currentWeights[id];
         }
     });
-    
     // Create the URL
-    
     var path = document.URL.split("?")[0] + "?" + queryString;
     $('#share').val(path);
-    
     relativeWeights = {};
     $.each(currentWeights, function(param) {
         var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    
     // Set the 'random weight' value
-    for(var regionID in bracketTeamsByRegionAndSeed) {
+    for (var regionID in bracketTeamsByRegionAndSeed) {
         var region = bracketTeamsByRegionAndSeed[regionID];
-        for(var seed in region) {
+        for (var seed in region) {
             region[seed].R = Math.random() * 100;
         }
     }
-    
     for (var matchupID in firstFours) {
         var winner = getWinner(firstFours[matchupID][0], firstFours[matchupID][1]);
-        if(winner == firstFours[matchupID][0]) {
+        if (winner == firstFours[matchupID][0]) {
             $('#matchup' + matchupID + ' > .team1').removeClass('loser').addClass('winner');
             $('#matchup' + matchupID + ' > .team2').removeClass('winner').addClass('loser');
         } else {
             $('#matchup' + matchupID + ' > .team1').removeClass('winner').addClass('loser');
-            $('#matchup' + matchupID + ' > .team2').removeClass('loser').addClass('winner');            
+            $('#matchup' + matchupID + ' > .team2').removeClass('loser').addClass('winner');
         }
         bracketTeamsByRegionAndSeed[winner.Region][winner.Seed] = winner;
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.Seed).text('(' + winner.Seed + ') ' + winner.Name);
@@ -187,7 +179,6 @@ function submit() {
             scores: []
         };
         var region = regions[regionID].toLowerCase();
-        
         // First round of 64
         for (var seed = 1; seed < 9; seed++) {
             var high = currentRegion[seed];
@@ -203,7 +194,6 @@ function submit() {
             }
             $('#' + region + 'game' + seed).text('(' + winner.Seed + ') ' + winner.Name);
         }
-        
         // Round of 32 through the Elite 8
         var gameDiff = 8;
         for (var game = 9; game < 16; game++) {
@@ -222,7 +212,6 @@ function submit() {
             gameDiff--;
         }
     }
-    
     // Final four and championship game
     var regionID = 0;
     var sides = ["left", "right"];
@@ -244,7 +233,6 @@ function submit() {
         }
         regionID += 2;
     }
-    
     var winner = getWinner(championship.left, championship.right);
     $('#championship').text('(' + winner.Seed + ') ' + winner.Name);
     if (championship.left == winner) {
@@ -254,11 +242,12 @@ function submit() {
         $('#leftgame').removeClass('winner').addClass('loser');
         $('#rightgame').removeClass('loser').addClass('winner');
     }
-    
-    
 }
+/*
+ * Converts the statistic name to the id used in js objects and html ids.
+ */
 
 function attrToID(attr) {
-    if(['Region', 'Name', 'Rank', 'Seed'].indexOf(attr) != -1) return attr;
+    if (['Region', 'Name', 'Rank', 'Seed'].indexOf(attr) != -1) return attr;
     return attr.replace(/[ a-z%\/]/g, "");
 }
