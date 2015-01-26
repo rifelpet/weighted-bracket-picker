@@ -16,7 +16,19 @@ var headers = [];
 var regions = ["South", "East", "West", "Midwest"];
 var firstFours = [];
 $(function() {
-    $.get("2014-data.csv", function(data) {
+
+    // Grab values from the url if any
+    var urlParams = {};
+    location.search.substr(1).split("&").forEach(function(item) {
+        var key = item.split("=")[0];
+        urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
+    });
+    var year = "2014";
+    if("year" in urlParams) {
+        year = urlParams["year"];
+        $('select[name="year"]').val(year);
+    }
+    $.get(year + "-data.csv", function(data) {
         var lines = data.trim().split("\n");
         var result = [];
         headers = lines[0].trim().split(",");
@@ -35,12 +47,7 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.Seed] = team;
             }
         }
-        // Grab values from the url if any
-        urlParams = {};
-        location.search.substr(1).split("&").forEach(function(item) {
-            var key = item.split("=")[0];
-            urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
-        });
+
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
