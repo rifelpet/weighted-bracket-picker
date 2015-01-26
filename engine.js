@@ -78,9 +78,9 @@ $(function() {
 function setupInitialMatches() {
     for (var matchupID in firstFours) {
         matchup = firstFours[matchupID];
-        $('#matchup' + matchupId + ' > .region').text(regions[matchup[0].Region] + ' (' + matchup[0].Seed + '):');
-        $('#matchup' + matchupId + ' > .team1').text(matchup[0].Name);
-        $('#matchup' + matchupId + ' > .team2').text(matchup[1].Name);
+        $('#matchup' + matchupID + ' > .region').text(regions[matchup[0].Region] + ' (' + matchup[0].Seed + '):');
+        $('#matchup' + matchupID + ' > .team1').text(matchup[0].Name);
+        $('#matchup' + matchupID + ' > .team2').text(matchup[1].Name);
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
         var region = regions[regionID];
