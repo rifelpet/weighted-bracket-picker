@@ -59,7 +59,6 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
             }
         }
-        console.log(bracketTeamsByRegionAndSeed);
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
@@ -267,7 +266,6 @@ function submit() {
             var highDiv = '#' + region + 'game' + String(game - gameDiff);
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
             var winner = getWinner(high, low);
-            console.log(high.Name + " " + low.Name + ": " + String(gameDiff));
             setTrueWinner(high, low, getRound(game), winner, highDiv, lowDiv);
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner.stats.Seed + ') ' + winner.Name);
