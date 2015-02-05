@@ -17,7 +17,7 @@ var headers = [];
 var regions = ["South", "East", "West", "Midwest"];
 
 // Headers that arent used in comparison for winner determination
-var nonStatHeaders = ["Region", "Name", "Rank", "MMGamesWon"];
+var nonStatHeaders = ["Region", "Name", "Rank", "Games Won"];
 
 var firstFours = [];
 var year = "2014";
@@ -137,12 +137,10 @@ function getWinner(team1, team2) {
             team1Total += team1.stats[weightName] * weight;
             team2Total += team2.stats[weightName] * weight;
         }
-        console.log(weightName + " " + team1Total + "  " + team2Total);
     }
     if (team1Total == team2Total) {
         return parseInt(team1.Rank) < parseInt(team2.Rank) ? team1 : team2;
     }
-    console.log(team1Total + " " + team2Total);
     return team1Total > team2Total ? team1 : team2;
 }
 /*
@@ -269,6 +267,6 @@ function submit() {
 
 function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leaver just seed
-    if (['Region', 'Name', 'Rank', 'Seed'].indexOf(attr) != -1) return attr;
+    if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
     return attr.replace(/[ a-z%\/]/g, "");
 }
