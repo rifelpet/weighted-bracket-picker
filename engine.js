@@ -59,6 +59,7 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
             }
         }
+        console.log(bracketTeamsByRegionAndSeed);
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
@@ -148,22 +149,42 @@ function getWinner(team1, team2) {
  * If the matchup hasnt occured yet, return null.
  */
 function setTrueWinner(team1, team2, round, winner, team1Div, team2Div) {
+    //console.log(team1.Name + " vs " + team2.Name + " winner: " + winner.Name + " with " + team1['Games Won'] + " vs " + team2['Games Won'] + " for round " + String(round));
     if(team1['Games Won'] == team2['Games Won'] && round == team1['Games Won']) {
         //return null;
+        //console.log("Setting to null: " + team1.Name + " " + team2.Name + " both games won " + String(team1['Games Won']) + " for round " + String(round));
         $(team1Div).removeClass('incorrect').removeClass('correct');
         $(team2Div).removeClass('incorrect').removeClass('correct');
     } else {
-        if(team1['Games Won'] > team2['Games Won'] && team1 == winner && team1['Games Won'] >= round) {
+        /*if(team1['Games Won'] > team2['Games Won'] && team1 == winner && team1['Games Won'] >= round) {
+            console.log("Setting to correct: " + team1.Name + " over " + team2.Name + " for wins: " + team1['Games Won'] + " over " + team2['Games Won'] + " for round " + String(round));
             $(team1Div).removeClass('incorrect').addClass('correct');
         } else if (team1['Games Won'] < team2['Games Won'] && team2 == winner && team2['Games Won'] >= round) {
+            console.log("Setting to correct: " + team2.Name + " over " + team1.Name + " for wins: " + team2['Games Won'] + " over " + team1['Games Won'] + " for round " + String(round));
             $(team2Div).removeClass('incorrect').addClass('correct');        
         }
         
-        if(team1['Games Won'] < round && team1 == winner) {
+        if((team1['Games Won'] < round && team1 == winner) || 
+           (team2['Games Won'] < round && team2 == winner)) {
+            console.log("Setting to incorrect: " + winner.Name + " for wins: " + team1['Games Won'] + " for round " + String(round));
             $(team1Div).addClass('incorrect').removeClass('correct');
-        }
-        if(team2['Games Won'] < round && team2 == winner) {
             $(team2Div).addClass('incorrect').removeClass('correct');
+            
+        }*/
+        if(team1 == winner) {
+            if(team1['Games Won'] > team2['Games Won'] && team1['Games Won'] >= round) {
+                $(team1Div).removeClass('incorrect').addClass('correct');
+            } else {
+                $(team1Div).removeClass('correct').addClass('incorrect');
+                $(team2Div).removeClass('correct').addClass('incorrect');
+            }
+        } else {
+            if(team2['Games Won'] > team1['Games Won'] && team2['Games Won'] >= round) {
+                $(team2Div).removeClass('incorrect').addClass('correct');
+            } else {
+                $(team1Div).removeClass('correct').addClass('incorrect');
+                $(team2Div).removeClass('correct').addClass('incorrect');
+            }
         }
     }
     //return (team1['Games Won'] > team2['Games Won']) ? team1 : team2;
