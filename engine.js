@@ -139,54 +139,37 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         }
     }
     
-    // Create a 2D array containing arrays of the winning team and its div, followed by the losing team and its div.
-    var outcome;
-    if (team1Total == team2Total) {
-        outcome = parseInt(team1.Rank) < parseInt(team2.Rank) ? [[team1, team1Div], [team2, team2Div]] : [[team2, team2Div], [team1, team1Div]];
+    if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
+        var winner = team1;
+        var winnerDiv = team1Div;
+        var loser = team2;
+        var loserDiv = team2Div;
     } else {
-        outcome = team1Total > team2Total ? [[team1, team1Div], [team2, team2Div]] : [[team2, team2Div], [team1, team1Div]];
+        var winner = team2;
+        var winnerDiv = team2Div;
+        var loser = team1;
+        var loserDiv = team1Div;
     }
     
-    $(outcome[0][1]).removeClass('loser').addClass('winner');
-    $(outcome[1][1]).removeClass('winner').addClass('loser');
     
-    if(team1['Games Won'] == team2['Games Won'] && round == team1['Games Won']) {
+    $(winnerDiv).removeClass('loser').addClass('winner');
+    $(loserDiv).removeClass('winner').addClass('loser');
+    
+    if(winner['Games Won'] == loser['Games Won'] && round == loser['Games Won']) {
         //console.log("Setting to null: " + team1.Name + " " + team2.Name + " both games won " + String(team1['Games Won']) + " for round " + String(round));
-        $(team1Div).removeClass('incorrect').removeClass('correct');
-        $(team2Div).removeClass('incorrect').removeClass('correct');
+        $(winnerDiv).removeClass('incorrect').removeClass('correct');
+        $(loserDiv).removeClass('incorrect').removeClass('correct');
+    } else if(winner['Games Won'] > loser['Games Won'] && winner['Games Won'] >= round) {
+        $(winnerDiv).removeClass('incorrect').addClass('correct');
     } else {
-        // TODO: make this use outcome variables rather than if/else against winner 
-        if(team1 == outcome[0][0]) {
-            if(team1['Games Won'] > team2['Games Won'] && team1['Games Won'] >= round) {
-                $(team1Div).removeClass('incorrect').addClass('correct');
-            } else {
-                $(team1Div).removeClass('correct').addClass('incorrect');
-                
-                // If the loser lost where they should have, dont mark it incorrect.
-                if(team2['Games Won'] - 1 != round) {
-                    console.log("not equal: " + team2['Games Won'] + " vs " + String(round));
-                    $(team2Div).removeClass('correct').addClass('incorrect');
-                }
-            }
-        } else {
-            if(team2['Games Won'] > team1['Games Won'] && team2['Games Won'] >= round) {
-                $(team2Div).removeClass('incorrect').addClass('correct');
-            } else {
-                $(team2Div).removeClass('correct').addClass('incorrect');
-
-                // If the loser lost where they should have, dont mark it incorrect.
-                if(team1['Games Won'] - 1 != round) {
-                    console.log("not equal: " + team2['Games Won'] + " vs " + String(round));
-
-                    $(team1Div).removeClass('correct').addClass('incorrect');
-                }
-
-            }
+        $(winnerDiv).removeClass('correct').addClass('incorrect');
+        // If the loser lost where they should have, dont mark it incorrect.
+        if(loser['Games Won'] - 1 != round) {
+            //console.log("not equal: " + loser['Games Won'] + " vs " + String(round));
+            $(loserDiv).removeClass('correct').addClass('incorrect');
         }
     }
-    
-    // Return just the winning team object
-    return outcome[0][0];
+    return winner;
 }
 
 /* 
