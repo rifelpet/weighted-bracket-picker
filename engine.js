@@ -124,7 +124,7 @@ function setupInitialMatches() {
  * Return the team object for the winning team.
  * Tie breaker is the higher overall rank
  */
-function getWinner(team1, team2) {
+function runMatchup(team1, team2, round, team1Div, team2Div) {
     team1Total = 0;
     team2Total = 0;
     for (var weightName in currentWeights) {
@@ -138,56 +138,55 @@ function getWinner(team1, team2) {
             team2Total += team2.stats[weightName] * weight;
         }
     }
+    
+    // Create a 2D array containing arrays of the winning team and its div, followed by the losing team and its div.
+    var outcome;
     if (team1Total == team2Total) {
-        return parseInt(team1.Rank) < parseInt(team2.Rank) ? team1 : team2;
+        outcome = parseInt(team1.Rank) < parseInt(team2.Rank) ? [[team1, team1Div], [team2, team2Div]] : [[team2, team2Div], [team1, team1Div]];
+    } else {
+        outcome = team1Total > team2Total ? [[team1, team1Div], [team2, team2Div]] : [[team2, team2Div], [team1, team1Div]];
     }
-    return team1Total > team2Total ? team1 : team2;
-}
-
-/*
- * Determines which team actually won in the matchup.
- * If the matchup hasnt occured yet, return null.
- */
-function setTrueWinner(team1, team2, round, winner, team1Div, team2Div) {
-    //console.log(team1.Name + " vs " + team2.Name + " winner: " + winner.Name + " with " + team1['Games Won'] + " vs " + team2['Games Won'] + " for round " + String(round));
+    
+    $(outcome[0][1]).removeClass('loser').addClass('winner');
+    $(outcome[1][1]).removeClass('winner').addClass('loser');
+    
     if(team1['Games Won'] == team2['Games Won'] && round == team1['Games Won']) {
-        //return null;
         //console.log("Setting to null: " + team1.Name + " " + team2.Name + " both games won " + String(team1['Games Won']) + " for round " + String(round));
         $(team1Div).removeClass('incorrect').removeClass('correct');
         $(team2Div).removeClass('incorrect').removeClass('correct');
     } else {
-        /*if(team1['Games Won'] > team2['Games Won'] && team1 == winner && team1['Games Won'] >= round) {
-            console.log("Setting to correct: " + team1.Name + " over " + team2.Name + " for wins: " + team1['Games Won'] + " over " + team2['Games Won'] + " for round " + String(round));
-            $(team1Div).removeClass('incorrect').addClass('correct');
-        } else if (team1['Games Won'] < team2['Games Won'] && team2 == winner && team2['Games Won'] >= round) {
-            console.log("Setting to correct: " + team2.Name + " over " + team1.Name + " for wins: " + team2['Games Won'] + " over " + team1['Games Won'] + " for round " + String(round));
-            $(team2Div).removeClass('incorrect').addClass('correct');        
-        }
-        
-        if((team1['Games Won'] < round && team1 == winner) || 
-           (team2['Games Won'] < round && team2 == winner)) {
-            console.log("Setting to incorrect: " + winner.Name + " for wins: " + team1['Games Won'] + " for round " + String(round));
-            $(team1Div).addClass('incorrect').removeClass('correct');
-            $(team2Div).addClass('incorrect').removeClass('correct');
-            
-        }*/
-        if(team1 == winner) {
+        // TODO: make this use outcome variables rather than if/else against winner 
+        if(team1 == outcome[0][0]) {
             if(team1['Games Won'] > team2['Games Won'] && team1['Games Won'] >= round) {
                 $(team1Div).removeClass('incorrect').addClass('correct');
             } else {
                 $(team1Div).removeClass('correct').addClass('incorrect');
-                $(team2Div).removeClass('correct').addClass('incorrect');
+                
+                // If the loser lost where they should have, dont mark it incorrect.
+                if(team2['Games Won'] - 1 != round) {
+                    console.log("not equal: " + team2['Games Won'] + " vs " + String(round));
+                    $(team2Div).removeClass('correct').addClass('incorrect');
+                }
             }
         } else {
             if(team2['Games Won'] > team1['Games Won'] && team2['Games Won'] >= round) {
                 $(team2Div).removeClass('incorrect').addClass('correct');
             } else {
-                $(team1Div).removeClass('correct').addClass('incorrect');
                 $(team2Div).removeClass('correct').addClass('incorrect');
+
+                // If the loser lost where they should have, dont mark it incorrect.
+                if(team1['Games Won'] - 1 != round) {
+                    console.log("not equal: " + team2['Games Won'] + " vs " + String(round));
+
+                    $(team1Div).removeClass('correct').addClass('incorrect');
+                }
+
             }
         }
     }
-    //return (team1['Games Won'] > team2['Games Won']) ? team1 : team2;
+    
+    // Return just the winning team object
+    return outcome[0][0];
 }
 
 /* 
@@ -233,18 +232,9 @@ function submit() {
         }
     }
     for (var matchupID in firstFours) {
-        var winner = getWinner(firstFours[matchupID][0], firstFours[matchupID][1]);
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
-        setTrueWinner(firstFours[matchupID][0], firstFours[matchupID][1], 0, winner, team1Div, team2Div);
-        
-        if (winner == firstFours[matchupID][0]) {
-            $(team1Div).removeClass('loser').addClass('winner');
-            $(team2Div).removeClass('winner').addClass('loser');
-        } else {
-            $(team1Div).removeClass('winner').addClass('loser');
-            $(team2Div).removeClass('loser').addClass('winner');
-        }
+        var winner = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
 
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text('(' + winner.stats.Seed + ') ' + winner.Name);
@@ -267,9 +257,9 @@ function submit() {
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
             
             bracketData.teams.push(['(' + high.stats.Seed + ') ' + high.Name, '(' + low.stats.Seed + ') ' + low.Name]);
-            var winner = getWinner(high, low);
-            setTrueWinner(high, low, 1, winner, highDiv, lowDiv);
+            var winner = runMatchup(high, low, 0, highDiv, lowDiv);
             gameWinners['game' + String(seed)] = winner;
+            /* Strip this? */
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
             if (high == winner) {
                 $(lowDiv).removeClass('winner').addClass('loser');
@@ -278,6 +268,7 @@ function submit() {
             }
             
             $('#' + region + 'game' + seed).text('(' + winner.stats.Seed + ') ' + winner.Name);
+            /* end Strip this? */
         }
         // Round of 32 through the Elite 8
         var gameDiff = 8;
@@ -286,17 +277,12 @@ function submit() {
             var low = gameWinners['game' + String(game + 1 - gameDiff)];
             var highDiv = '#' + region + 'game' + String(game - gameDiff);
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
-            var winner = getWinner(high, low);
-            setTrueWinner(high, low, getRound(game), winner, highDiv, lowDiv);
+            
+            var winner = runMatchup(high, low, getRound(game), highDiv, lowDiv);
+            
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner.stats.Seed + ') ' + winner.Name);
-            if (high == winner) {
-                $(highDiv).removeClass('loser').addClass('winner');
-                $(lowDiv).removeClass('winner').addClass('loser');
-            } else {
-                $(highDiv).removeClass('winner').addClass('loser');
-                $(lowDiv).removeClass('loser').addClass('winner');
-            }
+
             gameDiff--;
         }
     }
@@ -311,29 +297,13 @@ function submit() {
         var team1Div = '#' + regions[region1].toLowerCase() + 'game15';
         var team2Div = '#' + regions[region2].toLowerCase() + 'game15'
         var team2 = gameWinnerRegions[region2].game15;
-        var winner = getWinner(team1, team2);
-        setTrueWinner(team1, team2, 5, winner, team1Div, team2Div);
+        var winner = runMatchup(team1, team2, 5, team1Div, team2Div);
         championship[sides[side]] = winner;
         $('#' + sides[side] + 'game').text('(' + winner.stats.Seed + ') ' + winner.Name);
-        if (team1 == winner) {
-            $(team1Div).removeClass('loser').addClass('winner');
-            $(team2Div).removeClass('winner').addClass('loser');
-        } else {
-            $(team1Div).removeClass('winner').addClass('loser');
-            $(team2Div).removeClass('loser').addClass('winner');
-        }
         regionID += 2;
     }
-    var winner = getWinner(championship.left, championship.right);
-    setTrueWinner(championship.left, championship.right, 6, winner, '#leftgame', '#rightgame');
+    var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
     $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
-    if (championship.left == winner) {
-        $('#leftgame').removeClass('loser').addClass('winner');
-        $('#rightgame').removeClass('winner').addClass('loser');
-    } else {
-        $('#leftgame').removeClass('winner').addClass('loser');
-        $('#rightgame').removeClass('loser').addClass('winner');
-    }
 }
 /*
  * Converts the statistic name to the id used in js objects and html ids.
