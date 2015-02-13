@@ -63,7 +63,7 @@ $(function() {
                 bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
             }
         }
-        console.log(bracketTeamsByRegionAndSeed);
+        //console.log(bracketTeamsByRegionAndSeed);
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
@@ -205,6 +205,11 @@ function submit() {
             queryString = queryString + id + "=" + currentWeights[id];
         }
     });
+    
+    if(totalWeight == 0) {
+        clear();
+        return;
+    }
     // Create the URL
     var path = document.URL.split("?")[0] + "?" + "year=" + year + "&" + queryString;
     $('#share').val(path);
@@ -299,6 +304,22 @@ function submit() {
     var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
     $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
 }
+
+function clear() {
+    // Easier to just wipe everything and rerun the setup
+    for(var regionID in regions) {
+        var regionName = regions[regionID].toLowerCase();
+        $('[id^=' + regionName + 'game]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
+        $('[id^=' + regionName + 'seed]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect');
+    }
+    $('#first-four').text('');
+    $('#leftgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
+    $('#rightgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
+    $('#championship').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
+
+    setupInitialMatches();
+}
+
 /*
  * Converts the statistic name to the id used in js objects and html ids.
  */
