@@ -52,7 +52,7 @@ li {
     padding-left: 20px;
 }
 
-#first-four > li,#first-four > li > div {
+#play-in > li,#play-in > li > div {
 	display:inline;
 	padding:10px;
 }

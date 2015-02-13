@@ -99,9 +99,14 @@ $(function() {
  */
 
 function setupInitialMatches() {
+    if(firstFours.length == 1) {
+        $('#play-in-title').text('Play-In');
+    } else {
+        $('#play-in-title').text('First Four');
+    }
     for (var matchupID in firstFours) {
         matchup = firstFours[matchupID];
-        $('#first-four').append('<li id="matchup' + matchupID + '"><div class="region">' + regions[matchup[0].Region] + ' (' + matchup[0].stats.Seed +
+        $('#play-in').append('<li id="matchup' + matchupID + '"><div class="region">' + regions[matchup[0].Region] + ' (' + matchup[0].stats.Seed +
         '):</div><div class="team1">' + matchup[0].Name + '</div> vs <div class="team2">' + matchup[1].Name + '</div></li>');
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
