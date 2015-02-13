@@ -8,6 +8,10 @@ var teamsByRegion = [
     [],
     []
 ];
+
+
+var seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
+
 // array of regions, each representing hashmaps representing seed numbers
 // Does not contain losers of first-four matchups.
 var bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
@@ -137,8 +141,10 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
             team1Total += team1.stats[weightName] * weight;
             team2Total += team2.stats[weightName] * weight;
         }
+        //console.log("stat: " + weightName + " " + String(team1Total) + " vs " + String(team2Total));
     }
     
+    //console.log("team1: " + String(team1Total) + " team2: " + String(team2Total) + "  ranke: " + team1.Rank + " vs " + team2.Rank);
     if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
         var winner = team1;
         var winnerDiv = team1Div;
@@ -150,7 +156,7 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         var loser = team1;
         var loserDiv = team1Div;
     }
-    
+    //console.log("winner between " + team1.Name + " and " + team2.Name + " is " + winner.Name);
     
     $(winnerDiv).removeClass('loser').addClass('winner');
     $(loserDiv).removeClass('winner').addClass('loser');
@@ -217,6 +223,8 @@ function submit() {
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
+        firstFours[matchupID][0].stats.R = Math.random() * 100;
+        firstFours[matchupID][1].stats.R = Math.random() * 100;
         var winner = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
 
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
@@ -225,6 +233,7 @@ function submit() {
     }
     var gameWinnerRegions = [{}, {}, {}, {}];
     for (regionID in regions) {
+    //{var regionID = 0; 
         var currentRegion = bracketTeamsByRegionAndSeed[regionID];
         var gameWinners = gameWinnerRegions[regionID];
         var bracketData = {
@@ -233,15 +242,18 @@ function submit() {
         };
         var region = regions[regionID].toLowerCase();
         // First round of 64
-        for (var seed = 1; seed < 9; seed++) {
+        for (var index in seedMatchOrder) {
+            var seed = seedMatchOrder[index];
             var high = currentRegion[seed];
             var low = currentRegion[17 - seed];
+            // game numbers #ids are 1-indexed rather than 0-indexed
+            var gameNum = parseInt(index) + 1;
             var highDiv = '#' + region + 'seed' + high.stats.Seed;
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
             
             bracketData.teams.push(['(' + high.stats.Seed + ') ' + high.Name, '(' + low.stats.Seed + ') ' + low.Name]);
             var winner = runMatchup(high, low, 0, highDiv, lowDiv);
-            gameWinners['game' + String(seed)] = winner;
+            gameWinners['game' + String(gameNum)] = winner;
             /* Strip this? */
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
             if (high == winner) {
@@ -250,7 +262,7 @@ function submit() {
                 $(highDiv).removeClass('winner').addClass('loser');
             }
             
-            $('#' + region + 'game' + seed).text('(' + winner.stats.Seed + ') ' + winner.Name);
+            $('#' + region + 'game' + gameNum).text('(' + winner.stats.Seed + ') ' + winner.Name);
             /* end Strip this? */
         }
         // Round of 32 through the Elite 8
@@ -260,7 +272,6 @@ function submit() {
             var low = gameWinners['game' + String(game + 1 - gameDiff)];
             var highDiv = '#' + region + 'game' + String(game - gameDiff);
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
-            
             var winner = runMatchup(high, low, getRound(game), highDiv, lowDiv);
             
             gameWinners['game' + String(game)] = winner;
