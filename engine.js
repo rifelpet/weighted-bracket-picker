@@ -165,7 +165,7 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
     
     $(winnerDiv).removeClass('loser').addClass('winner');
     $(loserDiv).removeClass('winner').addClass('loser');
-    
+
     if(winner['Games Won'] == loser['Games Won'] && round == loser['Games Won']) {
         //console.log("Setting to null: " + team1.Name + " " + team2.Name + " both games won " + String(team1['Games Won']) + " for round " + String(round));
         $(winnerDiv).removeClass('incorrect').removeClass('correct');
@@ -174,11 +174,11 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         $(winnerDiv).removeClass('incorrect').addClass('correct');
     } else {
         $(winnerDiv).removeClass('correct').addClass('incorrect');
-        // If the loser lost where they should have, dont mark it incorrect.
-        if(loser['Games Won'] - 1 != round) {
-            //console.log("not equal: " + loser['Games Won'] + " vs " + String(round));
-            $(loserDiv).removeClass('correct').addClass('incorrect');
-        }
+    }
+    // If the loser lost where they should have, dont mark it incorrect.
+    if(loser['Games Won'] - 1 != round) {
+        //console.log("not equal: " + loser['Games Won'] + " vs " + String(round));
+        $(loserDiv).removeClass('correct').addClass('incorrect');
     }
     return winner;
 }
@@ -230,6 +230,7 @@ function submit() {
             region[seed].stats.R = Math.random() * 100;
         }
     }
+    //console.log(firstFours);
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
@@ -307,6 +308,11 @@ function submit() {
         regionID += 2;
     }
     var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
+    if(winner['Games Won'] == 6) {
+        $('#championship').removeClass('incorrect').addClass('correct');
+    } else {
+        $('#championship').removeClass('correct').addClass('incorrect');
+    }
     $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
 }
 
