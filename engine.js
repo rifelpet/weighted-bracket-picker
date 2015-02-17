@@ -79,7 +79,7 @@ $(function() {
             }
             if (nonStatHeaders.indexOf(id) > -1) return true;
             currentWeights[id] = initialVal;
-            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div id="' + id + '"></div><div class="value" id="' + id + '-val">0</div></li>');
+            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).slider({
                 value: initialVal,
                 range: "min",

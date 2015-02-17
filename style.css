@@ -1,8 +1,18 @@
-#sliders > li > div {
+#sliders > li > div > div.ui-slider {
 	width:120px;
 	height: 7px;
 	margin: 10px 10px 2px;
 	display:inline-block;
+}
+
+#sliders > li > label {
+    line-height: 2em;
+}
+
+#sliders > li > div {
+    display: inline-block;
+    float: right;
+    padding-right: 20px;
 }
 
 * {
@@ -23,15 +33,21 @@
 #sliders {
 	-moz-column-count:3;
 	-moz-column-gap:20px;
+	-moz-column-rule: 4px solid #cccccc;
+	
 	-webkit-column-count:3;
 	-webkit-column-gap:20px;
+	-webkit-column-rule: 4px solid #cccccc;
+	
 	column-count:3;
 	column-gap:20px;
+    column-rule: 4px solid #cccccc;
+	
 	width: 1080px;
 }
 
-#sliders > li > div.value {
-    padding: 0;
+#sliders > li > div > div.value {
+    padding: 0px 7px;
     margin: 0;
     display: inline;
 }
@@ -130,7 +146,7 @@ li {
     position: absolute;
     left: 516px;
     text-align: center;
-    padding-top: 15em;
+    padding-top: 8em;
     height: 30em;
 }
 
