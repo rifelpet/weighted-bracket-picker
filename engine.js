@@ -25,6 +25,7 @@ var nonStatHeaders = ["Region", "Name", "Rank", "Games Won"];
 
 var firstFours = [];
 var year = "2014";
+var totalGames = 0; // This will be 63 except for the current year
 
 $(function() {
     // Grab values from the url if any
@@ -61,6 +62,9 @@ $(function() {
                 delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
             } else {
                 bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
+            }
+            if(parseInt(team['Games Won']) > 0) {
+                totalGames += parseInt(team['Games Won']);
             }
         }
         //console.log(bracketTeamsByRegionAndSeed);
@@ -126,6 +130,7 @@ function setupInitialMatches() {
             $('#' + region.toLowerCase() + 'seed' + high.stats.Seed).text('(' + high.stats.Seed + ') ' + high.Name);
         }
     }
+    $('#correct').text('0 / ' + totalGames);
 }
 
 /*
@@ -319,7 +324,10 @@ function submit() {
         $('#championship').removeClass('correct').addClass('incorrect');
     }
     $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
-    $('#correct-count').val(correctCount);
+    $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
+    if(totalGames > 0) {
+        
+    }
 }
 
 function clear() {

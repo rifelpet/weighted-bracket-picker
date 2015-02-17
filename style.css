@@ -21,12 +21,13 @@
 }
 
 #sliders {
-	-moz-column-count:4;
+	-moz-column-count:3;
 	-moz-column-gap:20px;
-	-webkit-column-count:4;
+	-webkit-column-count:3;
 	-webkit-column-gap:20px;
-	column-count:4;
+	column-count:3;
 	column-gap:20px;
+	width: 1080px;
 }
 
 #sliders > li > div.value {
@@ -42,6 +43,11 @@ li {
 
 #teams {
     font-size: 10px;
+    width: 1080px;
+}
+
+#play-in, #play-in-title {
+    text-align: center;
 }
 
 #data-headline, #share-div, #year-div, #top-bar, #correct-div {
@@ -117,6 +123,15 @@ li {
 
 .championship-right {
     line-height: 76em;
+}
+
+#correct-wrapper {
+    font-weight: 700;
+    position: absolute;
+    left: 516px;
+    text-align: center;
+    padding-top: 15em;
+    height: 30em;
 }
 
 .tournament32-wrap {
