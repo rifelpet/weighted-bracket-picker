@@ -156,22 +156,14 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
     
     //console.log("team1: " + String(team1Total) + " team2: " + String(team2Total) + "  ranke: " + team1.Rank + " vs " + team2.Rank);
     if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
-        var winner = team1;
-        var winnerDiv = team1Div;
-        var loser = team2;
-        var loserDiv = team2Div;
+        $(team1Div).removeClass('loser').addClass('winner');
+        $(team2Div).removeClass('winner').addClass('loser');
+        return team1;
     } else {
-        var winner = team2;
-        var winnerDiv = team2Div;
-        var loser = team1;
-        var loserDiv = team1Div;
+        $(team2Div).removeClass('loser').addClass('winner');
+        $(team1Div).removeClass('winner').addClass('loser');
+        return team2;
     }
-    //console.log("winner between " + team1.Name + " and " + team2.Name + " is " + winner.Name);
-    
-    $(winnerDiv).removeClass('loser').addClass('winner');
-    $(loserDiv).removeClass('winner').addClass('loser');
-
-    return winner;
 }
 
 /* 
@@ -202,7 +194,7 @@ function submit() {
         }
     });
     
-    if(totalWeight == 0) {
+    if(totalWeight === 0) {
         clear();
         return;
     }
@@ -300,7 +292,7 @@ function submit() {
         var region2 = regionID + 1;
         var team1 = gameWinnerRegions[region1].game15;
         var team1Div = '#' + regions[region1].toLowerCase() + 'game15';
-        var team2Div = '#' + regions[region2].toLowerCase() + 'game15'
+        var team2Div = '#' + regions[region2].toLowerCase() + 'game15';
         var team2 = gameWinnerRegions[region2].game15;
         var winner = runMatchup(team1, team2, 5, team1Div, team2Div);
         championship[sides[side]] = winner;
