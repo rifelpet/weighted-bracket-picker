@@ -166,20 +166,6 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
     $(winnerDiv).removeClass('loser').addClass('winner');
     $(loserDiv).removeClass('winner').addClass('loser');
 
-    if(winner['Games Won'] == loser['Games Won'] && round == loser['Games Won']) {
-        //console.log("Setting to null: " + team1.Name + " " + team2.Name + " both games won " + String(team1['Games Won']) + " for round " + String(round));
-        $(winnerDiv).removeClass('incorrect').removeClass('correct');
-        $(loserDiv).removeClass('incorrect').removeClass('correct');
-    } else if(winner['Games Won'] > loser['Games Won'] && winner['Games Won'] >= round) {
-        $(winnerDiv).removeClass('incorrect').addClass('correct');
-    } else {
-        $(winnerDiv).removeClass('correct').addClass('incorrect');
-    }
-    // If the loser lost where they should have, dont mark it incorrect.
-    if(loser['Games Won'] - 1 != round) {
-        //console.log("not equal: " + loser['Games Won'] + " vs " + String(round));
-        $(loserDiv).removeClass('correct').addClass('incorrect');
-    }
     return winner;
 }
 
@@ -267,13 +253,13 @@ function submit() {
             gameWinners['game' + String(gameNum)] = winner;
             /* Strip this? */
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
-            if (high == winner) {
-                $(lowDiv).removeClass('winner').addClass('loser');
-            } else {
-                $(highDiv).removeClass('winner').addClass('loser');
-            }
-            
+
             $('#' + region + 'game' + gameNum).text('(' + winner.stats.Seed + ') ' + winner.Name);
+            if(winner['Games Won'] > 0) {
+                $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
+            } else {
+                $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
+            }
             /* end Strip this? */
         }
         // Round of 32 through the Elite 8
@@ -287,7 +273,12 @@ function submit() {
             
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner.stats.Seed + ') ' + winner.Name);
-
+            if(winner['Games Won'] >= getRound(game)) {
+                $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
+            } else {
+                $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
+            }
+            
             gameDiff--;
         }
     }
@@ -304,7 +295,15 @@ function submit() {
         var team2 = gameWinnerRegions[region2].game15;
         var winner = runMatchup(team1, team2, 5, team1Div, team2Div);
         championship[sides[side]] = winner;
+        
         $('#' + sides[side] + 'game').text('(' + winner.stats.Seed + ') ' + winner.Name);
+        
+        if(winner['Games Won'] >= 5) {
+            $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
+        } else {
+            $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
+        }
+        
         regionID += 2;
     }
     var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
@@ -323,7 +322,7 @@ function clear() {
         $('[id^=' + regionName + 'game]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
         $('[id^=' + regionName + 'seed]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect');
     }
-    $('#first-four').text('');
+    $('#play-in').text('');
     $('#leftgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
     $('#rightgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
     $('#championship').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
