@@ -228,6 +228,8 @@ function submit() {
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text('(' + winner.stats.Seed + ') ' + winner.Name);
         $('#FirstFour' + matchupID + 'Result').text("Winner: " + winner.Name);
     }
+    
+    var correctCount = 0;
     var gameWinnerRegions = [{}, {}, {}, {}];
     for (regionID in regions) {
     //{var regionID = 0; 
@@ -256,6 +258,7 @@ function submit() {
 
             $('#' + region + 'game' + gameNum).text('(' + winner.stats.Seed + ') ' + winner.Name);
             if(winner['Games Won'] > 0) {
+                correctCount++;
                 $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
             } else {
                 $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
@@ -274,6 +277,7 @@ function submit() {
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text('(' + winner.stats.Seed + ') ' + winner.Name);
             if(winner['Games Won'] >= getRound(game)) {
+                correctCount++;
                 $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
             } else {
                 $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
@@ -299,6 +303,7 @@ function submit() {
         $('#' + sides[side] + 'game').text('(' + winner.stats.Seed + ') ' + winner.Name);
         
         if(winner['Games Won'] >= 5) {
+            correctCount++;
             $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
         } else {
             $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
@@ -308,11 +313,13 @@ function submit() {
     }
     var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
     if(winner['Games Won'] == 6) {
+        correctCount++;
         $('#championship').removeClass('incorrect').addClass('correct');
     } else {
         $('#championship').removeClass('correct').addClass('incorrect');
     }
     $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
+    $('#correct-count').val(correctCount);
 }
 
 function clear() {

@@ -44,11 +44,11 @@ li {
     font-size: 10px;
 }
 
-#data-headline, #share-div, #year-div, #top-bar {
+#data-headline, #share-div, #year-div, #top-bar, #correct-div {
     display: inline-block;
 }
 
-#share-div, #year-div {
+#share-div, #year-div, #correct-div {
     padding-left: 20px;
 }
 
@@ -127,6 +127,10 @@ li {
 .round1-top,.round1-bottom {
 	width:90px;
 	height:3em;
+}
+
+.round1-top {
+	line-height:3em;
 }
 
 .round2-topwrap .round1-bottom {
