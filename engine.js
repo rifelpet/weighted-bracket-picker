@@ -18,34 +18,34 @@ var bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
 
 var headers = [];
 // RegionIDs in the csv are the 'regions' indeces
-var regions = ["South", "East", "West", "Midwest"];
+var regions = ['South', 'East', 'West', 'Midwest'];
 
 // Headers that arent used in comparison for winner determination
-var nonStatHeaders = ["Region", "Name", "Rank", "Games Won"];
+var nonStatHeaders = ['Region', 'Name', 'Rank', 'Games Won'];
 
 var firstFours = [];
-var year = "2014";
+var year = '2014';
 var totalGames = 0; // This will be 63 except for the current year
 
 $(function() {
     // Grab values from the url if any
     var urlParams = {};
-    location.search.substr(1).split("&").forEach(function(item) {
-        var key = item.split("=")[0];
-        urlParams[key] = decodeURIComponent(item.split("=")[1]).replace(/\//g, "");
+    location.search.substr(1).split('&').forEach(function(item) {
+        var key = item.split('=')[0];
+        urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
-    if ("year" in urlParams) {
+    if ('year' in urlParams) {
         year = urlParams.year;
         $('select[name="year"]').val(year);
     }
     $('#raw').attr('href', year + '-data.csv');
         
-    $.get(year + "-data.csv", function(data) {
+    $.get(year + '-data.csv', function(data) {
         var lines = data.trim().split("\n");
         var result = [];
-        headers = lines[0].trim().split(",");
+        headers = lines[0].trim().split(',');
         for (var i = 1; i < lines.length; i++) {
-            var currentLine = lines[i].split(",");
+            var currentLine = lines[i].split(',');
             var team = {};
             team.stats = {};
             for (var j = 0; j < headers.length; j++) {
@@ -67,7 +67,7 @@ $(function() {
                 totalGames += parseInt(team['Games Won']);
             }
         }
-        //console.log(bracketTeamsByRegionAndSeed);
+
         var initialSubmit = false;
         headers.push('Random');
         $.each(headers, function(i, param) {
@@ -82,7 +82,7 @@ $(function() {
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).slider({
                 value: initialVal,
-                range: "min",
+                range: 'min',
                 animate: true,
                 step: 10,
                 slide: function(event, ui) {
@@ -151,10 +151,8 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
             team1Total += team1.stats[weightName] * weight;
             team2Total += team2.stats[weightName] * weight;
         }
-        //console.log("stat: " + weightName + " " + String(team1Total) + " vs " + String(team2Total));
     }
     
-    //console.log("team1: " + String(team1Total) + " team2: " + String(team2Total) + "  ranke: " + team1.Rank + " vs " + team2.Rank);
     if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
@@ -183,14 +181,14 @@ function getRound(gameNumber) {
 
 function submit() {
     var totalWeight = 0;
-    var queryString = "";
+    var queryString = '';
     $.each(headers, function(i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
         totalWeight += currentWeights[id];
         if (currentWeights[id] !== 0) {
-            if (queryString !== "") queryString += "&";
-            queryString = queryString + id + "=" + currentWeights[id];
+            if (queryString !== '') queryString += '&';
+            queryString = queryString + id + '=' + currentWeights[id];
         }
     });
     
@@ -199,7 +197,7 @@ function submit() {
         return;
     }
     // Create the URL
-    var path = document.URL.split("?")[0] + "?" + "year=" + year + "&" + queryString;
+    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&' + queryString;
     $('#share').val(path);
     relativeWeights = {};
     $.each(currentWeights, function(param) {
@@ -213,7 +211,7 @@ function submit() {
             region[seed].stats.R = Math.random() * 100;
         }
     }
-    //console.log(firstFours);
+
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
@@ -223,7 +221,6 @@ function submit() {
 
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text('(' + winner.stats.Seed + ') ' + winner.Name);
-        $('#FirstFour' + matchupID + 'Result').text("Winner: " + winner.Name);
     }
     
     var correctCount = 0;
@@ -287,7 +284,7 @@ function submit() {
     }
     // Final four and championship game
     var regionID = 0;
-    var sides = ["left", "right"];
+    var sides = ['left', 'right'];
     var championship = {};
     for (var side in sides) {
         var region1 = regionID;
@@ -349,5 +346,5 @@ function clear() {
 function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leaver just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    return attr.replace(/[ a-z%\/]/g, "");
+    return attr.replace(/[ a-z%\/]/g, '');
 }
