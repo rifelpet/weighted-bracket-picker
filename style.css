@@ -81,12 +81,13 @@ li {
 }
 
 .rtol {
-/*border-left: 1px solid #000;*/
 	float:right;
+	text-align:right;
 }
 
 .ltor {
 	float:left;
+	text-align:left;
 }
 
 .fl {
@@ -145,10 +146,6 @@ li {
 	text-align:center;
 	padding-top:48em;
 	height:30em;
-}
-
-.tournament32-wrap {
-	text-align:center;
 }
 
 /****** round 1 ******/
