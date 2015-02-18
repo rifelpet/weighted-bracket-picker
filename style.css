@@ -168,17 +168,17 @@ li {
 
 /****** round 2 ******/
 .round2-top,.round2-bottom {
-	width:90px;
+	width:86px;
 	height:4em;
 	line-height:5em;
 }
 
 .round3-topwrap .round2-bottom {
-	width:89px;
+	width:86px;
 }
 
 .round3-bottomwrap .round2-top {
-	width:89px;
+	width:86px;
 }
 
 .tournament4-wrap .round2-top {
@@ -191,17 +191,17 @@ li {
 
 /****** round 3 ******/
 .round3-top,.round3-bottom {
-	width:90px;
+	width:86px;
 	height:8em;
 	line-height:9em;
 }
 
 .round4-topwrap .round3-bottom {
-	width:89px;
+	width:86px;
 }
 
 .round4-bottomwrap .round3-top {
-	width:89px;
+	width:86px;
 }
 
 .tournament8-wrap .round3-top {
@@ -214,17 +214,17 @@ li {
 
 /****** round 4 ******/
 .round4-top,.round4-bottom {
-	width:90px;
+	width:86px;
 	height:16em;
 	line-height:17em;
 }
 
 .round5-topwrap .round4-bottom {
-	width:89px;
+	width:86px;
 }
 
 .round5-bottomwrap .round4-top {
-	width:89px;
+	width:86px;
 }
 
 .round4-topwrap,.round4-bottomwrap {
@@ -236,7 +236,7 @@ li {
 
 /****** round 5 ******/
 .round5-top,.round5-bottom {
-	width:90px;
+	width:86px;
 	height:32em;
 	line-height:33em;
 }
@@ -250,7 +250,7 @@ li {
 
 /****** round 6 ******/
 .round6-top,.round6-bottom {
-	width:90px;
+	width:86px;
 	height:32em;
 }
 
