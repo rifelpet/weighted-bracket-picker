@@ -250,17 +250,18 @@ function submit() {
             bracketData.teams.push(['(' + high.stats.Seed + ') ' + high.Name, '(' + low.stats.Seed + ') ' + low.Name]);
             var winner = runMatchup(high, low, 0, highDiv, lowDiv);
             gameWinners['game' + String(gameNum)] = winner;
-            /* Strip this? */
+
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
 
-            $('#' + region + 'game' + gameNum).text('(' + winner.stats.Seed + ') ' + winner.Name);
-            if(winner['Games Won'] > 0) {
-                correctCount++;
-                $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
-            } else {
-                $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
+            $('#' + region + 'game' + gameNum).text(winner.Name);
+            if(totalGames > 0) {
+                if(winner['Games Won'] > 0) {
+                    correctCount++;
+                    $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
+                } else {
+                    $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
+                }
             }
-            /* end Strip this? */
         }
         // Round of 32 through the Elite 8
         var gameDiff = 8;
@@ -272,14 +273,15 @@ function submit() {
             var winner = runMatchup(high, low, getRound(game), highDiv, lowDiv);
             
             gameWinners['game' + String(game)] = winner;
-            $('#' + region + 'game' + game).text('(' + winner.stats.Seed + ') ' + winner.Name);
-            if(winner['Games Won'] >= getRound(game)) {
-                correctCount++;
-                $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
-            } else {
-                $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
+            $('#' + region + 'game' + game).text(winner.Name);
+            if(totalGames > 0) {
+                if(winner['Games Won'] >= getRound(game)) {
+                    correctCount++;
+                    $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
+                } else {
+                    $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
+                }
             }
-            
             gameDiff--;
         }
     }
@@ -297,25 +299,28 @@ function submit() {
         var winner = runMatchup(team1, team2, 5, team1Div, team2Div);
         championship[sides[side]] = winner;
         
-        $('#' + sides[side] + 'game').text('(' + winner.stats.Seed + ') ' + winner.Name);
+        $('#' + sides[side] + 'game').text(winner.Name);
         
-        if(winner['Games Won'] >= 5) {
-            correctCount++;
-            $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
-        } else {
-            $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
+        if(totalGames > 0) {
+            if(winner['Games Won'] >= 5) {
+                correctCount++;
+                $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
+            } else {
+                $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
+            }
         }
-        
         regionID += 2;
     }
     var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
-    if(winner['Games Won'] == 6) {
-        correctCount++;
-        $('#championship').removeClass('incorrect').addClass('correct');
-    } else {
-        $('#championship').removeClass('correct').addClass('incorrect');
+    if(totalGames > 0) {
+        if(winner['Games Won'] == 6) {
+            correctCount++;
+            $('#championship').removeClass('incorrect').addClass('correct');
+        } else {
+            $('#championship').removeClass('correct').addClass('incorrect');
+        }
     }
-    $('#championship').text('(' + winner.stats.Seed + ') ' + winner.Name);
+    $('#championship').text(winner.Name);
     $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
     if(totalGames > 0) {
         
