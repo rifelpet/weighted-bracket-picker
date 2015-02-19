@@ -38,8 +38,7 @@ $(function() {
         year = urlParams.year;
         $('select[name="year"]').val(year);
     }
-    $('#raw').attr('href', year + '-data.csv');
-        
+            
     $.get(year + '-data.csv', function(data) {
         var lines = data.trim().split("\n");
         var result = [];
@@ -145,8 +144,8 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         weight = currentWeights[weightName];
         if (weightName == 'Seed') {
             // Higher seeds are worse, so invert the value range
-            team1Total += (17 - team1.stats[weightName]) * weight;
-            team2Total += (17 - team2.stats[weightName]) * weight;
+            team1Total += (17 - team1.stats[weightName]) * weight / 17;
+            team2Total += (17 - team2.stats[weightName]) * weight / 17;
         } else {
             team1Total += team1.stats[weightName] * weight;
             team2Total += team2.stats[weightName] * weight;
