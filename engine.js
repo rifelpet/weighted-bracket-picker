@@ -207,15 +207,15 @@ function submit() {
     for (var regionID in bracketTeamsByRegionAndSeed) {
         var region = bracketTeamsByRegionAndSeed[regionID];
         for (var seed in region) {
-            region[seed].stats.R = Math.random() * 100;
+            region[seed].stats.R = Math.random();
         }
     }
 
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
-        firstFours[matchupID][0].stats.R = Math.random() * 100;
-        firstFours[matchupID][1].stats.R = Math.random() * 100;
+        firstFours[matchupID][0].stats.R = Math.random();
+        firstFours[matchupID][1].stats.R = Math.random();
         var winner = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
 
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
