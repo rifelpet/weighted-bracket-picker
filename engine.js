@@ -39,64 +39,69 @@ $(function() {
         $('select[name="year"]').val(year);
     }
             
-    $.get(year + '-data.csv', function(data) {
-        var lines = data.trim().split("\n");
-        var result = [];
-        headers = lines[0].trim().split(',');
-        for (var i = 1; i < lines.length; i++) {
-            var currentLine = lines[i].split(',');
-            var team = {};
-            team.stats = {};
-            for (var j = 0; j < headers.length; j++) {
-                if(nonStatHeaders.indexOf(headers[j]) > -1) {
-                    team[headers[j]] = currentLine[j];
-                } else {
-                    team.stats[attrToID(headers[j])] = currentLine[j];
-                }
-            }
-            team.stats.R = Math.random();
-            teamsByName[team.Name] = team;
-            teamsByRegion[team.Region].push(team);
-            if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
-                firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
-                delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
-            } else {
-                bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
-            }
-            if(parseInt(team['Games Won']) > 0) {
-                totalGames += parseInt(team['Games Won']);
-            }
-        }
-
-        var initialSubmit = false;
-        headers.push('Random');
-        $.each(headers, function(i, param) {
-            var id = attrToID(param);
-            var initialVal = 0;
-            if (id in urlParams) {
-                initialVal = urlParams[id];
-                initialSubmit = true;
-            }
-            if (nonStatHeaders.indexOf(id) > -1) return true;
-            currentWeights[id] = initialVal;
-            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-            $('#' + id).slider({
-                value: initialVal,
-                range: 'min',
-                animate: true,
-                step: 10,
-                slide: function(event, ui) {
-                    currentWeights[$(this).attr('id')] = ui.value;
-                    $('#' + id + '-val').text(ui.value);
-                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
-                    submit();
-                }
-            });
-        });
-        setupInitialMatches();
-        if (initialSubmit) submit();
+    $.get(year + '-data.csv', function(data) { parseData(data, urlParams)
+        
     });
 });
+
+
+function parseData(data, urlParams) {
+    var lines = data.trim().split("\n");
+    var result = [];
+    headers = lines[0].trim().split(',');
+    for (var i = 1; i < lines.length; i++) {
+        var currentLine = lines[i].split(',');
+        var team = {};
+        team.stats = {};
+        for (var j = 0; j < headers.length; j++) {
+            if(nonStatHeaders.indexOf(headers[j]) > -1) {
+                team[headers[j]] = currentLine[j];
+            } else {
+                team.stats[attrToID(headers[j])] = currentLine[j];
+            }
+        }
+        team.stats.R = Math.random();
+        teamsByName[team.Name] = team;
+        teamsByRegion[team.Region].push(team);
+        if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
+            firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
+            delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
+        } else {
+            bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
+        }
+        if(parseInt(team['Games Won']) > 0) {
+            totalGames += parseInt(team['Games Won']);
+        }
+    }
+
+    var initialSubmit = false;
+    headers.push('Random');
+    $.each(headers, function(i, param) {
+        var id = attrToID(param);
+        var initialVal = 0;
+        if (id in urlParams) {
+            initialVal = urlParams[id];
+            initialSubmit = true;
+        }
+        if (nonStatHeaders.indexOf(id) > -1) return true;
+        currentWeights[id] = initialVal;
+        $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+        $('#' + id).slider({
+            value: initialVal,
+            range: 'min',
+            animate: true,
+            step: 10,
+            slide: function(event, ui) {
+                currentWeights[$(this).attr('id')] = ui.value;
+                $('#' + id + '-val').text(ui.value);
+                ga('send', 'event', 'slider-adjust', param, '', ui.value);
+                submit();
+            }
+        });
+    });
+    setupInitialMatches();
+    if (initialSubmit) submit();
+}
 /*
  * Sets up the initial matchups based on seeding for a given region.
  * Any teams with identical seed numbers and regions are treated as a "First Four" match.
