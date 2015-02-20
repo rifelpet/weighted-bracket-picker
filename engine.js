@@ -54,6 +54,7 @@ $(function() {
                     team.stats[attrToID(headers[j])] = currentLine[j];
                 }
             }
+            team.stats.R = Math.random();
             teamsByName[team.Name] = team;
             teamsByRegion[team.Region].push(team);
             if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
@@ -124,7 +125,7 @@ function setupInitialMatches() {
                 lowString = '(' + lowTeam.stats.Seed + ') ' + lowTeam.Name;
                 $('#' + region.toLowerCase() + 'seed' + lowTeam.stats.Seed).text('(' + lowTeam.stats.Seed + ') ' + lowTeam.Name);
             } else {
-                $('#' + region.toLowerCase() + 'seed' + (17 - seed)).html('(' + (17 - seed) + ') <i>First 4 winner</i>');
+                $('#' + region.toLowerCase() + 'seed' + (17 - seed)).html('(' + (17 - seed) + ') <i>Play-In winner</i>');
             }
             $('#' + region.toLowerCase() + 'seed' + high.stats.Seed).text('(' + high.stats.Seed + ') ' + high.Name);
         }
@@ -203,19 +204,10 @@ function submit() {
         var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
-    // Set the 'random weight' value
-    for (var regionID in bracketTeamsByRegionAndSeed) {
-        var region = bracketTeamsByRegionAndSeed[regionID];
-        for (var seed in region) {
-            region[seed].stats.R = Math.random();
-        }
-    }
 
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
-        firstFours[matchupID][0].stats.R = Math.random();
-        firstFours[matchupID][1].stats.R = Math.random();
         var winner = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
 
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
