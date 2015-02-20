@@ -1,14 +1,6 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert*/
 var currentWeights = {};
-var teamsByName = {};
-var teamsByRegion = [
-    [],
-    [],
-    [],
-    []
-];
-
 
 var seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
 
@@ -61,8 +53,6 @@ function parseData(data, urlParams) {
             }
         }
         team.stats.R = Math.random();
-        teamsByName[team.Name] = team;
-        teamsByRegion[team.Region].push(team);
         if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
             firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
             delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
