@@ -145,8 +145,8 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         weight = currentWeights[weightName];
         if (weightName == 'Seed') {
             // Higher seeds are worse, so invert the value range
-            team1Total += (17 - team1.stats[weightName]) * weight / 17;
-            team2Total += (17 - team2.stats[weightName]) * weight / 17;
+            team1Total += (16 - team1.stats[weightName]) * weight / 16;
+            team2Total += (16 - team2.stats[weightName]) * weight / 16;
         } else {
             team1Total += team1.stats[weightName] * weight;
             team2Total += team2.stats[weightName] * weight;
