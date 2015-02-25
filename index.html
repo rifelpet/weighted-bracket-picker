@@ -48,7 +48,6 @@
     <div id="top-bar">
         <h3 id="data-headline">March Madness Weighted Bracket Picker</h3>
         <div id="year-div">
-            <form action="" method="GET" id="year-form">
                 <label for="year">Year:</label>
                 <select id="year" name="year">
                     <option>2015</option>
@@ -58,8 +57,7 @@
                     <option>2011</option>
                     <option>2010</option>
                 </select>
-                <input type="submit" value="Set Year" />
-            </form>
+                <input type="submit" onClick="selectYear()" value="Set Year" />
         </div>
         <div id="share-div">
             <label for="share">Share:</label>

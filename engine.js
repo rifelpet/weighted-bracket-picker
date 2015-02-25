@@ -2,6 +2,9 @@
 /*global $, jQuery, alert*/
 var currentWeights = {};
 
+// Used as a cache so that we aren't re-requesting CSVs over and over
+var yearData = {};
+
 var seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
 
 // array of regions, each representing hashmaps representing seed numbers
@@ -16,31 +19,48 @@ var regions = ['South', 'East', 'West', 'Midwest'];
 var nonStatHeaders = ['Region', 'Name', 'Rank', 'Games Won'];
 
 var firstFours = [];
-var year = '2014';
 var totalGames = 0; // This will be 63 except for the current year
+
+var urlParams = {};
 
 $(function() {
     // Grab values from the url if any
-    var urlParams = {};
     location.search.substr(1).split('&').forEach(function(item) {
         var key = item.split('=')[0];
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
+    var year = '2014';
+
     if ('year' in urlParams) {
         year = urlParams.year;
         $('select[name="year"]').val(year);
     }
-            
-    $.get(year + '-data.csv', function(data) { parseData(data, urlParams)
-        
-    });
+    
+    selectYear();
 });
 
+function selectYear() {
+    var year = $('select[name="year"]').val();
+    if(typeof yearData[year] === "undefined") {
+        $.get(year + '-data.csv', function(data) {
+            yearData[year] = data;
+            parseData(year);
+        });
+    } else {
+        parseData(year);
+    }
+}
 
-function parseData(data, urlParams) {
-    var lines = data.trim().split("\n");
+
+function parseData(year) {
+    var lines = yearData[year].trim().split("\n");
     var result = [];
     headers = lines[0].trim().split(',');
+    
+    bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
+    firstFours = [];
+    totalGames = 0;
+    
     for (var i = 1; i < lines.length; i++) {
         var currentLine = lines[i].split(',');
         var team = {};
@@ -73,24 +93,29 @@ function parseData(data, urlParams) {
             initialVal = urlParams[id];
             initialSubmit = true;
         }
+        if ($('#' + id + '-val').length > 0) {
+            initialVal = parseInt($('#' + id + '-val').text());
+        }
         if (nonStatHeaders.indexOf(id) > -1) return true;
         currentWeights[id] = initialVal;
-        $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-        $('#' + id).slider({
-            value: initialVal,
-            range: 'min',
-            animate: true,
-            step: 10,
-            slide: function(event, ui) {
-                currentWeights[$(this).attr('id')] = ui.value;
-                $('#' + id + '-val').text(ui.value);
-                ga('send', 'event', 'slider-adjust', param, '', ui.value);
-                submit();
-            }
-        });
+        if($('#' + id).length == 0) {
+            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            $('#' + id).slider({
+                value: initialVal,
+                range: 'min',
+                animate: true,
+                step: 10,
+                slide: function(event, ui) {
+                    currentWeights[$(this).attr('id')] = ui.value;
+                    $('#' + id + '-val').text(ui.value);
+                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
+                    submit();
+                }
+            });
+        }
     });
     setupInitialMatches();
-    if (initialSubmit) submit();
+    submit();
 }
 /*
  * Sets up the initial matchups based on seeding for a given region.
@@ -98,6 +123,7 @@ function parseData(data, urlParams) {
  */
 
 function setupInitialMatches() {
+    $('#play-in').text('');
     if(firstFours.length == 1) {
         $('#play-in-title').text('Play-In');
     } else {
@@ -211,7 +237,7 @@ function submit() {
     
     var correctCount = 0;
     var gameWinnerRegions = [{}, {}, {}, {}];
-    for (regionID in regions) {
+    for (var regionID in regions) {
     //{var regionID = 0; 
         var currentRegion = bracketTeamsByRegionAndSeed[regionID];
         var gameWinners = gameWinnerRegions[regionID];
