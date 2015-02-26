@@ -351,6 +351,18 @@ function clear() {
 }
 
 /*
+ * Resets all sliders to zero, clearing the bracket.
+ */
+function resetSliders() {
+    $.each(headers, function(i, param) {
+        if (param in nonStatHeaders) return true;
+        $('#' + attrToID(param)).slider('value', 0);
+        $('#' + attrToID(param) + '-val').text('0');
+    });
+    clear();
+}
+
+/*
  * Converts the statistic name to the id used in js objects and html ids.
  */
 
