@@ -56,7 +56,6 @@ function parseData(year) {
     var lines = yearData[year].trim().split("\n");
     var result = [];
     headers = lines[0].trim().split(',');
-    
     bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
     firstFours = [];
     totalGames = 0;
@@ -358,5 +357,5 @@ function clear() {
 function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leaver just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    return attr.replace(/[ a-z%\/]/g, '');
+    return attr.replace(/[ a-z%\.\/]/g, '');
 }
