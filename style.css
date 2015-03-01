@@ -120,6 +120,7 @@ li {
 	background:url(bracket.svg) no-repeat top left;
 	background-size:contain;
 	letter-spacing:-.5px;
+	-webkit-print-color-adjust:exact;
 }
 
 #championship {
