@@ -60,6 +60,7 @@ function parseData(year) {
     bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
     firstFours = [];
     totalGames = 0;
+    totalScore = 0;
     
     for (var i = 1; i < lines.length; i++) {
         var currentLine = lines[i].split(',');
