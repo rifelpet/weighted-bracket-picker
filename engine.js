@@ -20,6 +20,7 @@ var nonStatHeaders = ['Region', 'Name', 'Rank', 'Games Won'];
 
 var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
+var totalScore = 0; // This will be 192 except for the current year
 
 var urlParams = {};
 
@@ -78,8 +79,10 @@ function parseData(year) {
         } else {
             bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
         }
-        if(parseInt(team['Games Won']) > 0) {
-            totalGames += parseInt(team['Games Won']);
+        var gamesWon = parseInt(team['Games Won']);
+        if(gamesWon > 0) {
+            totalGames += gamesWon;
+            totalScore += Math.pow(2, gamesWon) - 1;
         }
     }
 
@@ -151,7 +154,7 @@ function setupInitialMatches() {
         }
     }
     $('#correct').text('0 / ' + totalGames);
-    $('#score').text('0 / 192');
+    $('#score').text('0 / ' + totalScore);
 }
 
 /*
@@ -219,7 +222,6 @@ function submit() {
             queryString = queryString + id + '=' + currentWeights[id];
         }
     });
-    
     if(totalWeight === 0) {
         clear();
         return;
@@ -345,7 +347,7 @@ function submit() {
     }
     $('#championship').text(winner.stats.Seed + '. ' + winner.Name);
     $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
-    $('#score').text(String(correctScore) + ' / 192');
+    $('#score').text(String(correctScore) + ' / ' + String(totalScore));
 }
 
 function clear() {
