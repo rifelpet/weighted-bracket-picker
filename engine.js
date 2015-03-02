@@ -97,7 +97,7 @@ function parseData(year) {
         }
         if (nonStatHeaders.indexOf(id) > -1) return true;
         currentWeights[id] = initialVal;
-        if($('#' + id).length == 0) {
+        if($('#' + id).length === 0) {
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).slider({
                 value: initialVal,
@@ -163,6 +163,10 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
     team2Total = 0;
     for (var weightName in currentWeights) {
         weight = currentWeights[weightName];
+        if (team1.stats[weightName] === undefined) {
+            console.log('warning: missing stat for ' + team1.Name + ': ' + weightName);
+            continue;
+        }
         if (weightName == 'Seed') {
             // Higher seeds are worse, so invert the value range
             team1Total += (16 - team1.stats[weightName]) * weight / 16;
@@ -176,10 +180,13 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
     if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
+        //console.log(team1.Name + ' won: ' + String(team1Total) + ' > ' + String(team2Total));
         return team1;
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
+        //console.log(team2.Name + ' won: ' + String(team2Total) + ' > ' + String(team1Total));
+
         return team2;
     }
 }
@@ -235,6 +242,7 @@ function submit() {
     }
     
     var correctCount = 0;
+    var correctScore = 0;
     var gameWinnerRegions = [{}, {}, {}, {}];
     for (var regionID in regions) {
     //{var regionID = 0; 
@@ -265,6 +273,7 @@ function submit() {
             if(totalGames > 0) {
                 if(winner['Games Won'] > 0) {
                     correctCount++;
+                    correctScore += 1;
                     $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
                 } else {
                     $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
@@ -285,6 +294,9 @@ function submit() {
             if(totalGames > 0) {
                 if(winner['Games Won'] >= getRound(game)) {
                     correctCount++;
+                    if(game <= 12) correctScore += 2;
+                    else if(game <= 14) correctScore += 4;
+                    else correctScore += 8;
                     $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
                 } else {
                     $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
@@ -312,6 +324,7 @@ function submit() {
         if(totalGames > 0) {
             if(winner['Games Won'] >= 5) {
                 correctCount++;
+                correctScore += 16;
                 $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
             } else {
                 $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
@@ -323,6 +336,7 @@ function submit() {
     if(totalGames > 0) {
         if(winner['Games Won'] == 6) {
             correctCount++;
+            correctScore += 32;
             $('#championship').removeClass('incorrect').addClass('correct');
         } else {
             $('#championship').removeClass('correct').addClass('incorrect');
@@ -330,9 +344,7 @@ function submit() {
     }
     $('#championship').text(winner.stats.Seed + '. ' + winner.Name);
     $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
-    if(totalGames > 0) {
-        
-    }
+    $('#score').text(String(correctScore) + ' / 192');
 }
 
 function clear() {
