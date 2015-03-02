@@ -146,10 +146,21 @@ li {
 #scoring-wrapper {
 	font-weight:700;
 	position:absolute;
-	left:516px;
+	left:409px;
 	text-align:center;
-	padding-top:48em;
+	padding-top:50em;
 	height:30em;
+}
+
+#correct-wrapper,
+#score-wrapper {
+    display:inline-block;
+    padding:20px;
+}
+
+#clear {
+    width: 25%;
+    margin: 0px auto;
 }
 
 /****** round 1 ******/
