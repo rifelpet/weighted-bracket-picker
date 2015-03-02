@@ -151,6 +151,7 @@ function setupInitialMatches() {
         }
     }
     $('#correct').text('0 / ' + totalGames);
+    $('#score').text('0 / 192');
 }
 
 /*
