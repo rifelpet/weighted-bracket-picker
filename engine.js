@@ -375,6 +375,9 @@ function resetSliders() {
         $('#' + attrToID(param)).slider('value', 0);
         $('#' + attrToID(param) + '-val').text('0');
     });
+    $.each(currentWeights, function(i, param) {
+       currentWeights[i] = 0;
+    });
     clear();
 }
 
