@@ -33,9 +33,9 @@ $(function() {
 
     if ('year' in urlParams) {
         year = urlParams.year;
-        $('select[name="year"]').val(year);
     }
-    
+    $('select[name="year"]').val(year);
+
     selectYear();
 });
 
