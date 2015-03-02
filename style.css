@@ -54,6 +54,9 @@ li {
 	height:38px;
 }
 
+#logo {
+    height:40px;
+}
 #teams {
 	font-size:10px;
 	width:1080px;
@@ -140,7 +143,7 @@ li {
 	line-height:76em;
 }
 
-#correct-wrapper {
+#scoring-wrapper {
 	font-weight:700;
 	position:absolute;
 	left:516px;
