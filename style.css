@@ -34,6 +34,26 @@ table {
 	border-spacing:0;
 }
 
+#table-contents {
+    float:right;
+    border: 1px solid #007AC3;
+    margin:24px;
+}
+
+#table-contents > ul {
+    list-style:none;
+    	list-style-type:none;
+    	padding:0 30px;
+}
+
+#table-contents > ul > li {
+    padding:5px 0;
+}
+
+#table-contents > ul > li > a {
+    color:#555;
+}
+
 /* start editing from here */
 a {
 	text-decoration:none;

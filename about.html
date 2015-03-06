@@ -65,9 +65,17 @@
     </div>
     
     <div id="body">
-    <h2>Introduction</h2>
+    <div id="table-contents">
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#howitworks">How It Works</a></li>
+            <li><a href="#statistics">Statistics</a></li>
+        </ul>
+    </div>
+    <h2 id="introduction">Introduction</h2>
     <p>Algebracket was created by two Michigan State alumni with the goal taking the stress out of March. Our site will give you a unique bracket based on the statistics that you think are most important to a team's success. We aren't trying to convince you to make certain picks based on a bunch of unique stats that someone from MIT developed over months of work in a dimly lit basement. We went to MSU. We use simple, easy to digest stats to make the process more user friendly.</p>
-    <h2>Overview</h2>
+    <h2 id="overview">Overview</h2>
 <p>Welcome to Algebracket! This site allows you to create a customized bracket based on the stats that you deem most important to a team’s success. The sliders are used to weight the individual stats, which determines a team’s overall score. The farther you slide a stat bar, the greater weight you give that stat and the more influence that stat has in a team’s overall score. If you don’t want a certain stat to effect your formula, leave the slider at 0. The “Clear” button will drop all the stat-weights back to zero.</p>
 <p>We have integrated data and results from the last 5 years so that you can test what combinations of weights would work best for those years. When you find a combination that works best, you can change the year using the drop down menu at the top of the page and click the “Set Year” button. This will transfer the weights you picked to that year.</p>
 <p>The “Correct” counter at the bottom of the page tells you how many correct picks your weights have chosen. This is different from the “Score” counter, which calculates a score based on the tiered point system below. Correct picks round are worth the following:</p>
@@ -79,7 +87,7 @@
 	<li>16 pts. - Finals</li>
 	<li>32 pts. - Championship</li>
 </ul>
-<h2>How it works</h2>
+<h2 id="howitworks">How it works</h2>
 <p>When two team’s are matched up in the bracket, the team with the highest overall score, based on the given weights, wins and advances to the next round until that team is ultimately beaten by a team with a higher overall score. The team that is selected to win the bracket, is the team with the highest overall score out of all the teams in that given year.</p>
 <p>To account for the fact that each stat group was measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0.</p>
 <pre>
@@ -121,7 +129,7 @@ The overall score equation would be:
 </pre>
 <p>The Seed’s influence has dropped to 37.5% (60/160) and the other 5 stats each only account for 12.5% of the final score.</p>
 
-<h2>Statistics</h2>
+<h2 id="statistics">Statistics</h2>
 <p>Explanation of Stats (all normalized):</p>
 <ul id="stat-descriptions">
 <li>Seed - The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.</li> 
