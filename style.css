@@ -325,7 +325,7 @@ body {
 
 #play-in > li,#play-in > li > div {
 	display:inline;
-	padding:10px;
+	padding:6px;
 }
 
 #play-in > li > div.region {
