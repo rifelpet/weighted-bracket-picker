@@ -3,7 +3,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	padding:0;
 	border:0;
 	font-size:100%;
-	font:inherit;
+	/*font:inherit;*/
 	vertical-align:baseline;
 }
 
@@ -139,10 +139,6 @@ body {
 	padding-right:4px;
 }
 
-* {
-	font-family:helvetica;
-}
-
 #description {
 	padding-top:24px;
 	padding-left:48px;
@@ -196,7 +192,12 @@ li {
 }
 
 #body {
-	width:1080px;
+	width:1008px;
+	padding-left:72px;
+}
+
+#body > h2 {
+    font-size:24px;
 }
 
 #options {

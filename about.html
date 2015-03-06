@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta charset="UTF-8">
@@ -15,77 +14,60 @@
     <link type="text/css" rel="stylesheet" href="jquery-ui.css">
     <link type="text/css" rel="stylesheet" href="style.css">
     <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
-
     
     <script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
   ga('create', 'UA-58912106-1', 'auto');
   ga('send', 'pageview');
-
 </script>
     <script type="text/javascript">
-
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-58912106-1']);
   _gaq.push(['_trackPageview']);
-
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
 </script>
 </head>
-
 <body>
+<div id="body-container">
     <div id="top-bar">
         <div class="header">
             <div class="logo">
                 <h1><a href="index.html">Algebracket</a></h1>
             </div>
-
             <div class="cssmenu">
                 <ul>
                     <li><a href="index.html">Home</a></li>
-
                     <li class="active"><a href="about.html">About</a></li>
-
                     <li><a href="mailto:algebracket@gmail.com">Contact</a></li>
-
                     <li style="list-style: none; display: inline">
                         <div class="clear"></div>
                     </li>
                 </ul>
             </div>
-
             <div class="clear"></div>
-
             <div class="top-nav">
                 <nav class="clearfix">
                     <ul>
                         <li><a href="index.html">Home</a></li>
-
                         <li><a href="about.html">About</a></li>
-
                         <li><a href="mailto:algebracket@gmail.com">Contact</a></li>
                     </ul><a href="#" id="pull">Menu</a>
                 </nav>
             </div>
         </div>
     </div>
-
+    
     <div id="body">
-    <h1>About Algebracket</h1>
-
+    <h2>Overview</h2>
 <p>Welcome to Algebracket! This site allows you to create a customized bracket based on the stats that you deem most important to a team’s success. The sliders are used to weight the individual stats, which determines a team’s overall score. The farther you slide a stat bar, the greater weight you give that stat and the more influence that stat has in a team’s overall score. If you don’t want a certain stat to effect your formula, leave the slider at 0. The “Clear” button will drop all the stat-weights back to zero.</p>
-
 <p>We have integrated data and results from the last 5 years so that you can test what combinations of weights would work best for those years. When you find a combination that works best, you can change the year using the drop down menu at the top of the page and click the “Set Year” button. This will transfer the weights you picked to that year.</p>
-
 <p>The “Correct” counter at the bottom of the page tells you how many correct picks your weights have chosen. This is different from the “Score” counter, which calculates a score based on the tiered point system below. Correct picks round are worth the following:</p>
 <ul>
 	<li>1 pt. - Round 1</li>
@@ -95,9 +77,8 @@
 	<li>16 pts. - Finals</li>
 	<li>32 pts. - Championship</li>
 </ul>
-<h4>How it works:</h4>
+<h2>How it works:</h2>
 <p>When two team’s are matched up in the bracket, the team with the highest overall score, based on the given weights, wins and advances to the next round until that team is ultimately beaten by a team with a higher overall score. The team that is selected to win the bracket, is the team with the highest overall score out of all the teams in that given year.</p>
-
 <p>To account for the fact that each stat group was measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0.</p>
 <pre>
 	x’ = (x - min(x)) / (max(x) - min(x))
@@ -111,9 +92,7 @@
 	T = (weight1)*(stat1) + (weight2)*(stat2) + ... + (weightn)*(statn)
 </pre>
 <p>Where T is the overall score for a given team. The individual stats are multiplied by their corresponding weights given by the sliders. If a slider is set at zero, this stat does not contribute to the team’s overall score. All of the weighted stats are then added up to give the team’s overall score.</p>
-
 <p>The weight you give an individual stat has less effect on the overall score as more stats are given weights. For example:</p>
-
 If I picked the following weights for these two stats: 
 <pre>	
 	60 - Seed	
@@ -140,7 +119,7 @@ The overall score equation would be:
 </pre>
 <p>The Seed’s influence has dropped to 37.5% (60/160) and the other 5 stats each only account for 12.5% of the final score.</p>
 
-
+<h2>Statistics</h2>
 <p>Explanation of Stats (all normalized):</p>
 <ul>
 <li>Seed - The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.</li> 
@@ -157,9 +136,7 @@ The overall score equation would be:
 <li>FG % - Field Goal Percentage. This is the ratio of a team’s made field goals over field goal attempts over the course of the season. </li>
  
 <li>FG % Def. - Field Goal Percentage Defense. This is the average field goal percentage that a team allows their opponents to shoot.</li>
-
 <li>3pt FG % - Three Point Field Goal Percentage. This is the ratio of a team’s made three pointers over three point attempts over the course of the season.</li>
-
 <li>3pt FG % Def. - Three Point Field Goal Percentage Defense. This is the average three point field goal percentage that a team allows their opponents to shoot.</li>
  
 <li>Free Throw % - Free Throw Percentage. Ratio of made throws made over attempts for the team over the course of the season.</li>
@@ -167,13 +144,9 @@ The overall score equation would be:
 <li>FT Att. / Game - Free Throw Attempts per Game. This is the average number of free throw attempts a team gets per game. A team that is better at drawing fouls or just gets fouled more in general would have a high Free Throw Attempts per Game stat. </li>
  
 <li>Rebound Margin - Rebound Margin is the average difference between a team’s rebounds per game and the number of rebounds that team allows their opponents to get per game. A team with a positive rebound margin, out rebounds their opponents. Where a team with a negative rebound margin, gets less rebounds on average than their opponents.  </li>
-
 <li>Off. Reb. / Game - Offensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on offense in a game. A team with a higher number of offensive rebounds per game has more second chances to score per offensive possession. </li>
-
 <li>Def. Reb. / Game - Defensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on defense in a game. A team with a higher number of defensive rebounds per game denies their opponent to score off second chance shots. </li>
-
 <li>Assists / Turnover - Assist to Turnover Ratio. This is the total number of assists a team makes divided by the total number of turnovers they commit. It can be thought of as a stat to measure how “clean” a teams offense is. </li>
-
 <li>Assists / Game -  Assists per Game. This is the average number of assists a team has per game. </li>
  
 <li>Turnover Margin - The turnover margin is the difference between a team’s turnovers per game and the turnovers their opponents commit per game. A positive Turnover Margin means the team turns the ball over less than their opponents.</li>
@@ -185,13 +158,11 @@ The overall score equation would be:
 <li>Steals / Game - Steals per Game. This is the average number of steals a team gets per game. </li>
  
 <li>Fouls / Game - Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws. </li>
-
 <li>Random - In this stat, a unique randomly assigned number between 0 and 1 is given to each team when the page is loaded. This random number will change every time the page is loaded. As a greater weight is applied to this number, it will more greatly influence a teams final outcome in the bracket, just as with any other stat. This was designed as a “wildcard” to mix up your bracket. Use Random at your own risk. We are not responsible if you lose your bracket because it chose Michigan to win it all. Like that would ever happen. Go State.</li>
 </ul>
  
  
 
-
-
     </div>
+</div>
 </body>
