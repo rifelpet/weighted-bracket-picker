@@ -164,6 +164,7 @@ body {
 	column-gap:20px;
 	column-rule:4px solid #ccc;
 	width:1080px;
+	padding:20px;
 }
 
 #sliders > li > div > div.value {
@@ -198,6 +199,7 @@ li {
 #teams {
 	font-size:10px;
 	width:1080px;
+	padding:0 20px;
 }
 
 #play-in,#play-in-title {
@@ -206,6 +208,12 @@ li {
 
 #top-bar {
 	width:1080px;
+}
+
+#year-div {
+    background-color:#BAD7E5;
+    padding:4px;
+    border-radius: 10px;
 }
 
 #data-headline,#share-div,#year-div,#top-bar,#correct-div,.menu {
