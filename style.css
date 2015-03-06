@@ -1,3 +1,32 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
+ol,ul{list-style:none;margin:0;padding:0;}
+blockquote,q{quotes:none;}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+table{border-collapse:collapse;border-spacing:0;}
+/* start editing from here */
+a{text-decoration:none;}
+.txt-rt{text-align:right;}/* text align right */
+.txt-lt{text-align:left;}/* text align left */
+.txt-center{text-align:center;}/* text align center */
+.float-rt{float:right;}/* float right */
+.float-lt{float:left;}/* float left */
+.clear{clear:both;}/* clear float */
+.pos-relative{position:relative;}/* Position Relative */
+.pos-absolute{position:absolute;}/* Position Absolute */
+.vertical-base{	vertical-align:baseline;}/* vertical align baseline */
+.vertical-top{	vertical-align:top;}/* vertical align top */
+.underline{	padding-bottom:5px;	border-bottom: 1px solid #eee; margin:0 0 20px 0;}/* Add 5px bottom padding and a underline */
+nav.vertical ul li{	display:block;}/* vertical menu */
+nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
+img{max-width:100%;}
+body {
+	font-family:trebuchet ms, arial, sans-serif;
+	font-size: 100%;
+	background: #ffffff;
+	color:#555555;
+}
+
 #sliders > li > div > div.ui-slider {
 	width:120px;
 	height:7px;
@@ -20,8 +49,10 @@
 }
 
 #description {
-    width:720px;
-    /*text-align:center;*/
+    padding-top:24px;
+    padding-left:48px;
+    width:680px;
+    display: inline-block;
 }
 
 #sliders {
@@ -59,8 +90,24 @@ li {
 	height:38px;
 }
 
-#logo {
-    height:40px;
+.logo, .logo > h1, .logo > h1 > a, .logo > h1 > a:visited {
+    float: left;
+font-size: 48px;
+color: #007AC3;
+font-family: "Pontano Sans",sans-serif;
+padding-left: 24px;
+padding-top: 4px;
+}
+
+#body {
+    width:1080px;
+}
+
+#options {
+
+display:inline-block;
+    padding:20px;
+    
 }
 #teams {
 	font-size:10px;
@@ -69,6 +116,10 @@ li {
 
 #play-in,#play-in-title {
 	text-align:center;
+}
+
+#top-bar {
+    width:1080px;
 }
 
 #data-headline,#share-div,#year-div,#top-bar,#correct-div,.menu {
@@ -155,6 +206,11 @@ li {
 	text-align:center;
 	padding-top:50em;
 	height:30em;
+}
+
+#scoring-wrapper > div > h1 {
+    	font-weight:700;
+font-size: 24px;
 }
 
 #correct-wrapper,
@@ -276,4 +332,114 @@ li {
 
 .tournament32-wrap {
 	width:540px;
+}
+
+
+
+.cssmenu {
+	float: right;
+	margin-top: 1%;
+}
+.cssmenu > ul > li {
+	display:inline-block;
+	position: relative;
+}
+.cssmenu > ul > li.active a{
+	color:#ffffff;
+	background-color:#007AC3;
+}
+.cssmenu > ul > li span img {
+	vertical-align: middle;
+}
+.cssmenu > ul > li > a {
+	font-weight:bold;
+	color: #555555;
+	display: block;
+	font-size: 15px;
+	line-height: 1.8em;
+	padding: 24px 26px;
+	text-transform: uppercase;
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+}
+.cssmenu > ul > li > a:hover {
+	background-color:#007AC3;
+	color: #ffffff;
+}
+/* display with 840px  */
+.top-nav{
+	display: none;
+}
+.nav_bg{
+	background: #464646;
+}
+.clearfix {
+	height: 40px;
+	width: 100%;
+	font-size: 11pt;
+	font-weight: bold;
+	position: relative;
+	z-index: 9999;
+}
+.clearfix ul {
+	padding: 0;
+	margin: 0 auto;
+	display: none;
+	background: #f0f0f0;
+}
+.clearfix li {
+	display: block;
+}
+.clearfix a {
+	color: #555555;
+	font-size:15px;
+	font-weight:bold;
+	text-transform:uppercase;
+	display: block;
+	width:100%;
+	text-indent: 10px;
+	text-align: left;
+	text-decoration: none;
+	line-height: 40px;
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+}
+.clearfix li a {
+	border-bottom: 1px solid rgba(90, 85, 73, 0.17);
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+.clearfix li:last-child a {
+	border-right: 0;
+}
+.clearfix a:hover,.clearfix a:active {
+	background: #424242;
+	color:#ffffff;
+}
+.clearfix a#pull {
+	font-size: 20px;
+	display: block;
+	width: 100%;
+	position: relative;
+	text-shadow: 0 1px 0 #181717;
+	color: #FFFFFF;
+	background-color: #007AC3;
+}
+.clearfix a#pull:after {
+	background:url('../images/nav-icon.png')no-repeat;
+	width: 30px;
+	content:"";
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	position: absolute;
+	right: 15px;
+	top: 10px;
 }

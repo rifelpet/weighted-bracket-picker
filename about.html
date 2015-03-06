@@ -10,13 +10,12 @@
     <meta property="og:description" content="A March Madness bracket picking tool that lets you choose how important different statistics are for determining a winner.">
     
     <title>Algebracket</title>
-    <script type="text/javascript" src="jquery.min.js">
-</script>
-    <script type="text/javascript" src="jquery-ui.min.js">
-</script>
-
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery-ui.min.js"></script>
     <link type="text/css" rel="stylesheet" href="jquery-ui.css">
     <link type="text/css" rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+
     
     <script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -45,11 +44,41 @@
 
 <body>
     <div id="top-bar">
-        <h3 id="data-headline">Algebracket</h3>
-        <h3 class="menu"><a href="index.html">Home</a></h3>
-        <h3 class="menu"><a href="about.html">About</a></h3>
+        <div class="header">
+            <div class="logo">
+                <h1><a href="index.html">Algebracket</a></h1>
+            </div>
 
+            <div class="cssmenu">
+                <ul>
+                    <li class="active"><a href="index.html">Home</a></li>
+
+                    <li><a href="about.html">About</a></li>
+
+                    <li><a href="mailto:algebracket@gmail.com">Contact</a></li>
+
+                    <li style="list-style: none; display: inline">
+                        <div class="clear"></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="top-nav">
+                <nav class="clearfix">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+
+                        <li><a href="about.html">About</a></li>
+
+                        <li><a href="mailto:algebracket@gmail.com">Contact</a></li>
+                    </ul><a href="#" id="pull">Menu</a>
+                </nav>
+            </div>
+        </div>
     </div>
+
     <div id="body">
     <h1>About Algebracket</h1>
 
