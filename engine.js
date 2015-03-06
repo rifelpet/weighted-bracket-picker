@@ -229,9 +229,13 @@ function submit() {
     }
     // Create the URL
     var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&' + queryString;
+    if (path.substring(0, 4) != "http") {
+        path = 'http://' + path;
+    }
     $('#share').val(path);
     $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
     twttr.widgets.load();
+    $('.fb-share-button').attr('data-href', path);
     relativeWeights = {};
     $.each(currentWeights, function(param) {
         var id = attrToID(param);
