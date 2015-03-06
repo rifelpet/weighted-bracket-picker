@@ -206,14 +206,20 @@ li {
 	text-align:center;
 }
 
+#play-in-title {
+	font-weight:700;
+	padding-bottom:4px;
+	font-size:larger;
+}
+
 #top-bar {
 	width:1080px;
 }
 
 #year-div {
-    background-color:#BAD7E5;
-    padding:4px;
-    border-radius: 10px;
+	background-color:#BAD7E5;
+	padding:4px;
+	border-radius:10px;
 }
 
 #data-headline,#share-div,#year-div,#top-bar,#correct-div,.menu {
@@ -234,7 +240,7 @@ li {
 }
 
 #play-in > li > div.region {
-    padding-right:0px;
+	padding-right:0;
 }
 
 .jQBracket > .tools {
@@ -314,7 +320,7 @@ li {
 #scoring-wrapper > div > h1 {
 	font-weight:700;
 	font-size:24px;
-	text-align: right;
+	text-align:right;
 }
 
 #correct-wrapper {
