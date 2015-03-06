@@ -282,6 +282,8 @@ function submit() {
                 } else {
                     $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
                 }
+            } else {
+                $('#' + region + 'game' + gameNum).removeClass('incorrect').removeClass('correct');
             }
         }
         // Round of 32 through the Elite 8
@@ -305,6 +307,8 @@ function submit() {
                 } else {
                     $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
                 }
+            } else {
+                $('#' + region + 'game' + game).removeClass('correct').removeClass('incorrect');
             }
             gameDiff--;
         }
@@ -333,6 +337,8 @@ function submit() {
             } else {
                 $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
             }
+        } else {
+            $('#' + sides[side] + 'game').removeClass('correct').removeClass('incorrect');
         }
         regionID += 2;
     }
@@ -345,6 +351,8 @@ function submit() {
         } else {
             $('#championship').removeClass('correct').addClass('incorrect');
         }
+    } else {
+        $('#championship').removeClass('correct').removeClass('incorrect');
     }
     $('#championship').text(winner.stats.Seed + '. ' + winner.Name);
     $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
