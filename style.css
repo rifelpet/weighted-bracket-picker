@@ -343,11 +343,11 @@ body {
 }
 
 .correct {
-	color:green;
+	color:#090;
 }
 
 .incorrect {
-	color:red;
+	color:#900;
 }
 
 .bracket-container {
