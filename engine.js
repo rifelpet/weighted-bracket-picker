@@ -23,6 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlParams = {};
+var year = '2014';
 
 $(function() {
     // Grab values from the url if any
@@ -30,18 +31,17 @@ $(function() {
         var key = item.split('=')[0];
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
-    var year = '2014';
 
     if ('year' in urlParams) {
         year = urlParams.year;
     }
     $('select[name="year"]').val(year);
-
     selectYear();
 });
 
 function selectYear() {
     var year = $('select[name="year"]').val();
+
     if(typeof yearData[year] === "undefined") {
         $.get(year + '-data.csv', function(data) {
             yearData[year] = data;
