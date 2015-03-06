@@ -20,7 +20,8 @@
 }
 
 #description {
-    width:1080px;
+    width:720px;
+    /*text-align:center;*/
 }
 
 #sliders {
