@@ -303,6 +303,7 @@ body {
     left: 480px;
     width: 152px;
     top: 300px;
+    z-index: 999;
 }
 
 #play-in > li,#play-in > li > div {
