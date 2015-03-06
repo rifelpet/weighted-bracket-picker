@@ -19,6 +19,10 @@
 	font-family:helvetica;
 }
 
+#description {
+    width:1080px;
+}
+
 #sliders {
 /*-webkit-column-count: 3; /* Chrome, Safari, Opera */
 /*-moz-column-count: 3; /* Firefox */
@@ -66,11 +70,11 @@ li {
 	text-align:center;
 }
 
-#data-headline,#share-div,#year-div,#top-bar,#correct-div {
+#data-headline,#share-div,#year-div,#top-bar,#correct-div,.menu {
 	display:inline-block;
 }
 
-#share-div,#year-div,#correct-div {
+#share-div,#year-div,#correct-div,.menu {
 	padding-left:20px;
 }
 
