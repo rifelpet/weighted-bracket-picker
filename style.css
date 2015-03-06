@@ -274,6 +274,8 @@ body {
 
 #play-in,#play-in-title {
 	text-align:center;
+	padding-left:0;
+	padding-right:0;
 }
 
 #play-in-title {
