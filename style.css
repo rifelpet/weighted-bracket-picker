@@ -244,7 +244,7 @@ body {
 
 #options {
 	display:inline-block;
-	padding-left:100px;
+	float:right;
 }
 
 #teams {
