@@ -225,6 +225,10 @@ li {
 	padding:10px;
 }
 
+#play-in > li > div.region {
+    padding-right:0px;
+}
+
 .jQBracket > .tools {
 	display:none;
 }
