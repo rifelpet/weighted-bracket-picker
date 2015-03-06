@@ -17,6 +17,9 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	padding:0;
 }
 
+#body > pre {
+    padding: 10px 0px;
+}
 blockquote,q {
 	quotes:none;
 }
