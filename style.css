@@ -195,7 +195,9 @@ li {
 	width:1008px;
 	padding-left:72px;
 }
-
+#body > h1 {
+    font-size:36px;
+}
 #body > h2 {
     font-size:24px;
 }
