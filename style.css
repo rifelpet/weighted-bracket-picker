@@ -11,7 +11,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	display:block;
 }
 
-ol,ul {
+#sliders > ol, #sliders > ul {
 	list-style:none;
 	margin:0;
 	padding:0;
@@ -177,7 +177,7 @@ body {
 	display:inline;
 }
 
-li {
+#sliders > li {
 	list-style-type:none;
 	height:38px;
 }
@@ -200,6 +200,11 @@ li {
 }
 #body > h2 {
     font-size:24px;
+    padding: 14px 8px;
+}
+
+#stat-descriptions > li {
+    padding-bottom:12px;
 }
 
 #options {
