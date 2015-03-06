@@ -50,6 +50,14 @@ a {
 	text-align:center;
 }
 
+.adsense {
+    width:160px;
+    height:600px;
+    position: absolute;
+left: 1109px;
+top: 10px;
+}
+
 /* text align center */
 .float-rt {
 	float:right;
