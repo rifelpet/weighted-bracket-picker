@@ -244,7 +244,7 @@ body {
 
 #options {
 	display:inline-block;
-	padding:0 20px;
+	padding-left:100px;
 }
 
 #teams {
@@ -273,6 +273,17 @@ body {
 	border-radius:10px;
 }
 
+#year-div > h1 {
+    font-weight:700;
+	font-size:24px;
+	text-align:center;
+}
+
+#year-select {
+    text-align:center;
+    padding-top:10px;
+}
+
 #data-headline,#share-div,#year-div,#top-bar,#correct-div,.menu {
 	display:inline-block;
 }
@@ -281,8 +292,15 @@ body {
 	text-align:right;
 }
 
-#share-div,#year-div,#correct-div,.menu {
+#share-div,#correct-div,.menu {
 	padding-left:20px;
+}
+
+#year-div {
+    position:absolute;
+    left: 480px;
+    width: 152px;
+    top: 300px;
 }
 
 #play-in > li,#play-in > li > div {

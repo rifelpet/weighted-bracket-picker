@@ -85,22 +85,9 @@
                 <script>
                     window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
                 </script>
-            </div>
-            <div id="year-div">
-            
-            
-                <label for="year">Select Year:</label> <select id="year" name="year" onchange="selectYear()">
-                    <option>2015</option>
-                    <option>2014</option>
-                    <option>2013</option>
-                    <option>2012</option>
-                    <option>2011</option>
-                    <option>2010</option>
-                </select>
-            </div>
-    
+            </div>    
             <div id="share-div">
-                <label for="share">Share:</label> <input onclick="this.select();" id="share">
+                <label for="share">Share Your Bracket:</label> <input onclick="this.select();" id="share">
             </div>
         </div>
         <div class="adsense">
@@ -118,6 +105,20 @@
             <h4 id="play-in-title"></h4>
             <ul id="play-in"></ul>
             <div class="bracket-container">
+                <div id="year-div">
+                    <h1>Select Year</h1>
+                    <div id="year-select">
+                        <select id="year" name="year" onchange="selectYear()">
+                            <option>2015</option>
+                            <option>2014</option>
+                            <option>2013</option>
+                            <option>2012</option>
+                            <option>2011</option>
+                            <option>2010</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="round7" id="championship"></div>
                 <div id="scoring-wrapper">
                     <div id="correct-wrapper">
