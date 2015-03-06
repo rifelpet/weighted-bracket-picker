@@ -34,6 +34,14 @@
     </script>
 </head>
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1376310522690703&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
     <div id="body-container">
         <div id="top-bar">
             <div class="header">
@@ -43,7 +51,7 @@
     
                 <div class="cssmenu">
                     <ul>
-                        <li class="active"><a href="index.html">Home</a></li>
+                        <li class="active"><a href="/">Home</a></li>
                         <li><a href="about.html">About</a></li>    
                         <li><a href="contact.html">Contact</a></li>
                         <li style="list-style: none; display: inline">
@@ -57,7 +65,7 @@
                 <div class="top-nav">
                     <nav class="clearfix">
                         <ul>
-                            <li><a href="index.html">Home</a></li>
+                            <li><a href="/">Home</a></li>
                             <li><a href="about.html">About</a></li>
                             <li><a href="contact.html">Contact</a></li>
                         </ul><a href="#" id="pull">Menu</a>
@@ -65,12 +73,26 @@
                 </div>
             </div>
         </div>
+
         <div id="description">
             <blockquote>Slide the bars to create a unique bracket based on stats that you find most important. The farther you slide a bar, the more influence that stat has on the overall outcome.</blockquote>
         </div>
     
         <div id="options">
+                            <div id="social">
+        <div class="fb-share-button" data-href="http://algebracket.com" data-layout="button"></div>
+        <a class="twitter-share-button"
+  href="https://twitter.com/share?text=Check%20out%20%23Algebracket%21">
+Tweet
+</a>
+<script>
+window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
+</script>
+        </div>
+
             <div id="year-div">
+            
+            
                 <label for="year">Select Year:</label> <select id="year" name="year" onchange="selectYear()">
                     <option>2015</option>
                     <option>2014</option>

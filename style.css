@@ -164,10 +164,19 @@ body {
 }
 
 #description {
-	padding-top:24px;
 	padding-left:48px;
 	width:650px;
 	display:inline-block;
+	vertical-align:top;
+}
+
+#social {
+	text-align:right;
+	padding-bottom:10px;
+}
+
+#social > div {
+    vertical-align: top;
 }
 
 #sliders {
@@ -235,7 +244,7 @@ body {
 
 #options {
 	display:inline-block;
-	padding:20px;
+	padding:0 20px;
 }
 
 #teams {
