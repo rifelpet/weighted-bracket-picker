@@ -189,8 +189,12 @@ body {
 	padding-bottom:10px;
 }
 
-#social > div {
+#social > div, #social > div > div {
     vertical-align: top;
+}
+
+#twitter {
+    display:inline;
 }
 
 #sliders {
