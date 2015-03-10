@@ -111,8 +111,30 @@ function parseData(year) {
                 slide: function(event, ui) {
                     currentWeights[$(this).attr('id')] = ui.value;
                     $('#' + id + '-val').text(ui.value);
-                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
                     submit();
+                },
+                change: function(event, ui) {
+                    var queryString = '';
+                    $.each(headers, function(i, param) {
+                        var id = attrToID(param);
+                        if (nonStatHeaders.indexOf(id) > -1) return true;
+                        if (currentWeights[id] !== 0) {
+                            if (queryString !== '') queryString += '&';
+                            queryString = queryString + id + '=' + currentWeights[id];
+                        }
+                    });
+                    // Create the URL
+                    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&' + queryString;
+                    if (path.substring(0, 4) != "http") {
+                        path = 'http://' + path;
+                    }
+                    $('#share').val(path);
+                    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
+                    twttr.widgets.load();
+                    $('.fb-share-button').attr('data-href', path);
+                    window.history.pushState({id:ui.value},"AlgeBracket", path);
+                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
+
                 }
             });
         }
@@ -213,29 +235,16 @@ function getRound(gameNumber) {
 
 function submit() {
     var totalWeight = 0;
-    var queryString = '';
     $.each(headers, function(i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
         totalWeight += currentWeights[id];
-        if (currentWeights[id] !== 0) {
-            if (queryString !== '') queryString += '&';
-            queryString = queryString + id + '=' + currentWeights[id];
-        }
     });
     if(totalWeight === 0) {
         clear();
         return;
     }
-    // Create the URL
-    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&' + queryString;
-    if (path.substring(0, 4) != "http") {
-        path = 'http://' + path;
-    }
-    $('#share').val(path);
-    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
-    twttr.widgets.load();
-    $('.fb-share-button').attr('data-href', path);
+
     relativeWeights = {};
     $.each(currentWeights, function(param) {
         var id = attrToID(param);
