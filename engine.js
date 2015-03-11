@@ -115,25 +115,16 @@ function parseData(year) {
     });
     URLToWeights(urlWeightString);
     
+    weightsToURL();
     // Now that sliders have been built and values assigned,
     // setup the event handlers
     $.each(headers, function(i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
         $('#' + id).on("slidechange", function(event, ui) {
-            // Create the URL
-            var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + weightsToURL();
-            if (path.substring(0, 4) != "http") {
-                path = 'http://' + path;
-            } 
-            
-            $('#share').val(path);
-            $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
-            twttr.widgets.load();
-            $('.fb-share-button').attr('data-href', path);
+            weightsToURL();
             window.history.pushState({id:ui.value},"AlgeBracket", path);
             ga('send', 'event', 'slider-adjust', param, '', ui.value);
-
         });
 
     });
@@ -427,7 +418,18 @@ function weightsToURL() {
         }
         urlValue += weightVal;
     }
-    return urlValue;
+    console.log('called event for ' + urlValue);
+            // Create the URL
+            var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
+            if (path.substring(0, 4) != "http") {
+                path = 'http://' + path;
+            } 
+            
+            $('#share').val(path);
+            $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
+            //twttr.widgets.load();
+            $('.fb-share-button').attr('data-href', path);
+
 }
 
 function URLToWeights(urlValue) {
