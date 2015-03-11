@@ -242,6 +242,11 @@ body {
 	padding-top:8px;
 }
 
+.logo {
+    width:359px;
+    height:74px;
+}
+
 #body {
 	width:1008px;
 	padding-left:72px;
