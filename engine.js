@@ -35,6 +35,8 @@ $(function() {
 
     if('year' in urlParams) {
         year = urlParams.year;
+    } else if($.cookie('year') !== undefined) {
+        year = $.cookie('year');
     }
     if('weights' in urlParams) {
         urlWeightString = urlParams.weights;
@@ -46,7 +48,7 @@ $(function() {
 
 function selectYear() {
     var year = $('select[name="year"]').val();
-
+    $.cookie('year', year);
     if(typeof yearData[year] === "undefined") {
         $.get(year + '-data.csv', function(data) {
             yearData[year] = data;
@@ -123,7 +125,7 @@ function parseData(year) {
         if (nonStatHeaders.indexOf(id) > -1) return true;
         $('#' + id).on("slidechange", function(event, ui) {
             var path = weightsToURL();
-            window.history.pushState({id:ui.value},"AlgeBracket", path);
+            //window.history.pushState({id:ui.value},"AlgeBracket", path);
             ga('send', 'event', 'slider-adjust', param, '', ui.value);
         });
 
@@ -391,6 +393,7 @@ function resetSliders() {
     $.each(currentWeights, function(i, param) {
        currentWeights[i] = 0;
     });
+    //window.history.pushState({},"AlgeBracket", document.URL.split('?')[0]);
     clear();
 }
 
@@ -418,9 +421,7 @@ function weightsToURL() {
         }
         urlValue += weightVal;
     }
-    $.cookie('year', year);
     $.cookie('weights', urlValue);
-    console.log('setting cookie to ' + document.cookie);
     // Create the URL
     var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
     if (path.substring(0, 4) != "http") {
@@ -444,9 +445,8 @@ function URLToWeights(urlValue) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    if(urlValue.length == 0) {
+    if(urlValue.length == 0 && $.cookie('weights') !== undefined) {
         urlValue = $.cookie('weights');
-        year = $.cookie('year');
     }
     for(var i=0; i < urlValue.length; i++) {
         var weightVal = urlValue[i];
