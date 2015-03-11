@@ -426,7 +426,7 @@ function weightsToURL() {
     
     $('#share').val(path);
     $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #AlgeBracket!" data-url="' + path + '">Tweet</a>')
-    if(twtter.widgets !== undefined) {
+    if(twttr !== undefined && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
     $('.fb-share-button').attr('data-href', path);
