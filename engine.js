@@ -91,7 +91,7 @@ function parseData(year) {
             totalScore += Math.pow(2, gamesWon) - 1;
         }
     }
-
+    
     var initialSubmit = false;
     headers.push('Random');
     $.each(headers, function(i, param) {
@@ -418,17 +418,18 @@ function weightsToURL() {
         }
         urlValue += weightVal;
     }
-    console.log('called event for ' + urlValue);
-            // Create the URL
-            var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
-            if (path.substring(0, 4) != "http") {
-                path = 'http://' + path;
-            } 
-            
-            $('#share').val(path);
-            $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #AlgeBracket!" data-url="' + path + '">Tweet</a>')
-            twttr.widgets.load();
-            $('.fb-share-button').attr('data-href', path);
+    // Create the URL
+    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
+    if (path.substring(0, 4) != "http") {
+        path = 'http://' + path;
+    } 
+    
+    $('#share').val(path);
+    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #AlgeBracket!" data-url="' + path + '">Tweet</a>')
+    if(twtter.widgets !== undefined) {
+        twttr.widgets.load();
+    }
+    $('.fb-share-button').attr('data-href', path);
 
 }
 
