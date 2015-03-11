@@ -22,21 +22,26 @@ var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
-var urlParams = {};
+var urlWeightString = '';
 var year = '2014';
 
 $(function() {
+    var urlParams = {};
     // Grab values from the url if any
     location.search.substr(1).split('&').forEach(function(item) {
         var key = item.split('=')[0];
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
 
-    if ('year' in urlParams) {
+    if('year' in urlParams) {
         year = urlParams.year;
+    }
+    if('weights' in urlParams) {
+        urlWeightString = urlParams.weights;
     }
     $('select[name="year"]').val(year);
     selectYear();
+    
 });
 
 function selectYear() {
@@ -91,20 +96,12 @@ function parseData(year) {
     headers.push('Random');
     $.each(headers, function(i, param) {
         var id = attrToID(param);
-        var initialVal = 0;
-        if (id in urlParams) {
-            initialVal = urlParams[id];
-            initialSubmit = true;
-        }
-        if ($('#' + id + '-val').length > 0) {
-            initialVal = parseInt($('#' + id + '-val').text());
-        }
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        currentWeights[id] = initialVal;
+        currentWeights[id] = 0;
         if($('#' + id).length === 0) {
             $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).slider({
-                value: initialVal,
+                value: 0,
                 range: 'min',
                 animate: true,
                 step: 10,
@@ -112,33 +109,35 @@ function parseData(year) {
                     currentWeights[$(this).attr('id')] = ui.value;
                     $('#' + id + '-val').text(ui.value);
                     submit();
-                },
-                change: function(event, ui) {
-                    var queryString = '';
-                    $.each(headers, function(i, param) {
-                        var id = attrToID(param);
-                        if (nonStatHeaders.indexOf(id) > -1) return true;
-                        if (currentWeights[id] !== 0) {
-                            if (queryString !== '') queryString += '&';
-                            queryString = queryString + id + '=' + currentWeights[id];
-                        }
-                    });
-                    // Create the URL
-                    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&' + queryString;
-                    if (path.substring(0, 4) != "http") {
-                        path = 'http://' + path;
-                    }
-                    $('#share').val(path);
-                    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
-                    twttr.widgets.load();
-                    $('.fb-share-button').attr('data-href', path);
-                    window.history.pushState({id:ui.value},"AlgeBracket", path);
-                    ga('send', 'event', 'slider-adjust', param, '', ui.value);
-
                 }
             });
         }
     });
+    URLToWeights(urlWeightString);
+    
+    // Now that sliders have been built and values assigned,
+    // setup the event handlers
+    $.each(headers, function(i, param) {
+        var id = attrToID(param);
+        if (nonStatHeaders.indexOf(id) > -1) return true;
+        $('#' + id).on("slidechange", function(event, ui) {
+            // Create the URL
+            var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + weightsToURL();
+            if (path.substring(0, 4) != "http") {
+                path = 'http://' + path;
+            } 
+            
+            $('#share').val(path);
+            $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
+            twttr.widgets.load();
+            $('.fb-share-button').attr('data-href', path);
+            window.history.pushState({id:ui.value},"AlgeBracket", path);
+            ga('send', 'event', 'slider-adjust', param, '', ui.value);
+
+        });
+
+    });
+    
     setupInitialMatches();
     submit();
 }
@@ -412,4 +411,42 @@ function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leaver just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
     return attr.replace(/[ a-z%\.\/]/g, '');
+}
+
+function weightsToURL() {
+    var sortedWeights = [];
+    var urlValue = '';
+    for (var k in currentWeights) {
+        sortedWeights.push(k);
+    }
+    sortedWeights.sort();
+    for(var weightName in sortedWeights) {
+        var weightVal = String(currentWeights[sortedWeights[weightName]] / 10);
+        if(weightVal === '10') {
+            weightVal = 'A';
+        }
+        urlValue += weightVal;
+    }
+    return urlValue;
+}
+
+function URLToWeights(urlValue) {
+    var weights = {};
+    var sortedWeights = [];
+    for (var k in currentWeights) {
+        sortedWeights.push(k);
+    }
+    sortedWeights.sort();
+    for(var i=0; i < urlValue.length; i++) {
+        var weightVal = urlValue[i];
+        if(weightVal === 'A') {
+            weightVal = 100;
+        } else {
+            weightVal = parseInt(weightVal) * 10;
+        }
+        weightName = sortedWeights[i];
+        $('#' + weightName).slider('value', weightVal);
+        currentWeights[weightName] = weightVal;
+        $('#' + weightName + '-val').text(weightVal);
+    }
 }
