@@ -394,6 +394,8 @@ function resetSliders() {
        currentWeights[i] = 0;
     });
     //window.history.pushState({},"AlgeBracket", document.URL.split('?')[0]);
+    $.removeCookie('year');
+    $.removeCookie('weights');
     clear();
 }
 
