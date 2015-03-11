@@ -233,13 +233,13 @@ body {
 	height:38px;
 }
 
-.logo,.logo > h1,.logo > h1 > a,.logo > h1 > a:visited {
+.logo,.logo > a,.logo > a:visited {
 	float:left;
 	font-size:48px;
 	color:#007AC3;
 	font-family:"Pontano Sans",sans-serif;
 	padding-left:24px;
-	padding-top:4px;
+	padding-top:8px;
 }
 
 #body {
