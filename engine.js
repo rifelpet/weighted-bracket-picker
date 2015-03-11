@@ -122,7 +122,7 @@ function parseData(year) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
         $('#' + id).on("slidechange", function(event, ui) {
-            weightsToURL();
+            var path = weightsToURL();
             window.history.pushState({id:ui.value},"AlgeBracket", path);
             ga('send', 'event', 'slider-adjust', param, '', ui.value);
         });
@@ -418,6 +418,9 @@ function weightsToURL() {
         }
         urlValue += weightVal;
     }
+    $.cookie('year', year);
+    $.cookie('weights', urlValue);
+    console.log('setting cookie to ' + document.cookie);
     // Create the URL
     var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
     if (path.substring(0, 4) != "http") {
@@ -431,6 +434,7 @@ function weightsToURL() {
     }
     $('.fb-share-button').attr('data-href', path);
 
+    return path;
 }
 
 function URLToWeights(urlValue) {
@@ -440,6 +444,10 @@ function URLToWeights(urlValue) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
+    if(urlValue.length == 0) {
+        urlValue = $.cookie('weights');
+        year = $.cookie('year');
+    }
     for(var i=0; i < urlValue.length; i++) {
         var weightVal = urlValue[i];
         if(weightVal === 'A') {
