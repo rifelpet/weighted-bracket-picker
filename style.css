@@ -21,6 +21,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	padding:10px 0;
 }
 
+#body > p {
+    padding-top: 8px;
+}
+
 blockquote,q {
 	quotes:none;
 }
