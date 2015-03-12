@@ -422,7 +422,8 @@ function attrToID(attr) {
 function weightsToURL() {
 
     // Create the URL
-    var path = document.URL.split('?')[0] + '?w=' + saveCookie();
+    var weightValue = saveCookie();
+    var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
     } 
@@ -433,7 +434,7 @@ function weightsToURL() {
         twttr.widgets.load();
     }
     $('.fb-share-button').attr('data-href', path);
-
+    window.history.pushState({w:weightValue},"AlgeBracket", path);
     return path;
 }
 
