@@ -429,12 +429,12 @@ function weightsToURL() {
     } 
     
     $('#share').val(path);
-    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #AlgeBracket!" data-url="' + path + '">Tweet</a>')
+    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
     if(twttr !== undefined && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
-    $('.fb-share-button').attr('data-href', path);
-    window.history.pushState({w:weightValue},"AlgeBracket", path);
+    //$('.fb-share-button').attr('data-href', path);
+    //window.history.pushState({w:weightValue},"AlgeBracket", path);
     return path;
 }
 
