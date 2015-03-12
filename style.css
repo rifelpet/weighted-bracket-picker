@@ -25,6 +25,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     padding-top: 8px;
 }
 
+#logo-svg {
+    width: 330px;
+    height: 80px;
+}
 #alert { 
     color: red;
     font-size: smaller;
