@@ -94,14 +94,19 @@ function parseData(year) {
         }
     }
     
-    var initialSubmit = false;
+
     headers.push('Random');
+    var headerCount = headers.length - nonStatHeaders.length;
+    console.log(headerCount);
+
     $.each(headers, function(i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
         currentWeights[id] = 0;
         if($('#' + id).length === 0) {
-            $('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            //$('#sliders').append('<li><label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            console.log('#slidertable-col' + String(id / headerCount));
+            $('#slidertable-col' + String(id / headerCount)).append('<label for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div>');
             $('#' + id).slider({
                 value: 0,
                 range: 'min',
@@ -113,6 +118,7 @@ function parseData(year) {
                     submit();
                 }
             });
+            
         }
     });
     URLToWeights(urlWeightString);
