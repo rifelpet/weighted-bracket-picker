@@ -45,7 +45,9 @@ function selectYear() {
     curYear = $('select[name="year"]').val()
     
     var currCookie = $.cookie('w');
-    $.cookie('w', curYear.substring(3,4) + currCookie.substring(1, currCookie.length));
+    if(currCookie !== undefined) {
+        $.cookie('w', curYear.substring(3,4) + currCookie.substring(1, currCookie.length));
+    }
     
     if(typeof yearData[curYear] === "undefined") {
         $.get(curYear + '-data.csv', function(data) {
