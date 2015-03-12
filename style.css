@@ -11,7 +11,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	display:block;
 }
 
-#sliders > ol,#sliders > ul {
+#sliders > tr > td > ul {
 	list-style:none;
 	margin:0;
 	padding:0;
@@ -169,18 +169,20 @@ body {
     min-height:100%;
 }
 
-#sliders > li > div > div.ui-slider {
+.slider-wrapper > div.ui-slider {
 	width:120px;
 	height:7px;
 	margin:10px 10px 2px;
 	display:inline-block;
 }
 
-#sliders > li > label {
+.slider-label {
 	line-height:2em;
+    /*float:left;
+	display:block;*/
 }
 
-#sliders > li > div {
+.slider-wrapper {
 	display:inline-block;
 	float:right;
 	padding-right:4px;
@@ -208,37 +210,18 @@ body {
 }
 
 #sliders {
-/*-webkit-column-count: 3; /* Chrome, Safari, Opera */
-/*-moz-column-count: 3; /* Firefox */
-/*column-count: 3;  */
-}
-
-#sliders > ul > li > label {
-	float:left;
-	display:block;
-}
-
-#sliders {
-	-moz-column-count:3;
-	-moz-column-gap:20px;
-	-moz-column-rule:4px solid #ccc;
-	-webkit-column-count:3;
-	-webkit-column-gap:20px;
-	-webkit-column-rule:4px solid #ccc;
-	column-count:3;
-	column-gap:20px;
-	column-rule:4px solid #ccc;
 	width:1080px;
 	padding:20px;
+	margin-bottom: 20px;
 }
 
-#sliders > li > div > div.value {
+.slider-wrapper > div.value {
 	padding:0 7px;
 	margin:0;
 	display:inline;
 }
 
-#sliders > li {
+#sliders > tbody > tr > td > ul > li {
 	list-style-type:none;
 	height:38px;
 }
