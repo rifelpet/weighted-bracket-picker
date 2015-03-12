@@ -224,6 +224,11 @@ body {
 #sliders > tbody > tr > td > ul > li {
 	list-style-type:none;
 	height:38px;
+    width: 320px;
+}
+
+#sliders > tbody > tr > td {
+    border-left:4px solid #ccc;
 }
 
 .logo,.logo > a,.logo > a:visited {
