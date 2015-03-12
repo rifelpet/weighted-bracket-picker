@@ -25,6 +25,12 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     padding-top: 8px;
 }
 
+#alert { 
+    color: red;
+    font-size: smaller;
+    padding-left: 48px;
+}
+
 blockquote,q {
 	quotes:none;
 }

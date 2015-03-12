@@ -44,6 +44,12 @@ $(function() {
 function selectYear() {
     curYear = $('select[name="year"]').val()
     
+    if(curYear == '2015') {
+        $('#alert').text('2015 currently uses an estimated bracket until official seeding is announced.');
+    } else {
+        $('#alert').text('');
+    }
+    
     var currCookie = $.cookie('w');
     if(currCookie !== undefined) {
         $.cookie('w', curYear.substring(3,4) + currCookie.substring(1, currCookie.length));
