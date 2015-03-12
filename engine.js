@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var year = '2014';
+var curYear = '2014';
 
 $(function() {
     var urlParams = {};
@@ -33,29 +33,27 @@ $(function() {
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
 
-    if('year' in urlParams) {
-        year = urlParams.year;
-    } else if($.cookie('year') !== undefined) {
-        year = $.cookie('year');
+    if('w' in urlParams) {
+        urlWeightString = urlParams.w;
     }
-    if('weights' in urlParams) {
-        urlWeightString = urlParams.weights;
-    }
-    $('select[name="year"]').val(year);
+    curYear = getDefaultYear(urlWeightString);
+    $('select[name="year"]').val(curYear);
     selectYear();
-    
 });
 
 function selectYear() {
-    year = $('select[name="year"]').val()
-    $.cookie('year', year);
-    if(typeof yearData[year] === "undefined") {
-        $.get(year + '-data.csv', function(data) {
-            yearData[year] = data;
-            parseData(year);
+    curYear = $('select[name="year"]').val()
+    
+    var currCookie = $.cookie('w');
+    $.cookie('w', curYear.substring(3,4) + currCookie.substring(1, currCookie.length));
+    
+    if(typeof yearData[curYear] === "undefined") {
+        $.get(curYear + '-data.csv', function(data) {
+            yearData[curYear] = data;
+            parseData(curYear);
         });
     } else {
-        parseData(year);
+        parseData(curYear);
     }
 }
 
@@ -394,8 +392,7 @@ function resetSliders() {
        currentWeights[i] = 0;
     });
     //window.history.pushState({},"AlgeBracket", document.URL.split('?')[0]);
-    $.removeCookie('year');
-    $.removeCookie('weights');
+    $.removeCookie('w');
     clear();
 }
 
@@ -410,22 +407,9 @@ function attrToID(attr) {
 }
 
 function weightsToURL() {
-    var sortedWeights = [];
-    var urlValue = '';
-    for (var k in currentWeights) {
-        sortedWeights.push(k);
-    }
-    sortedWeights.sort();
-    for(var weightName in sortedWeights) {
-        var weightVal = String(currentWeights[sortedWeights[weightName]] / 10);
-        if(weightVal === '10') {
-            weightVal = 'A';
-        }
-        urlValue += weightVal;
-    }
-    $.cookie('weights', urlValue);
+
     // Create the URL
-    var path = document.URL.split('?')[0] + '?' + 'year=' + year + '&weights=' + urlValue;
+    var path = document.URL.split('?')[0] + '?w=' + saveCookie();
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
     } 
@@ -440,6 +424,24 @@ function weightsToURL() {
     return path;
 }
 
+function saveCookie() {
+    var sortedWeights = [];
+    var urlValue = curYear.substring(3,4);
+    for (var k in currentWeights) {
+        sortedWeights.push(k);
+    }
+    sortedWeights.sort();
+    for(var weightName in sortedWeights) {
+        var weightVal = String(currentWeights[sortedWeights[weightName]] / 10);
+        if(weightVal === '10') {
+            weightVal = 'A';
+        }
+        urlValue += weightVal;
+    }
+    $.cookie('w', urlValue);
+    return urlValue
+}
+
 function URLToWeights(urlValue) {
     var weights = {};
     var sortedWeights = [];
@@ -447,19 +449,32 @@ function URLToWeights(urlValue) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    if(urlValue.length == 0 && $.cookie('weights') !== undefined) {
-        urlValue = $.cookie('weights');
+    if(urlValue.length == 0 && $.cookie('w') !== undefined) {
+        urlValue = $.cookie('w');
     }
-    for(var i=0; i < urlValue.length; i++) {
+    year = '201' + urlValue[0];
+    
+    for(var i=1; i < urlValue.length - 1; i++) {
         var weightVal = urlValue[i];
         if(weightVal === 'A') {
             weightVal = 100;
         } else {
             weightVal = parseInt(weightVal) * 10;
         }
-        weightName = sortedWeights[i];
+        weightName = sortedWeights[i - 1];
         $('#' + weightName).slider('value', weightVal);
         currentWeights[weightName] = weightVal;
         $('#' + weightName + '-val').text(weightVal);
     }
+}
+
+function getDefaultYear(urlValue) {
+    var defYear = curYear;
+    if(urlValue !== '') {
+        defYear = '201' + urlValue[0];
+    } else if($.cookie('w') !== undefined && !isNaN(parseInt($.cookie('w').substring(0,1)))) {
+
+        defYear = '201' + $.cookie('w').substring(0,1);
+    }
+    return defYear
 }
