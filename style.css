@@ -33,6 +33,9 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     color: red;
     font-size: smaller;
     padding-left: 48px;
+    position: absolute;
+    top: 248px;
+    left: 283px;
 }
 
 blockquote,q {
