@@ -209,8 +209,13 @@ body {
     vertical-align: top;
 }
 
-#twitter {
+#twitter-share {
     display:inline;
+}
+
+#twitter-follow {
+    display: inline;
+    padding-right: 18px;
 }
 
 #sliders {
@@ -321,7 +326,7 @@ body {
 }
 
 #share-div,#correct-div,.menu {
-	padding-left:20px;
+    padding-left: 46px;
 }
 
 #year-div {
