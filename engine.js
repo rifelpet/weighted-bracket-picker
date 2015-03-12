@@ -47,6 +47,7 @@ $(function() {
 });
 
 function selectYear() {
+    year = $('select[name="year"]').val()
     $.cookie('year', year);
     if(typeof yearData[year] === "undefined") {
         $.get(year + '-data.csv', function(data) {
