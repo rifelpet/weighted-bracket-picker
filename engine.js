@@ -45,7 +45,7 @@ function selectYear() {
     curYear = $('select[name="year"]').val()
     
     if(curYear == '2015') {
-        $('#alert').text('Look at past years to see how your weights would perform historically.');
+        $('#alert').text('Look at previous years to see how your weights perform historically.');
     } else {
         $('#alert').text('');
     }
