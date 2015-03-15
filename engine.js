@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var curYear = '2014';
+var curYear = '2015';
 
 $(function() {
     var urlParams = {};
@@ -45,7 +45,7 @@ function selectYear() {
     curYear = $('select[name="year"]').val()
     
     if(curYear == '2015') {
-        $('#alert').text('2015 currently uses an estimated bracket until official seeding is announced.');
+        $('#alert').text('Look at past years to see how your weights would perform historically.');
     } else {
         $('#alert').text('');
     }
