@@ -38,6 +38,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     left: 283px;
 }
 
+.donate {
+    color:#090;
+}
+
 blockquote,q {
 	quotes:none;
 }
@@ -108,6 +112,10 @@ a {
 	position:absolute;
 	left:1109px;
 	top:10px;
+}
+
+#payment-popup {
+    text-align: center;
 }
 
 /* text align center */

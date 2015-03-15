@@ -126,6 +126,48 @@ function parseData(year) {
         }
         sliderCounter++;
     });
+    
+    $('#slider-col2 > ul').append('<li><label class="slider-label donate" for="donate">Give Beer $$$</label><div class="slider-wrapper"><div class="value" id="donate-val">$0</div><div id="donate"></div></div></li>');
+    $('#donate').slider({
+        value: 0,
+        min: 0,
+        max: 10,
+        range: 'min',
+        animate: true,
+        step: 1,
+        slide: function(event, ui) {
+            $('#donate-val').text('$' + ui.value);
+        }
+    });
+    $('#donate').on('slidechange', function(event, ui) {
+        if(ui.value === 0 || isNaN(ui.value)) {
+            return;
+        }
+        //$('.venmo-pay-button').attr('data-amount', ui.value + '.00');
+        var venmoUrl = $('#payment-popup > iframe').attr('src');
+        $('#payment-popup > iframe').get(0).src = venmoUrl.replace("amount=10.00", "amount=" + ui.value + ".00");
+        if(ui.value === 1) {
+            $('[name="os0"]').val('1 Dollar'); 
+        } else {
+            $('[name="os0"]').val(String(ui.value) + ' Dollars'); 
+        }
+        $("#payment-popup").dialog( "open" );
+            
+    });
+    
+    $("#payment-popup").dialog({
+        title: "Give Beer Money!",
+      autoOpen: false,
+      width:230,
+      show: {
+        effect: "fade",
+        duration: 500
+      },
+      hide: {
+        effect: "fade",
+        duration: 500
+      }
+    });
     URLToWeights(urlWeightString);
     
     weightsToURL();
