@@ -44,7 +44,7 @@ var descriptions = {
                 "AT": "Assist to Turnover Ratio. This is the total number of assists a team makes divided by the total number of turnovers they commit. It can be thought of as a stat to measure how “clean” a teams offense is.",
                 "AG": "Assists per Game. This is the average number of assists a team has per game.",
                 "TM": "The turnover margin is the difference between a team’s turnovers per game and the turnovers their opponents commit per game. A positive Turnover Margin means the team turns the ball over less than their opponents.",
-                "TG": "Turnovers per game. This is the average number of turnovers a team commits per game.",
+                "TG": "Turnovers per game. This is the average number of turnovers a team commits per game. A team that turns the ball over less would be rated higher in this stat",
                 "BG": "Blocks per Game. This is the average number of blocks a team gets per game.",
                 "SG": "Steals per Game. This is the average number of steals a team gets per game.",
                 "FG": "Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws.",
