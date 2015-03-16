@@ -25,6 +25,32 @@ var totalScore = 0; // This will be 192 except for the current year
 var urlWeightString = '';
 var curYear = '2015';
 
+var descriptions = {
+    "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
+                "SS": "Strength of Schedule. A measurement of the team’s opponents. The more ranked and tough opponents a team plays, the higher their strength of schedule.",
+                "WP": "Winning percentage. This is the ratio of games won over games played for a given team.",
+                "SM": "The scoring margin is the average number of points a teams wins or loses by. This can be found by taking the difference between the Scoring Offense and Scoring Defense stats for a team.",
+                "SO": "Scoring Offense is the average number of points a team scores per game.",
+                "SD": "Scoring Defense is the average number of points a team allows their opponents to score per game.",
+                "FGP": "Field Goal Percentage. This is the ratio of a team’s made field goals over field goal attempts over the course of the season.",
+                "FGPD": "Field Goal Percentage Defense. This is the average field goal percentage that a team allows their opponents to shoot.",
+                "3FGP": "Three Point Field Goal Percentage. This is the ratio of a team’s made three pointers over three point attempts over the course of the season.",
+                "3FGPD": "Three Point Field Goal Percentage Defense. This is the average three point field goal percentage that a team allows their opponents to shoot.",
+                "FTP": "Free Throw Percentage. Ratio of made throws made over attempts for the team over the course of the season.",
+                "FTAG": "Free Throw Attempts per Game. This is the average number of free throw attempts a team gets per game. A team that is better at drawing fouls or just gets fouled more in general would have a high Free Throw Attempts per Game stat.",
+                "RM": "Rebound Margin is the average difference between a team’s rebounds per game and the number of rebounds that team allows their opponents to get per game. A team with a positive rebound margin, out rebounds their opponents. Where a team with a negative rebound margin, gets less rebounds on average than their opponents.",
+                "ORG": "Offensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on offense in a game. A team with a higher number of offensive rebounds per game has more second chances to score per offensive possession.",
+                "DRG": "Defensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on defense in a game. A team with a higher number of defensive rebounds per game denies their opponent to score off second chance shots.",
+                "AT": "Assist to Turnover Ratio. This is the total number of assists a team makes divided by the total number of turnovers they commit. It can be thought of as a stat to measure how “clean” a teams offense is.",
+                "AG": "Assists per Game. This is the average number of assists a team has per game.",
+                "TM": "The turnover margin is the difference between a team’s turnovers per game and the turnovers their opponents commit per game. A positive Turnover Margin means the team turns the ball over less than their opponents.",
+                "TG": "Turnovers per game. This is the average number of turnovers a team commits per game.",
+                "BG": "Blocks per Game. This is the average number of blocks a team gets per game.",
+                "SG": "Steals per Game. This is the average number of steals a team gets per game.",
+                "FG": "Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws.",
+                "R": "In this stat, a unique randomly assigned number between 0 and 1 is given to each team when the page is loaded. This random number will change every time the page is loaded. As a greater weight is applied to this number, it will more greatly influence a teams final outcome in the bracket, just as with any other stat. This was designed as a “wildcard” to mix up your bracket. Use Random at your own risk. We are not responsible if you lose your bracket because it chose Michigan to win it all. Like that would ever happen. Go State."
+};
+
 $(function() {
     var urlParams = {};
     // Grab values from the url if any
@@ -110,7 +136,7 @@ function parseData(year) {
         currentWeights[id] = 0;
         if($('#' + id).length === 0) {
             var column = Math.floor(sliderCounter * 3/ headerCount);
-            $('#slider-col' + String(column) + ' > ul').append('<li><label class="slider-label" for="' + id + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            $('#slider-col' + String(column) + ' > ul').append('<li><label class="slider-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
 
             $('#' + id).slider({
                 value: 0,
