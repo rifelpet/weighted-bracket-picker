@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var curYear = '2015';
+var curYear = '2014';
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
@@ -70,8 +70,8 @@ $(function() {
 function selectYear() {
     curYear = $('select[name="year"]').val()
     
-    if(curYear == '2015') {
-        $('#alert').text('Look at previous years to see how your weights perform historically.');
+    if(curYear !== '2015') {
+        $('#alert').text('The 2015 bracket is available. Switch the year below.');
     } else {
         $('#alert').text('');
     }

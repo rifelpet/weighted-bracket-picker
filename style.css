@@ -32,10 +32,9 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 #alert { 
     color: red;
     font-size: smaller;
-    padding-left: 48px;
     position: absolute;
     top: 248px;
-    left: 283px;
+    left: 400px;
 }
 
 .donate {
