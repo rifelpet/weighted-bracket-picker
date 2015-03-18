@@ -24,6 +24,7 @@ var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
 var curYear = '2014';
+var showScore = false;
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
@@ -61,6 +62,9 @@ $(function() {
 
     if('w' in urlParams) {
         urlWeightString = urlParams.w;
+    }
+    if('showScore' in urlParams) {
+        showScore = true;
     }
     curYear = getDefaultYear(urlWeightString);
     $('select[name="year"]').val(curYear);
@@ -258,8 +262,8 @@ function setupInitialMatches() {
  * Tie breaker is the higher overall rank
  */
 function runMatchup(team1, team2, round, team1Div, team2Div) {
-    team1Total = 0;
-    team2Total = 0;
+    var team1Total = 0;
+    var team2Total = 0;
     for (var weightName in currentWeights) {
         weight = currentWeights[weightName];
         if (team1.stats[weightName] === undefined) {
@@ -275,19 +279,33 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
             team2Total += team2.stats[weightName] * weight;
         }
     }
-    
+    var winningPct;
     if((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
-        //console.log(team1.Name + ' won: ' + String(team1Total) + ' > ' + String(team2Total));
-        return team1;
+        winningPct = getWinningPct(team1Total, team2Total); 
+        console.log('team1Total: ' + team1Total + ' Team2Total: ' + team2Total + ' = ' + winningPct);
+        return [team1, winningPct];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
-        //console.log(team2.Name + ' won: ' + String(team2Total) + ' > ' + String(team1Total));
-
-        return team2;
+        winningPct = getWinningPct(team2Total, team1Total);
+        console.log('team2Total: ' + team2Total + ' Team1Total: ' + team1Total + ' = ' + winningPct);
+        return [team2, winningPct];
     }
+}
+
+function getWinningPct(winnerTotal, loserTotal) {
+console.log(winnerTotal);
+console.log(loserTotal);
+    console.log(winnerTotal + loserTotal);
+    console.log(winnerTotal / (winnerTotal + loserTotal));
+    var winningPct = Math.round(100 * winnerTotal / (winnerTotal + loserTotal));
+
+    if(isNaN(winningPct)) {
+        winningPct = 0;
+    }
+    return winningPct;
 }
 
 /* 
@@ -326,8 +344,9 @@ function submit() {
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
-        var winner = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
-
+        var winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
+        var winner = winnerData[0];
+        var winnerPct = winnerData[1];
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text(winner.stats.Seed + '. ' + winner.Name);
     }
@@ -355,12 +374,17 @@ function submit() {
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
             
             bracketData.teams.push([high.stats.Seed + '. ' + high.Name, low.stats.Seed + '. ' + low.Name]);
-            var winner = runMatchup(high, low, 0, highDiv, lowDiv);
+            var winnerData = runMatchup(high, low, 0, highDiv, lowDiv);
+            var winner = winnerData[0];
+            var winnerPct = winnerData[1];
             gameWinners['game' + String(gameNum)] = winner;
 
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
 
             $('#' + region + 'game' + gameNum).text(winner.stats.Seed + '. ' + winner.Name);
+            if(showScore) {
+                $('#' + region + 'game' + gameNum).append(' ' + winnerPct + '%');
+            }
             if(totalGames > 0) {
                 if(winner['Games Won'] > 0) {
                     correctCount++;
@@ -380,10 +404,14 @@ function submit() {
             var low = gameWinners['game' + String(game + 1 - gameDiff)];
             var highDiv = '#' + region + 'game' + String(game - gameDiff);
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
-            var winner = runMatchup(high, low, getRound(game), highDiv, lowDiv);
-            
+            var winnerData = runMatchup(high, low, getRound(game), highDiv, lowDiv);
+            var winner = winnerData[0];
+            var winnerPct = winnerData[1];            
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name);
+            if(showScore) {
+                $('#' + region + 'game' + game).append(' ' + winnerPct + '%');
+            }
             if(totalGames > 0) {
                 if(winner['Games Won'] >= getRound(game)) {
                     correctCount++;
@@ -411,11 +439,15 @@ function submit() {
         var team1Div = '#' + regions[region1].toLowerCase() + 'game15';
         var team2Div = '#' + regions[region2].toLowerCase() + 'game15';
         var team2 = gameWinnerRegions[region2].game15;
-        var winner = runMatchup(team1, team2, 5, team1Div, team2Div);
+        var winnerData = runMatchup(team1, team2, 5, team1Div, team2Div);
+        var winner = winnerData[0];
+        var winnerPct = winnerData[1];        
         championship[sides[side]] = winner;
         
         $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name);
-        
+        if(showScore) {
+            $('#' + sides[side] + 'game').append(' ' + winnerPct + '%');
+        }
         if(totalGames > 0) {
             if(winner['Games Won'] >= 5) {
                 correctCount++;
@@ -429,7 +461,9 @@ function submit() {
         }
         regionID += 2;
     }
-    var winner = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
+    var winnerData = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
+    var winner = winnerData[0];
+    var winnerPct = winnerData[1];
     if(totalGames > 0) {
         if(winner['Games Won'] == 6) {
             correctCount++;
@@ -442,6 +476,9 @@ function submit() {
         $('#championship').removeClass('correct').removeClass('incorrect');
     }
     $('#championship').text(winner.stats.Seed + '. ' + winner.Name);
+    if(showScore) {
+        $('#championship').append(' ' + winnerPct + '%');
+    }
     $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
     $('#score').text(String(correctScore) + ' / ' + String(totalScore));
 }
