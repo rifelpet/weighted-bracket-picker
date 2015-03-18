@@ -284,22 +284,16 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team1Total, team2Total); 
-        console.log('team1Total: ' + team1Total + ' Team2Total: ' + team2Total + ' = ' + winningPct);
         return [team1, winningPct];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team2Total, team1Total);
-        console.log('team2Total: ' + team2Total + ' Team1Total: ' + team1Total + ' = ' + winningPct);
         return [team2, winningPct];
     }
 }
 
 function getWinningPct(winnerTotal, loserTotal) {
-console.log(winnerTotal);
-console.log(loserTotal);
-    console.log(winnerTotal + loserTotal);
-    console.log(winnerTotal / (winnerTotal + loserTotal));
     var winningPct = Math.round(100 * winnerTotal / (winnerTotal + loserTotal));
 
     if(isNaN(winningPct)) {
