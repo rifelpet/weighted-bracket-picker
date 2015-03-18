@@ -24,7 +24,7 @@ var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
 var curYear = '2014';
-var showScore = false;
+var showScore = true;
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
