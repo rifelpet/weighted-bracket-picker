@@ -294,7 +294,7 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
 }
 
 function getWinningPct(winnerTotal, loserTotal) {
-    var winningPct = Math.round(100 * winnerTotal / (winnerTotal + loserTotal));
+    var winningPct = (2 * Math.round(100 * winnerTotal / (winnerTotal + loserTotal))) - 100;
 
     if(isNaN(winningPct)) {
         winningPct = 0;
