@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var curYear = '2014';
+var curYear = '2015';
 var showScore = true;
 
 var descriptions = {
