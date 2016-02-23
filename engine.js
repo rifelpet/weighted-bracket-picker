@@ -271,9 +271,6 @@ function setupInitialMatches() {
  * Tie breaker is the higher overall rank
  */
 function runMatchup(team1, team2, round, team1Div, team2Div) {
-    console.log(team1);
-    console.log(team1.stats);
-    console.log(round);
     var team1Total = 0;
     var team2Total = 0;
     for (var weightName in currentWeights) {
