@@ -310,7 +310,7 @@ function submit() {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        totalWeight += currentWeights[id];
+        totalWeight += parseInt(currentWeights[id]);
     });
     if (totalWeight === 0) {
         clear();
