@@ -106,6 +106,34 @@ $(function () {
     selectYear();
 });
 
+function updateStat(id) {
+    var newVal = $('#' + id + ' > input').val();
+    currentWeights[id] = newVal;
+    $('#' + id + '-val').text(newVal);
+    submit();
+}
+
+function giveBeer() {
+    var newVal = $('#donate > input').val();
+    $('#donate-val').text('$' + newVal);
+
+    if (newVal === 0 || isNaN(newVal)) {
+        return;
+    }
+    if (newVal === 1) {
+        $('[name="os0"]').val('1 Dollar');
+    } else {
+        $('[name="os0"]').val(String(newVal) + ' Dollars');
+    }
+    var modal = UIkit.modal("#payment-popup");
+
+    if (modal.isActive() ) {
+        modal.hide();
+    } else {
+        modal.show();
+    }
+}
+
 function parseData(year) {
     var lines = yearData[year].trim().split("\n"), result = [];
     headers = lines[0].trim().split(',');
@@ -149,64 +177,15 @@ function parseData(year) {
         currentWeights[id] = 0;
         if ($('#' + id).length === 0) {
             var column = Math.floor(sliderCounter * 3/ headerCount);
-            $('#slider-col' + String(column) + ' > ul').append('<li><label class="slider-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')">')
 
-            $('#' + id).slider({
-                value: 0,
-                range: 'min',
-                animate: true,
-                step: 10,
-                slide: function (event, ui) {
-                    currentWeights[$(this).attr('id')] = ui.value;
-                    $('#' + id + '-val').text(ui.value);
-                    submit();
-                }
-            });
         }
         sliderCounter++;
     });
     if ($('#donate').length === 0) {
-        $('#slider-col2 > ul').append('<li><label class="slider-label donate" for="donate">Give Beer $$$</label><div class="slider-wrapper"><div class="value" id="donate-val">$0</div><div id="donate"></div></div></li>');
-        $('#donate').slider({
-            value: 0,
-            min: 0,
-            max: 10,
-            range: 'min',
-            animate: true,
-            step: 1,
-            slide: function (event, ui) {
-                $('#donate-val').text('$' + ui.value);
-            }
-        });
-        $('#donate').on('slidechange', function (event, ui) {
-            if (ui.value === 0 || isNaN(ui.value)) {
-                return;
-            }
-            //$('.venmo-pay-button').attr('data-amount', ui.value + '.00');
-            var venmoUrl = $('#payment-popup > iframe').attr('src');
-            $('#payment-popup > iframe').get(0).src = venmoUrl.replace("amount=10.00", "amount=" + ui.value + ".00");
-            if (ui.value === 1) {
-                $('[name="os0"]').val('1 Dollar'); 
-            } else {
-                $('[name="os0"]').val(String(ui.value) + ' Dollars'); 
-            }
-            $("#payment-popup").dialog( "open" );
-                
-        });
-        
-        $("#payment-popup").dialog({
-            title: "Give Beer Money!",
-          autoOpen: false,
-          width:230,
-          show: {
-            effect: "fade",
-            duration: 500
-          },
-          hide: {
-            effect: "fade",
-            duration: 500
-          }
-        });
+        $('#slider-col2 > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="donate">Give Beer $$$</label><div class="slider-wrapper"><div class="value" id="donate-val">$0</div><div id="donate"></div></div></li>');
+        $('#donate').append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="giveBeer()">')
     }
     URLToWeights(urlWeightString);
     
@@ -507,7 +486,8 @@ function clear() {
 function resetSliders() {
     $.each(headers, function (i, param) {
         if (param in nonStatHeaders) return true;
-        $('#' + attrToID(param)).slider('value', 0);
+
+        $('#' + attrToID(param) + ' > input').val(0);
         $('#' + attrToID(param) + '-val').text('0');
     });
     $.each(currentWeights, function (i, param) {
@@ -585,7 +565,7 @@ function URLToWeights(urlValue) {
             weightVal = parseInt(weightVal) * 10;
         }
         weightName = sortedWeights[i - 1];
-        $('#' + weightName).slider('value', weightVal);
+        $('#' + weightName + ' > input').val(weightVal);
         currentWeights[weightName] = weightVal;
         $('#' + weightName + '-val').text(weightVal);
     }
