@@ -34,7 +34,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     font-size: smaller;
     position: absolute;
     top: 248px;
-    left: 400px;
+    width: 1080px;
+    text-align: center;
+    padding-left: 20px;
+    z-index: 100;
 }
 
 .donate {

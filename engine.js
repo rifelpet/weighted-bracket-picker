@@ -69,7 +69,7 @@ function selectYear() {
     if (curYear !== '2016') {
         $('#alert').text('The 2016 bracket is available. Switch the year below.');
     } else {
-        $('#alert').text('');
+        $('#alert').html('This is a projected bracket from <a href="http://espn.go.com/mens-college-basketball/bracketology/_/iteration/237">ESPN</a> and uses stats through 2/21');
     }
 
     var currCookie = $.cookie('w');
