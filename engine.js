@@ -108,7 +108,7 @@ $(function () {
 
 function updateStat(id) {
     var newVal = $('#' + id + ' > input').val();
-    currentWeights[id] = newVal;
+    currentWeights[id] = parseInt(newVal);
     $('#' + id + '-val').text(newVal);
     submit();
 }
@@ -174,8 +174,8 @@ function parseData(year) {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        currentWeights[id] = 0;
         if ($('#' + id).length === 0) {
+            currentWeights[id] = 0;
             var column = Math.floor(sliderCounter * 3/ headerCount);
             $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')">')
@@ -187,8 +187,9 @@ function parseData(year) {
         $('#slider-col2 > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="donate">Give Beer $$$</label><div class="slider-wrapper"><div class="value" id="donate-val">$0</div><div id="donate"></div></div></li>');
         $('#donate').append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="giveBeer()">')
     }
-    URLToWeights(urlWeightString);
-    
+    if (urlWeightString.length > 0) {
+        URLToWeights(urlWeightString);
+    }
     weightsToURL();
     // Now that sliders have been built and values assigned,
     // setup the event handlers
@@ -272,11 +273,13 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team1Total, team2Total); 
+        //console.log(team1.Name + ' won with totals ' + team1Total + ' vs ' + team2Total);
         return [team1, winningPct];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team2Total, team1Total);
+        //console.log(team2.Name + ' won with totals ' + team2Total + ' vs ' + team1Total);
         return [team2, winningPct];
     }
 }
@@ -310,7 +313,8 @@ function submit() {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        totalWeight += parseInt(currentWeights[id]);
+
+        totalWeight += currentWeights[id];
     });
     if (totalWeight === 0) {
         clear();
@@ -509,7 +513,6 @@ function attrToID(attr) {
 }
 
 function weightsToURL() {
-
     // Create the URL
     var weightValue = saveCookie();
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
