@@ -23,8 +23,10 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var curYear = '2016';
+var latestYear = '2016'
+var currYear = latestYear;
 var showScore = true;
+var tournamentStarted = false;
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
@@ -53,7 +55,7 @@ var descriptions = {
 };
 
 function getDefaultYear(urlValue) {
-    var defYear = curYear;
+    var defYear = currYear;
     if (urlValue !== '') {
         defYear = '201' + urlValue[0];
     } else if ($.cookie('w') !== undefined && !isNaN(parseInt($.cookie('w').substring(0, 1)))) {
@@ -64,9 +66,9 @@ function getDefaultYear(urlValue) {
 }
 
 function selectYear() {
-    curYear = $('select[name="year"]').val();
+    currYear = $('select[name="year"]').val();
 
-    if (curYear !== '2016') {
+    if (currYear !== '2016') {
         $('#alert').text('The 2016 bracket is available. Switch the year below.');
     } else {
         $('#alert').html('This is a projected bracket from <a href="http://espn.go.com/mens-college-basketball/bracketology/_/iteration/237">ESPN</a> and uses stats through 2/21');
@@ -74,16 +76,16 @@ function selectYear() {
 
     var currCookie = $.cookie('w');
     if (currCookie !== undefined) {
-        $.cookie('w', curYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
+        $.cookie('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
     }
 
-    if (typeof yearData[curYear] === "undefined") {
-        $.get(curYear + '-data.csv', function (data) {
-            yearData[curYear] = data;
-            parseData(curYear);
+    if (typeof yearData[currYear] === "undefined") {
+        $.get(currYear + '-data.csv', function (data) {
+            yearData[currYear] = data;
+            parseData(currYear);
         });
     } else {
-        parseData(curYear);
+        parseData(currYear);
     }
 }
 
@@ -101,8 +103,8 @@ $(function () {
     if (urlParams.hasOwnProperty('showScore')) {
         showScore = true;
     }
-    curYear = getDefaultYear(urlWeightString);
-    $('select[name="year"]').val(curYear);
+    currYear = getDefaultYear(urlWeightString);
+    $('select[name="year"]').val(currYear);
     selectYear();
 });
 
@@ -164,6 +166,9 @@ function parseData(year) {
         if (gamesWon > 0) {
             totalGames += gamesWon;
             totalScore += Math.pow(2, gamesWon) - 1;
+            if(currYear === latestYear) {
+                tournamentStarted = true;
+            }
         }
     }
     
@@ -241,8 +246,23 @@ function setupInitialMatches() {
             $('#' + region.toLowerCase() + 'seed' + high.stats.Seed).text(high.stats.Seed + '. ' + high.Name);
         }
     }
-    $('#correct').text('0 / ' + totalGames);
-    $('#score').text('0 / ' + totalScore);
+    if(tournamentStarted || currYear !== latestYear) {
+        $('#scoring-wrapper > div > h1').css('color', '');
+        $('#correct').text('0 / ' + totalGames);
+        $('#score').text('0 / ' + totalScore);
+    } else {
+        clearScoreDisplay();
+    }
+}
+
+/*
+ * Makes the score and games correct counters grey
+ * and displays N/A instead of X/Y
+ */
+function clearScoreDisplay() {
+    $('#scoring-wrapper > div > h1').css('color', 'grey');
+    $('#correct').text('N/A');
+    $('#score').text('N/A');
 }
 
 /*
@@ -462,8 +482,13 @@ function submit() {
     if (showScore) {
         $('#championship').append(' ' + winnerPct + '%');
     }
-    $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
-    $('#score').text(String(correctScore) + ' / ' + String(totalScore));
+    if(tournamentStarted || currYear !== latestYear) {
+        $('#scoring-wrapper > div > h1').css('color', '');
+        $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
+        $('#score').text(String(correctScore) + ' / ' + String(totalScore));
+    } else {
+        clearScoreDisplay();
+    }
 }
 
 function clear() {
@@ -529,7 +554,7 @@ function weightsToURL() {
 
 function saveCookie() {
     var sortedWeights = [];
-    var urlValue = curYear.substring(3,4);
+    var urlValue = currYear.substring(3,4);
     for (var k in currentWeights) {
         sortedWeights.push(k);
     }
