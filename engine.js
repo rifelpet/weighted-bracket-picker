@@ -273,20 +273,17 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team1Total, team2Total); 
-        //console.log(team1.Name + ' won with totals ' + team1Total + ' vs ' + team2Total);
         return [team1, winningPct];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team2Total, team1Total);
-        //console.log(team2.Name + ' won with totals ' + team2Total + ' vs ' + team1Total);
         return [team2, winningPct];
     }
 }
 
 function getWinningPct(winnerTotal, loserTotal) {
-    var winningPct = (2 * Math.round(100 * winnerTotal / (winnerTotal + loserTotal))) - 100;
-
+    var winningPct = Math.ceil((2 * (100 * winnerTotal / (winnerTotal + loserTotal))) - 100);
     if (isNaN(winningPct)) {
         winningPct = 0;
     }
