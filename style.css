@@ -800,3 +800,7 @@ input[type=range]::-ms-fill-upper {
 input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }
+input[type=range]::-moz-focus-outer {
+  outline: none;
+  border: 0;
+}
