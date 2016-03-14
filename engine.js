@@ -71,7 +71,7 @@ function selectYear() {
     if (currYear !== '2016') {
         $('#alert').text('The 2016 bracket is available. Switch the year below.');
     } else {
-        $('#alert').html('This is a projected bracket from <a href="http://espn.go.com/mens-college-basketball/bracketology/_/iteration/246">ESPN</a> and uses stats through 3/2');
+        $('#alert').text('');
     }
 
     var currCookie = $.cookie('w');
@@ -559,7 +559,7 @@ function saveCookie() {
     }
     sortedWeights.sort();
     for(var weightName in sortedWeights) {
-        var weightVal = String(currentWeights[sortedWeights[weightName]] / 10);
+        var weightVal = String(currentWeights[sortedWeights[weightName]]);
         if (weightVal === '10') {
             weightVal = 'A';
         }
