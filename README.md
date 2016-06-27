@@ -1,7 +1,7 @@
 weighted-bracket-picker
 =======================
 
-A March Madness bracket picker using weighted statistics
+A March Madness bracket picker using weighted statistics. Provides historical data back to 2010 as well as up to date data through the current season.
 
 Features
 ========
