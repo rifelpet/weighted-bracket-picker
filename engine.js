@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var latestYear = '2016'
+var latestYear = '2017'
 var currYear = latestYear;
 var showScore = true;
 var tournamentStarted = false;
@@ -68,8 +68,8 @@ function getDefaultYear(urlValue) {
 function selectYear() {
     currYear = $('select[name="year"]').val();
 
-    if (currYear !== '2016') {
-        $('#alert').text('The 2016 bracket is available. Switch the year below.');
+    if (currYear !== latestYear) {
+        $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
         $('#alert').text('');
     }
