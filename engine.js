@@ -155,6 +155,7 @@ function parseData(year) {
                 team.stats[attrToID(headers[j])] = currentLine[j];
             }
         }
+        team.Name = abbreviateName(team.Name);
         team.stats.R = Math.random();
         if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
             firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
@@ -253,6 +254,11 @@ function setupInitialMatches() {
         clearScoreDisplay();
     }
 }
+
+function abbreviateName(name) {
+    return name.replace('South ', 'S. ').replace('North ', 'N. ').replace('West ', 'W. ').replace(/\.$/, '')
+}
+
 
 /*
  * Makes the score and games correct counters grey
