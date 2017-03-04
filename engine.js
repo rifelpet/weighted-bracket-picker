@@ -256,7 +256,8 @@ function setupInitialMatches() {
 }
 
 function abbreviateName(name) {
-    return name.replace('South ', 'S. ').replace('North ', 'N. ').replace('West ', 'W. ').replace(/\.$/, '')
+    return name.replace('South ', 'S. ').replace('North ', 'N. ').replace('West ', 'W. ')
+    .replace(/\.$/, '').replace('Southern', 'Sthn.').replace('Bakersfield', 'Bkfd.');
 }
 
 
