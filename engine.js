@@ -71,7 +71,7 @@ function selectYear() {
     if (currYear !== latestYear) {
         $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
-        $('#alert').text('The statistics and seeding are up to date as of 3/5.');
+        // $('#alert').text('The statistics and seeding are up to date as of 3/5.');
     }
 
     var currCookie = $.cookie('w');
