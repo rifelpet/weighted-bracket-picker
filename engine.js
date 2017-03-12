@@ -256,6 +256,7 @@ function setupInitialMatches() {
 }
 
 function abbreviateName(name) {
+    console.log(name);
     return name.replace('South ', 'S. ').replace('North ', 'N. ').replace('West ', 'W. ')
     .replace(/\.$/, '').replace('Southern California', 'S. California').replace('Southern', 'Sthn.').replace('Bakersfield', 'Bkfd.');
 }
