@@ -71,7 +71,7 @@ function selectYear() {
     if (currYear !== latestYear) {
         $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
-        $('#alert').text('');
+        $('#alert').text('The statistics and seeding are up to date as of 3/5.');
     }
 
     var currCookie = $.cookie('w');
@@ -377,8 +377,12 @@ function submit() {
             var seed = seedMatchOrder[index];
             var high = currentRegion[seed];
             var low = currentRegion[17 - seed];
+            console.log(high);
+            console.log(low);
             // game numbers #ids are 1-indexed rather than 0-indexed
             var gameNum = parseInt(index) + 1;
+            console.log(region + high)
+            console.log(region + low)
             var highDiv = '#' + region + 'seed' + high.stats.Seed;
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
             
