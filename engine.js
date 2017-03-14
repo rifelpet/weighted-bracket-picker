@@ -589,13 +589,12 @@ function URLToWeights(urlValue) {
         urlValue = $.cookie('w');
     }
     year = '201' + urlValue[0];
-    
     for(var i=1; i < urlValue.length - 1; i++) {
         var weightVal = urlValue[i];
         if (weightVal === 'A') {
-            weightVal = 100;
+            weightVal = 10;
         } else {
-            weightVal = parseInt(weightVal) * 10;
+            weightVal = parseInt(weightVal);
         }
         weightName = sortedWeights[i - 1];
         $('#' + weightName + ' > input').val(weightVal);
