@@ -342,6 +342,7 @@ function submit() {
     });
     if (totalWeight === 0) {
         clear();
+        weightsToURL();
         return;
     }
 
@@ -500,6 +501,7 @@ function submit() {
     } else {
         clearScoreDisplay();
     }
+    weightsToURL();
 }
 
 function clear() {
