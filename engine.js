@@ -581,10 +581,12 @@ function saveCookie() {
 function URLToWeights(urlValue) {
     var weights = {};
     var sortedWeights = [];
+    console.log(currentWeights);
     for (var k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
+    console.log(sortedWeights);
     if (urlValue.length == 0 && $.cookie('w') !== undefined) {
         urlValue = $.cookie('w');
     }
