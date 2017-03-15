@@ -543,6 +543,7 @@ function attrToID(attr) {
 function weightsToURL() {
     // Create the URL
     var weightValue = saveCookie();
+    ga('send', 'event', 'bracket', 'save', '', weightValue);
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
