@@ -201,9 +201,9 @@ function parseData(year) {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        /*$('#' + id).on("change", function () {
+        $('#' + id).on("change", function () {
             ga('send', 'event', 'slider-adjust', param, '', this.value);
-        });*/
+        });
 
     });
     
