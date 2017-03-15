@@ -201,9 +201,9 @@ function parseData(year) {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        $('#' + id).on("change", function () {
+        /*$('#' + id).on("change", function () {
             ga('send', 'event', 'slider-adjust', param, '', this.value);
-        });
+        });*/
 
     });
     
@@ -543,7 +543,7 @@ function attrToID(attr) {
 function weightsToURL() {
     // Create the URL
     var weightValue = saveCookie();
-    ga('send', 'event', 'bracket', 'save', '', weightValue);
+    ga('send', 'event', 'bracket', weightValue, '', '');
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
