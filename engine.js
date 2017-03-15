@@ -248,6 +248,9 @@ function setupInitialMatches() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text('0 / ' + totalGames);
         $('#score').text('0 / ' + totalScore);
+        if(currYear !== latestYear) {
+            ga('send', 'score', String(currYear), '', totalScore);
+        }
     } else {
         clearScoreDisplay();
     }
