@@ -581,17 +581,15 @@ function saveCookie() {
 function URLToWeights(urlValue) {
     var weights = {};
     var sortedWeights = [];
-    console.log(currentWeights);
     for (var k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    console.log(sortedWeights);
     if (urlValue.length == 0 && $.cookie('w') !== undefined) {
         urlValue = $.cookie('w');
     }
     year = '201' + urlValue[0];
-    for(var i=1; i < urlValue.length - 1; i++) {
+    for(var i=1; i < urlValue.length; i++) {
         var weightVal = urlValue[i];
         if (weightVal === 'A') {
             weightVal = 10;
@@ -599,7 +597,6 @@ function URLToWeights(urlValue) {
             weightVal = parseInt(weightVal);
         }
         weightName = sortedWeights[i - 1];
-        console.log("Parsing value for " + weightName + ": " + weightVal);
         $('#' + weightName + ' > input').val(weightVal);
         currentWeights[weightName] = weightVal;
         $('#' + weightName + '-val').text(weightVal);
