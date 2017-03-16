@@ -26,7 +26,7 @@ var urlWeightString = '';
 var latestYear = '2017'
 var currYear = latestYear;
 var showScore = true;
-var tournamentStarted = false;
+var tournamentStarted = true;
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
