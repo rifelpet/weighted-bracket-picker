@@ -26,7 +26,7 @@ var urlWeightString = '';
 var latestYear = '2017'
 var currYear = latestYear;
 var showScore = true;
-var tournamentStarted = true;
+var tournamentStarted = false;
 
 var descriptions = {
     "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
@@ -164,12 +164,14 @@ function parseData(year) {
             bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
         }
         var gamesWon = parseInt(team['Games Won']);
-        if (gamesWon != 0) {
+        if (gamesWon > 0) {
             totalGames += gamesWon;
             totalScore += Math.pow(2, gamesWon) - 1;
             if(currYear === latestYear) {
                 tournamentStarted = true;
             }
+        } else if (gamesWon < 0) {
+            tournamentStarted = true
         }
     }
     
