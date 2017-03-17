@@ -302,12 +302,12 @@ function runMatchup(team1, team2, round, team1Div, team2Div) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team1Total, team2Total); 
-        return [team1, winningPct];
+        return [team1, winningPct, team2];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team2Total, team1Total);
-        return [team2, winningPct];
+        return [team2, winningPct, team1];
     }
 }
 
@@ -390,6 +390,7 @@ function submit() {
             var winnerData = runMatchup(high, low, 0, highDiv, lowDiv);
             var winner = winnerData[0];
             var winnerPct = winnerData[1];
+            var loser = winnerData[2];
             gameWinners['game' + String(gameNum)] = winner;
 
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
@@ -398,7 +399,7 @@ function submit() {
             if (showScore) {
                 $('#' + region + 'game' + gameNum).append(' ' + winnerPct + '%');
             }
-            if (totalGames > 0) {
+            if (totalGames > 0 && (winner['Games Won'] > 0 || loser['Games Won'] > 0)) {
                 if (winner['Games Won'] > 0) {
                     correctCount++;
                     correctScore += 1;
@@ -419,13 +420,16 @@ function submit() {
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
             var winnerData = runMatchup(high, low, getRound(game), highDiv, lowDiv);
             var winner = winnerData[0];
-            var winnerPct = winnerData[1];            
+            var winnerPct = winnerData[1];   
+            var loser = winnerData[2];         
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name);
             if (showScore) {
                 $('#' + region + 'game' + game).append(' ' + winnerPct + '%');
             }
-            if (totalGames > 0) {
+
+            var round = getRound(game);
+            if (totalGames > 0 && (winner['Games Won'] >= round || loser['Games Won'] >= round)) {
                 if (winner['Games Won'] >= getRound(game)) {
                     correctCount++;
                     if (game <= 12) correctScore += 2;
@@ -454,14 +458,15 @@ function submit() {
         var team2 = gameWinnerRegions[region2].game15;
         var winnerData = runMatchup(team1, team2, 5, team1Div, team2Div);
         var winner = winnerData[0];
-        var winnerPct = winnerData[1];        
+        var winnerPct = winnerData[1];  
+        var loser = winnerData[2];      
         championship[sides[side]] = winner;
         
         $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name);
         if (showScore) {
             $('#' + sides[side] + 'game').append(' ' + winnerPct + '%');
         }
-        if (totalGames > 0) {
+        if (totalGames > 0 &&  (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
             if (winner['Games Won'] >= 5) {
                 correctCount++;
                 correctScore += 16;
@@ -477,7 +482,8 @@ function submit() {
     var winnerData = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
     var winner = winnerData[0];
     var winnerPct = winnerData[1];
-    if (totalGames > 0) {
+    var loser = winnerData[2];
+    if (totalGames > 0 &&  (winner['Games Won'] == 6 || loser['Games Won'] == 6)) {
         if (winner['Games Won'] == 6) {
             correctCount++;
             correctScore += 32;
