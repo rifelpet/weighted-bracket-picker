@@ -164,7 +164,7 @@ function parseData(year) {
             bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
         }
         var gamesWon = parseInt(team['Games Won']);
-        if (gamesWon > 0) {
+        if (gamesWon != 0) {
             totalGames += gamesWon;
             totalScore += Math.pow(2, gamesWon) - 1;
             if(currYear === latestYear) {
