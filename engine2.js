@@ -51,7 +51,6 @@ var descriptions = {
     "BG": "Blocks per Game. This is the average number of blocks a team gets per game.",
     "SG": "Steals per Game. This is the average number of steals a team gets per game.",
     "FG": "Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws.",
-    "R": "In this stat, a unique randomly assigned number between 0 and 1 is given to each team when the page is loaded. This random number will change every time the page is loaded. As a greater weight is applied to this number, it will more greatly influence a teams final outcome in the bracket, just as with any other stat. This was designed as a “wildcard” to mix up your bracket. Use Random at your own risk. We are not responsible if you lose your bracket because it chose Michigan to win it all. Like that would ever happen. Go State."
 };
 
 function getDefaultYear(urlValue) {
@@ -156,7 +155,6 @@ function parseData(year) {
             }
         }
         team.Name = abbreviateName(team.Name);
-        team.stats.R = Math.random();
         if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
             firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
             delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
@@ -175,7 +173,6 @@ function parseData(year) {
         }
     }
     
-    headers.push('Random');
     var headerCount = headers.length - nonStatHeaders.length;
     var sliderCounter = 0;
     $.each(headers, function (i, param) {
@@ -542,9 +539,9 @@ function resetSliders() {
  */
 
 function attrToID(attr) {
-    // TODO: might be able to remove this check? maybe leaver just seed
+    // TODO: might be able to remove this check? maybe leave just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    return attr.replace(/[ a-z%\.\/]/g, '');
+    return attr.replace(/%/, 'P').replace(/[ a-z%\.\/]/g, '');
 }
 
 function weightsToURL() {
