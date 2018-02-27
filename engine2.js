@@ -16,14 +16,15 @@ var headers = [];
 var regions = ['South', 'East', 'West', 'Midwest'];
 
 // Headers that arent used in comparison for winner determination
-var nonStatHeaders = ['Region', 'Name', 'Rank', 'Games Won'];
+// TODO: add Rank back in here
+var nonStatHeaders = ['Region', 'Name', 'Games Won'];
 
 var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var latestYear = '2015'
+var latestYear = '2017'
 var currYear = latestYear;
 var showScore = true;
 var tournamentStarted = false;
@@ -183,7 +184,6 @@ function parseData(year) {
             var column = Math.floor(sliderCounter * 3/ headerCount);
             $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
             $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')">')
-
         }
         sliderCounter++;
     });
@@ -541,7 +541,8 @@ function resetSliders() {
 function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leave just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    return attr.replace(/%/, 'P').replace(/[ a-z%\.\/]/g, '');
+    short = attr.replace(/%/, 'P').replace(/[ a-z%\.\/]/g, '');
+    return short
 }
 
 function weightsToURL() {
