@@ -16,8 +16,7 @@ var headers = [];
 var regions = ['South', 'East', 'West', 'Midwest'];
 
 // Headers that arent used in comparison for winner determination
-// TODO: add Rank back in here
-var nonStatHeaders = ['Region', 'Name', 'Games Won'];
+var nonStatHeaders = ['Rank', 'Region', 'Name', 'Games Won'];
 
 var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
