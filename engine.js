@@ -23,7 +23,7 @@ var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var latestYear = '2017'
+var latestYear = '2017';
 var currYear = latestYear;
 var showScore = true;
 var tournamentStarted = false;
