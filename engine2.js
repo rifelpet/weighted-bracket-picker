@@ -29,30 +29,30 @@ var showScore = true;
 var tournamentStarted = false;
 
 var descriptions = {
-    "Seed": "Team's position in the bracket. 1 seeds have the \"easiest\" path to the championship.",
-    "SS": "Team's Strength of Schedule.",
-    "WP": "Team's Wins / Total Games prior to the tournament.",
+    "Seed": "Team's position in the bracket. 1 seeds have the 'easiest' path to the final four. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "SS": "Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.",
+    "WP": "Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.",
     "PG": "Average points a team scores per game.",
-    "OPG": "Average points a team's opponent scores per game.",
+    "OPG": " Average points a team's opponent scores per game. This stat is ranked inversely- the lowest value is ranked the highest.",
     "FGP": "Team Field Goal Percentage.",
     "3PFGP": "Team 3-Point Field Goal Percentage.",
     "FTP": "Team's Free Throw shooting percentage.",
-    "OR": "Estimate of points scored by a team per 100 possessions.",
-    "DR": "Estimate of points scored by a team's opponent per 100 possessions.",
+    "OR": "Estimate of points scored by a team per 100 possessions. Offensive Rating is different than points per game in that it eliminates the influence of a team's pace. A slow paced team will have less possessions per game and less opportunity to score, resulting in a lower points per game stat. However, if this team scores on almost every possession, they will have a high offensive rating.",
+    "DR": "Estimate of points a team allowed their opponents to score per 100 possessions. This stat is ranked inversely- the lowest value is ranked the highest.",
     "ASM": "Difference between a team's offense rating and defense rating. The Scoring Margin after 100 possessions.",
     "RP": "Percentage of available rebounds a team grabs during a game.",
-    "ORP": "Percentage of available offensive rebounds a team grabs during a game.",
+    "ORP": "Percentage of available offensive rebounds a team grabs during a game. Offensive rebounds are important because they keep a possession alive and allow a team to get more chances at scoring.",
     "EFGP": "Team's Total Field Goal percentage adjusted for the fact that a 3-point field goal is worth more than a 2-point field goal.",
-    "TSP": "Team's shooting efficiency that takes into account 3pt FG, FG, and FT.",
-    "OTSP": "Opponent's shooting efficiency that takes into account 3pt FG, FG, and FT.",
+    "TSP": "Team's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws.",
+    "OTSP": " Opponent's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws. A measure of how good a team is at making their opponent's miss. This stat is ranked inversely- the lowest value is ranked the highest.",
     "P": "Estimate of the number of possessions a team has per 40 minute game. Ranked by fastest paced teams. If you prefer slow paced teams, do not use this slider.",
-    "TP": "Estimate of turnovers a team commits per 100 offensive possessions.",
+    "TP": "Estimate of turnovers a team commits per 100 offensive possessions. This stat is ranked inversely- the lowest value is ranked the highest.",
     "OTP": "Estimate of turnovers a team forces their opponents to have per 100 defensive possessions.",
     "TM": "Difference between the number of times a team loses the ball vs times their opponent loses the ball.",
     "AP": "Percentage of team's field goals that were assisted.",
     "AT": "Number of assists per turnover a team has.",
-    "FTFGA": "Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws.",
-    "OFTFGA": "Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent."
+    "FTFGA": "Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws. A higher free throw rate mean's a team plays more aggressively and to draw contact in the paint and get fouled.",
+    "OFTFGA": "Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent. A low opponent's free throw rate means that a team is good at not fouling their opponent. This stat is ranked inversely- the lowest value is ranked the highest."
 };
 
 function getDefaultYear(urlValue) {
