@@ -58,9 +58,9 @@ function getDefaultYear(urlValue) {
     var defYear = currYear;
     if (urlValue !== '') {
         defYear = '201' + urlValue[0];
-    } else if ($.cookie('w') !== undefined && !isNaN(parseInt($.cookie('w').substring(0, 1)))) {
+    } else if (Cookies.get('w') !== undefined && !isNaN(parseInt(Cookies.get('w').substring(0, 1)))) {
 
-        defYear = '201' + $.cookie('w').substring(0, 1);
+        defYear = '201' + Cookies.get('w').substring(0, 1);
     }
     return defYear;
 }
@@ -74,9 +74,9 @@ function selectYear() {
         $('#alert').text('');
     }
 
-    var currCookie = $.cookie('w');
+    var currCookie = Cookies.get('w');
     if (currCookie !== undefined) {
-        $.cookie('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
+        Cookies.set('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
     }
 
     if (typeof yearData[currYear] === "undefined") {
@@ -584,7 +584,7 @@ function saveCookie() {
         }
         urlValue += weightVal;
     }
-    $.cookie('w', urlValue);
+    Cookies.set('w', urlValue);
     return urlValue
 }
 
@@ -595,8 +595,8 @@ function URLToWeights(urlValue) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    if (urlValue.length == 0 && $.cookie('w') !== undefined) {
-        urlValue = $.cookie('w');
+    if (urlValue.length == 0 && Cookies.get('w') !== undefined) {
+        urlValue = Cookies.get('w');
     }
     year = '201' + urlValue[0];
     for(var i=1; i < urlValue.length; i++) {
