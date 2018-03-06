@@ -40,6 +40,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     z-index: 100;
 }
 
+.stat-description {
+	text-decoration: underline;
+	font-weight: bold;
+}
 .donate {
     color:#090;
 }

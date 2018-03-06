@@ -88,7 +88,7 @@ var _gaq = _gaq || [];
             </ul>
             <h2 id="howitworks">How it works</h2>
             <p>A team's overall score is determined by the stat-weights you apply with the sliders. When two team’s are matched up in the bracket, the team with the highest overall score wins and advances to the next round until that team is ultimately beaten by a team with a higher overall score. The team that the algorithm picks to win the bracket, is the team with the highest overall score out of all the teams in that given year.</p>
-            <p>To account for the fact that each stat is measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0.</p>
+            <p>To account for the fact that each stat is measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0. Stats where lower values are better than higher values are normalized inversely (Seed, Defensive Rating, Opp Pts / Game, Defense Rating, Opp. True Shoot %, Turnover %, and Opp. FT / FGA).</p>
             <pre>
     x’ = (x - min(x)) / (max(x) - min(x))
     x’ = normalized value
@@ -126,30 +126,30 @@ var _gaq = _gaq || [];
             <h2 id="statistics">Statistics</h2>
             <p>Explanation of Stats (all normalized):</p>
             <ul id="stat-descriptions">
-                <li>Seed -  Team's position in the bracket. 1 seeds have the "easiest" path to the final four.</li>
-                <li>Win % -  Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.</li>
-                <li>SoS -  Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.</li>
-                <li>Pts / Game -  Average points a team scores per game.</li>
-                <li>Opp Pts / Game -  Average points a team's opponent scores per game.</li>
-                <li>FG % -  Team Field Goal Percentage.</li>
-                <li>3Pt FG % -  Team 3-Point Field Goal Percentage.</li>
-                <li>Free Throw % -  Team's Free Throw shooting percentage.</li>
-                <li>Offense Rating -  Estimate of points scored by a team per 100 possessions. Offensive Rating is different than points per game in that it eliminates the influence of a team's pace. A slow paced team will have less possessions per game and less opportunity to score, resulting in a lower points per game stat. However, if this team scores on almost every possession, they will have a high offensive rating.</li>
-                <li>Defense Rating -  Estimate of points a team allowed their opponents to score per 100 possessions.</li>
-                <li>Adj. Score Margin -  Difference between a team's offense rating and defense rating. The Scoring Margin after 100 possessions.</li>
-                <li>Rebound % -  Percentage of available rebounds a team grabs during a game.</li>
-                <li>Off. Rebound % -  Percentage of available offensive rebounds a team grabs during a game. Offensive rebounds are important because they keep a possession alive and allow a team to get more chances at scoring.</li>
-                <li>Effective FG % -  Team's Total Field Goal percentage adjusted for the fact that a 3-point field goal is worth more than a 2-point field goal.</li>
-                <li>True Shooting % -  Team's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws.</li>
-                <li>Opp. True Shoot % -  Opponent's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws. A measure of how good a team is at making their opponent's miss.</li>
-                <li>Pace -  Estimate of the number of possessions a team has per 40 minute game. Ranked by fastest paced teams. If you prefer slow paced teams, do not use this slider.</li>
-                <li>Turnover % -  Estimate of turnovers a team commits per 100 offensive possessions.</li>
-                <li>Opp. Turnover % -  Estimate of turnovers a team forces their opponents to have per 100 defensive possessions.</li>
-                <li>Turnover Margin -  Difference between the number of times a team loses the ball vs times their opponent loses the ball.</li>
-                <li>Assist % -  Percentage of team's field goals that were assisted. Shows how well the team shares the ball.</li>
-                <li>Assists / Turnover -  Number of assists per turnover a team has.</li>
-                <li>FT / FGA -  Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws. A higher free throw rate mean's a team plays more aggressively and to draw contact in the paint and get fouled.</li>
-                <li>Opp. FT / FGA -  Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent. A low opponent's free throw rate means that a team is good at not fouling their opponent.</li>
+                <li><span class="stat-description">Seed</span> -  Team's position in the bracket. 1 seeds have the "easiest" path to the final four. This stat is ranked inversely- the lowest value is ranked the highest. </li>
+                <li><span class="stat-description">Win %</span> -  Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.</li>
+                <li><span class="stat-description">SoS</span> -  Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.</li>
+                <li><span class="stat-description">Pts / Game</span> -  Average points a team scores per game.</li>
+                <li><span class="stat-description">Opp Pts / Game</span> -  Average points a team's opponent scores per game. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">FG %</span> -  Team Field Goal Percentage.</li>
+                <li><span class="stat-description">3Pt FG %</span> -  Team 3-Point Field Goal Percentage.</li>
+                <li><span class="stat-description">Free Throw %</span> -  Team's Free Throw shooting percentage.</li>
+                <li><span class="stat-description">Offense Rating</span> -  Estimate of points scored by a team per 100 possessions. Offensive Rating is different than points per game in that it eliminates the influence of a team's pace. A slow paced team will have less possessions per game and less opportunity to score, resulting in a lower points per game stat. However, if this team scores on almost every possession, they will have a high offensive rating.</li>
+                <li><span class="stat-description">Defense Rating</span> -  Estimate of points a team allowed their opponents to score per 100 possessions. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Adj. Score Margin</span> -  Difference between a team's offense rating and defense rating. The Scoring Margin after 100 possessions.</li>
+                <li><span class="stat-description">Rebound %</span> -  Percentage of available rebounds a team grabs during a game.</li>
+                <li><span class="stat-description">Off. Rebound %</span> -  Percentage of available offensive rebounds a team grabs during a game. Offensive rebounds are important because they keep a possession alive and allow a team to get more chances at scoring.</li>
+                <li><span class="stat-description">Effective FG %</span> -  Team's Total Field Goal percentage adjusted for the fact that a 3-point field goal is worth more than a 2-point field goal.</li>
+                <li><span class="stat-description">True Shooting %</span> -  Team's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws.</li>
+                <li><span class="stat-description">Opp. True Shoot %</span> -  Opponent's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws. A measure of how good a team is at making their opponent's miss. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Pace</span> -  Estimate of the number of possessions a team has per 40 minute game. Ranked by fastest paced teams. If you prefer slow paced teams, do not use this slider.</li>
+                <li><span class="stat-description">Turnover %</span> -  Estimate of turnovers a team commits per 100 offensive possessions. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Opp. Turnover %</span> -  Estimate of turnovers a team forces their opponents to have per 100 defensive possessions.</li>
+                <li><span class="stat-description">Turnover Margin</span> -  Difference between the number of times a team loses the ball vs times their opponent loses the ball.</li>
+                <li><span class="stat-description">Assist %</span> -  Percentage of team's field goals that were assisted. Shows how well the team shares the ball.</li>
+                <li><span class="stat-description">Assists / Turnover</span> -  Number of assists per turnover a team has.</li>
+                <li><span class="stat-description">FT / FGA</span> -  Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws. A higher free throw rate mean's a team plays more aggressively and to draw contact in the paint and get fouled.</li>
+                <li><span class="stat-description">Opp. FT / FGA</span> -  Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent. A low opponent's free throw rate means that a team is good at not fouling their opponent. This stat is ranked inversely- the lowest value is ranked the highest.</li>
             </ul>
         </div>
     </div>
