@@ -44,6 +44,13 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	text-decoration: underline;
 	font-weight: bold;
 }
+
+#stat-footer {
+	text-align: center;
+	padding-top: 20px;
+	font-size: smaller;
+}
+
 .donate {
     color:#090;
 }
