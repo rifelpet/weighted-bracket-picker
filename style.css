@@ -62,8 +62,19 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     margin-top: 5px !important;
 }
 
-.donate {
-    color:#090;
+#donate {
+	display: inline;
+	margin-left: 64px;
+	margin-top: 14px;
+	float: left;
+}
+#donate span {
+	display: inline-block;
+	vertical-align: top;
+	padding-top: 15px;
+}
+#donate a:hover{
+    text-decoration: none;
 }
 
 blockquote,q {
