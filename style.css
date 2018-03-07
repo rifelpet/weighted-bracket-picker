@@ -56,10 +56,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 }
 .uk-grid > div > h4 {
 	text-align: center;
-	font-size: 12px;
+	font-size: 14px;
 }
 .slider-grid-body {
-    margin-top: 0px !important;
+    margin-top: 5px !important;
 }
 
 .donate {
