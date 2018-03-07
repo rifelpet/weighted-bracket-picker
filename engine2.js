@@ -530,8 +530,7 @@ function resetSliders() {
     $.each(currentWeights, function (i, param) {
        currentWeights[i] = 0;
     });
-    //window.history.pushState({},"AlgeBracket", document.URL.split('?')[0]);
-    $.removeCookie('w');
+    Cookies.remove('w');
     clear();
 }
 
