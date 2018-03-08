@@ -267,6 +267,14 @@ body {
 	padding-left: 290px;
 }
 
+.social-link {
+	color: #fff;
+	text-decoration: underline;
+}
+.social-link:hover {
+	color: #ccc;
+}
+
 #twitter-share {
     display:inline;
 }
