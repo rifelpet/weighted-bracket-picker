@@ -68,9 +68,11 @@ function getDefaultYear(urlValue) {
 
 function selectShare(inputTag) {
     inputTag.select();
-    if (window.ga && ga.loaded) {
-        ga('send', 'event', 'share', 'copy', '', inputTag.value);
+    payload = {
+        action: 'share',
+        url: inputTag.value
     }
+    $.get( "http://tracking.algebracket.com", payload);
 }
 
 function selectYear() {
@@ -116,11 +118,15 @@ $(function () {
     selectYear();
 });
 
+function mouseUp(id) {
+    submit(true)
+}
+
 function updateStat(id) {
     var newVal = $('#' + id + ' > input').val();
     currentWeights[id] = parseInt(newVal);
     $('#' + id + '-val').text(newVal);
-    submit();
+    submit(false);
 }
 
 function giveBeer() {
@@ -191,7 +197,7 @@ function parseData(year) {
             currentWeights[id] = 0;
             var column = Math.floor(sliderCounter * 3/ headerCount);
             $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')">')
+            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')" onmouseup="mouseUp(\'' + id + '\')">')
         }
         sliderCounter++;
     });
@@ -212,7 +218,7 @@ function parseData(year) {
     });
     
     setupInitialMatches();
-    submit();
+    submit(false);
 }
 /*
  * Sets up the initial matchups based on seeding for a given region.
@@ -333,7 +339,7 @@ function getRound(gameNumber) {
  * Then loop through each matchup, determining the winner and updating the bracket
  */
 
-function submit() {
+function submit(logEvent) {
     var totalWeight = 0;
     $.each(headers, function (i, param) {
         var id = attrToID(param);
@@ -501,14 +507,18 @@ function submit() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
         $('#score').text(String(correctScore) + ' / ' + String(totalScore));
-        if(currYear !== latestYear && window.ga && ga.loaded) {
-            ga('send', 'event', 'score', String(currYear), '', correctScore);
-        } else {
-            weightsToURL();
-        }
     } else {
         clearScoreDisplay();
-        weightsToURL();
+    }
+    weightsToURL();
+    if(logEvent && (tournamentStarted || currYear !== latestYear)){
+        payload = {
+            action: 'render',
+            weights: saveCookie(),
+            correctScore: correctScore,
+            year: currYear
+        }
+        $.get( "http://tracking.algebracket.com", payload);
     }
 }
 
