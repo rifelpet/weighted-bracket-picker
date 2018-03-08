@@ -66,6 +66,13 @@ function getDefaultYear(urlValue) {
     return defYear;
 }
 
+function selectShare(inputTag) {
+    inputTag.select();
+    if (window.ga && ga.loaded) {
+        ga('send', 'event', 'share', 'copy', '', inputTag.value);
+    }
+}
+
 function selectYear() {
     currYear = $('select[name="year"]').val();
 
@@ -197,10 +204,11 @@ function parseData(year) {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        $('#' + id).on("change", function () {
-            ga('send', 'event', 'slider-adjust', param, '', this.value);
-        });
-
+        if (window.ga && ga.loaded) {
+            $('#' + id).on("change", function () {
+                ga('send', 'event', 'slider-adjust', param, '', this.value);
+            });
+        }
     });
     
     setupInitialMatches();
@@ -244,9 +252,6 @@ function setupInitialMatches() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text('0 / ' + totalGames);
         $('#score').text('0 / ' + totalScore);
-        if(currYear !== latestYear) {
-            ga('send', 'score', String(currYear), '', totalScore);
-        }
     } else {
         clearScoreDisplay();
     }
@@ -496,10 +501,15 @@ function submit() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
         $('#score').text(String(correctScore) + ' / ' + String(totalScore));
+        if(currYear !== latestYear && window.ga && ga.loaded) {
+            ga('send', 'event', 'score', String(currYear), '', correctScore);
+        } else {
+            weightsToURL();
+        }
     } else {
         clearScoreDisplay();
+        weightsToURL();
     }
-    weightsToURL();
 }
 
 function clear() {
@@ -548,14 +558,16 @@ function attrToID(attr) {
 function weightsToURL() {
     // Create the URL
     var weightValue = saveCookie();
-    ga('send', 'event', 'bracket', weightValue, '', '');
+    if(window.ga && ga.loaded) {
+        ga('send', 'event', 'bracket', 'build', '', weightValue);
+    }
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
     } 
     
     $('#share').val(path);
-    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
+    $('#twitter-share').html('<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
     if (twttr !== undefined && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
