@@ -511,7 +511,7 @@ function submit(logEvent) {
         clearScoreDisplay();
     }
     weightsToURL();
-    if(logEvent && (tournamentStarted || currYear !== latestYear)){
+    if(logEvent){
         payload = {
             action: 'render',
             weights: saveCookie(),
