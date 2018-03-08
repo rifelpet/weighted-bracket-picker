@@ -256,8 +256,15 @@ body {
 	padding-bottom:10px;
 }
 
-#social > div, #social > div > div {
+#social > div, #social > div > div, #social-footer > div, #social-footer > div > div {
     vertical-align: top;
+}
+
+#social-footer {
+	text-align: left;
+	padding-bottom: 10px;
+	display: inline-block;
+	padding-left: 290px;
 }
 
 #twitter-share {
