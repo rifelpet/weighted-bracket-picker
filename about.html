@@ -68,25 +68,25 @@ var _gaq = _gaq || [];
                 </ul>
             </div>
             <h2 id="introduction">Introduction</h2>
-            <p>Algebracket was created by Peter Rifel and Adam Wilcox, two Michigan State Alumni with the goal of taking the stress out of March. Our site will generate a unique bracket based on the statistics you deem most important to a team's success. We aren't trying to sell you on a bunch of unique formulas developed by a team of statisticians over months of work in a dimly lit basement. We went to MSU. We use simple, straightforward stats, and have just made the process of applying them more user friendly.</p>
+            <p>Algebracket was created in 2015 by Peter Rifel and Adam Wilcox, two Michigan State Alumni with the goal of taking the madn... stress out of March. Our site will generate a unique bracket based on the statistics you deem most important to a team's success. We aren't trying to sell you on a bunch of unique formulas developed by a team of statisticians over months of work in a dimly lit basement. We went to MSU. We use simple, straightforward stats, and have just made the process of applying them more user friendly.</p>
             <h2 id="overview">Overview</h2>
-            <p>Welcome to Algebracket! This site allows you to create a customized bracket based on the stats that you deem most important to a team’s success. The sliders are used to weight the individual stats, which determines a team’s overall score. The farther you slide a stat bar, the greater weight you give that stat and the more influence that stat has in a team’s overall score. If you don’t want a certain stat to effect your formula, leave the slider at 0. The “Clear” button will drop all the stat-weights back to zero.</p>
-            <p>We have integrated data and results from the last 5 years so that you can test what combinations of weights would work best for those years. When you find a combination that works best, you can change the year using the drop down menu at the top of the page and click the “Set Year” button. This will transfer the weights you picked to that year.</p>
-            <p>The "Correct" counter at the bottom of the page tells you how many picks your weights have chosen. This is different from the "Score" counter, which calculates a score based on correct picks in the different rounds being worth the following:</p>
+            <p>Welcome to Algebracket! This site allows you to create a customized bracket based on the stats that you deem most important to a team’s success. The sliders are used to weight the individual stats, which determines a team’s overall score. The farther you slide a stat bar, the greater weight you give that stat and the more influence that stat has in a team’s overall score. If you don’t want a certain stat to effect your formula, leave the slider at 0. The “Clear” button will drop all the stat-weights back to zero.            </p>
+            <p>We have integrated data and results from past years so that you can test what combinations of stat-weights would work best for those years. When you find a combination you like, change the year using the drop down menu at the top of the page. This will transfer the stat-weights you picked to that year.</p>
+            <p>The "Correct" counter tells you how many correct picks your weights have chosen. This is different from the "Score" counter, which calculates a score based on correct picks in the different rounds being worth the following:</p>
             <ul>
-                <li>1 pt. - Round 1</li>
-                <li>2 pts. - Round 2</li>
-                <li>4 pts. - Round 3</li>
-                <li>8 pts. - Semi Finals</li>
-                <li>16 pts. - Finals</li>
-                <li>32 pts. - Championship</li>
+                <li>Round 1 - 1 pts</li>
+                <li>Round 2 - 2 pts</li>
+                <li>Round 3 - 4 pts</li>
+                <li>Final Four - 8 pts</li>
+                <li>Final - 16 pts</li>
+                <li>Champion - 32 pts</li>
             </ul>
             <h2 id="howitworks">How it works</h2>
-            <p>When two team’s are matched up in the bracket, the team with the highest overall score, based on the given weights, wins and advances to the next round until that team is ultimately beaten by a team with a higher overall score. The team that is selected to win the bracket, is the team with the highest overall score out of all the teams in that given year.</p>
-            <p>To account for the fact that each stat group was measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0.</p>
+            <p>A team's overall score is determined by the stat-weights you apply with the sliders. When two team’s are matched up in the bracket, the team with the highest overall score wins and advances to the next round until that team is ultimately beaten by a team with a higher overall score. The team that the algorithm picks to win the bracket, is the team with the highest overall score out of all the teams in that given year.</p>
+            <p>To account for the fact that each stat is measured on different scales, a method called Feature Scaling was used to normalize the individual stats to put them in a range of 0 to 1. A team with the best value for a given stat will have a 1 where the team with the worst value will have a 0. Stats where lower values are better than higher values are normalized inversely (Seed, Defensive Rating, Opp Pts / Game, Defense Rating, Opp. True Shoot %, Turnover %, and Opp. FT / FGA).</p>
             <pre>
     x’ = (x - min(x)) / (max(x) - min(x))
-    x’ = normalized valve&gt;
+    x’ = normalized value
     x = original team stat value
     min = minimum value of data set
     max = maximum value of data set
@@ -95,60 +95,66 @@ var _gaq = _gaq || [];
             <pre>
     T = (weight1)*(stat1) + (weight2)*(stat2) + ... + (weightn)*(statn)
 </pre>
-            <p>Where T is the overall score for a given team. The individual stats are multiplied by their corresponding weights given by the sliders. If a slider is set at zero, this stat does not contribute to the team’s overall score. All of the weighted stats are then added up to give the team’s overall score.</p>
-            <p>The weight you give an individual stat has less effect on the overall score as more stats are given weights. For example:</p>If I picked the following weights for these two stats:
+            <p>Where T is the overall score for a given team. The individual stats are multiplied by their corresponding weights given by the sliders. If a slider is set at zero, this stat does not contribute to the team’s overall score. All of the weighted stats are then summed to give the team’s overall score.</p>
+            <p>The weight you give an individual stat has less effect on the overall score as more stats are given weights. For example, if I picked the following weights for these two stats:
             <pre>
-    60 - Seed   
-    20 - Rebound Margin 
+    6 - Seed   
+    2 - Rebound Margin 
 </pre>The overall score equation would be:
             <pre>
-    T = (.60)*(Seed) + (.20)*(Rebound Margin)
+    T = (6)*(Seed) + (2)*(Rebound Margin)
 </pre>
-            <p>The “Seed” stat has 75% (60/80) of the influence in the overall score compared to “Rebound Margin” which only has 25% (20/80). But if i were to add weights to a couple of other stats:</p>
+            <p>The “Seed” stat has 75% (6/8) of the influence in the overall score compared to “Rebound Margin” which only has 25% (2/8). But if i were to add weights to a couple of other stats:</p>
             <pre>
-    60 - Seed   
-    20 - Rebound Margin 
-    20 - FG % Def. 
-    20 - Free Throw % 
-    20 - Scoring Margin
-    20 - Fouls / Game
+    6 - Seed   
+    2 - Win % 
+    2 - SoS 
+    2 - Free Throw % 
+    2 - Offense Rating
+    2 - Rebound %
 </pre>The overall score equation would be:
             <pre>
-    T = (.60)*(Seed) + (.20)*(Rebound Margin) + (.20)*(FG % Def.) + 
-          (.20)*(Free Throw %) + (.20)*(Scoring Margin) + (.20)*(Fouls / Game)  
+    T = (6)*(Seed) + (2)*(Win %) + (2)*(SoS) + 
+    (2)*(Free Throw %) + (2)*(Offensive Rating) + (2)*(Rebound %)  
 </pre>
-            <p>The Seed’s influence has dropped to 37.5% (60/160) and the other 5 stats each only account for 12.5% of the final score.</p>
+            <p>The Seed’s influence has dropped to 37.5% (6/16) and the other 5 stats each only account for 12.5% of the final score (2/16).</p>
+            <br>
+            <h3>Certainty Percentage</h3>
+            <p>For each matchup, the winning team has a certainty percentage that is determined by the difference between the two team's overall scores. The higher the percentage value, the greater the difference between the teams overall scores based on the stat-weights you chose.</p>
+            <p>For example, if you were to only use the "Seed" slider and look at the matchup between a 1 and a 16 seed, you would see a certainty percentage of 100%.</p>
+            <p>A 16 seed carries a normalized value of 0 and a 1 seed has a normalized value of 1, therefore the difference between their overall scores would be 100%.</p>
             <h2 id="statistics">Statistics</h2>
             <p>Explanation of Stats (all normalized):</p>
             <ul id="stat-descriptions">
-                <li>Seed - The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.</li>
-                <li>S.o.S. - Strength of Schedule. A measurement of the team’s opponents. The more ranked and tough opponents a team plays, the higher their strength of schedule.</li>
-                <li>Win % - Winning percentage. This is the ratio of games won over games played for a given team.</li>
-                <li>Scoring Margin - The scoring margin is the average number of points a teams wins or loses by. This can be found by taking the difference between the Scoring Offense and Scoring Defense stats for a team.</li>
-                <li>Scoring Off. - Scoring Offense is the average number of points a team scores per game.</li>
-                <li>Scoring Def. - Scoring Defense is the average number of points a team allows their opponents to score per game.</li>
-                <li>FG % - Field Goal Percentage. This is the ratio of a team’s made field goals over field goal attempts over the course of the season.</li>
-                <li>FG % Def. - Field Goal Percentage Defense. This is the average field goal percentage that a team allows their opponents to shoot.</li>
-                <li>3pt FG % - Three Point Field Goal Percentage. This is the ratio of a team’s made three pointers over three point attempts over the course of the season.</li>
-                <li>3pt FG % Def. - Three Point Field Goal Percentage Defense. This is the average three point field goal percentage that a team allows their opponents to shoot.</li>
-                <li>Free Throw % - Free Throw Percentage. Ratio of made throws made over attempts for the team over the course of the season.</li>
-                <li>FT Att. / Game - Free Throw Attempts per Game. This is the average number of free throw attempts a team gets per game. A team that is better at drawing fouls or just gets fouled more in general would have a high Free Throw Attempts per Game stat.</li>
-                <li>Rebound Margin - Rebound Margin is the average difference between a team’s rebounds per game and the number of rebounds that team allows their opponents to get per game. A team with a positive rebound margin, out rebounds their opponents. Where a team with a negative rebound margin, gets less rebounds on average than their opponents.</li>
-                <li>Off. Reb. / Game - Offensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on offense in a game. A team with a higher number of offensive rebounds per game has more second chances to score per offensive possession.</li>
-                <li>Def. Reb. / Game - Defensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on defense in a game. A team with a higher number of defensive rebounds per game denies their opponent to score off second chance shots.</li>
-                <li>Assists / Turnover - Assist to Turnover Ratio. This is the total number of assists a team makes divided by the total number of turnovers they commit. It can be thought of as a stat to measure how “clean” a teams offense is.</li>
-                <li>Assists / Game - Assists per Game. This is the average number of assists a team has per game.</li>
-                <li>Turnover Margin - The turnover margin is the difference between a team’s turnovers per game and the turnovers their opponents commit per game. A positive Turnover Margin means the team turns the ball over less than their opponents.</li>
-                <li>Turnovers / Game - Turnovers per game. This is the average number of turnovers a team commits per game.</li>
-                <li>Blocks / Game - Blocks per Game. This is the average number of blocks a team gets per game.</li>
-                <li>Steals / Game - Steals per Game. This is the average number of steals a team gets per game.</li>
-                <li>Fouls / Game - Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws.</li>
-                <li>Random - In this stat, a unique randomly assigned number between 0 and 1 is given to each team when the page is loaded. This random number will change every time the page is loaded. As a greater weight is applied to this number, it will more greatly influence a teams final outcome in the bracket, just as with any other stat. This was designed as a “wildcard” to mix up your bracket. Use Random at your own risk. We are not responsible if you lose your bracket because it chose Michigan to win it all. Like that would ever happen. Go State.</li>
+                <li><span class="stat-description">Seed</span> -  Team's position in the bracket. 1 seeds have the "easiest" path to the final four. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Win %</span> -  Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.</li>
+                <li><span class="stat-description">SoS</span> -  Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.</li>
+                <li><span class="stat-description">Pts / Game</span> -  Average points a team scores per game.</li>
+                <li><span class="stat-description">Opp Pts / Game</span> -  Average points a team's opponent scores per game. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">FG %</span> -  Team Field Goal Percentage.</li>
+                <li><span class="stat-description">3Pt FG %</span> -  Team 3-Point Field Goal Percentage.</li>
+                <li><span class="stat-description">Free Throw %</span> -  Team's Free Throw shooting percentage.</li>
+                <li><span class="stat-description">Offense Rating</span> -  Estimate of points scored by a team per 100 possessions. Offensive Rating is different than points per game in that it eliminates the influence of a team's pace. A slow paced team will have less possessions per game and less opportunity to score, resulting in a lower points per game stat. However, if this team scores on almost every possession, they will have a high offensive rating.</li>
+                <li><span class="stat-description">Defense Rating</span> -  Estimate of points a team allowed their opponents to score per 100 possessions. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Adj. Score Margin</span> -  Difference between a team's offense rating and defense rating. The Scoring Margin after 100 possessions.</li>
+                <li><span class="stat-description">Rebound %</span> -  Percentage of available rebounds a team grabs during a game.</li>
+                <li><span class="stat-description">Off. Rebound %</span> -  Percentage of available offensive rebounds a team grabs during a game. Offensive rebounds are important because they keep a possession alive and allow a team to get more chances at scoring.</li>
+                <li><span class="stat-description">Effective FG %</span> -  Team's Total Field Goal percentage adjusted for the fact that a 3-point field goal is worth more than a 2-point field goal.</li>
+                <li><span class="stat-description">True Shooting %</span> -  Team's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws.</li>
+                <li><span class="stat-description">Opp. True Shoot %</span> -  Opponent's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws. A measure of how good a team is at making their opponent's miss. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Pace</span> -  Estimate of the number of possessions a team has per 40 minute game. Ranked by fastest paced teams. If you prefer slow paced teams, do not use this slider.</li>
+                <li><span class="stat-description">Turnover %</span> -  Estimate of turnovers a team commits per 100 offensive possessions. This stat is ranked inversely- the lowest value is ranked the highest.</li>
+                <li><span class="stat-description">Opp. Turnover %</span> -  Estimate of turnovers a team forces their opponents to have per 100 defensive possessions.</li>
+                <li><span class="stat-description">Turnover Margin</span> -  Difference between the number of times a team loses the ball vs times their opponent loses the ball.</li>
+                <li><span class="stat-description">Assist %</span> -  Percentage of team's field goals that were assisted. Shows how well the team shares the ball.</li>
+                <li><span class="stat-description">Assists / Turnover</span> -  Number of assists per turnover a team has.</li>
+                <li><span class="stat-description">FT / FGA</span> -  Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws. A higher free throw rate mean's a team plays more aggressively and to draw contact in the paint and get fouled.</li>
+                <li><span class="stat-description">Opp. FT / FGA</span> -  Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent. A low opponent's free throw rate means that a team is good at not fouling their opponent. This stat is ranked inversely- the lowest value is ranked the highest.</li>
             </ul>
         </div>
     </div>
     <div id="footer">
-Copyright &copy; 2015 Algebracket. All Rights Reserved. Template by <a href="http://w3layouts.com/">W3Layouts</a>
+Copyright &copy; 2018 Algebracket. All Rights Reserved. Template by <a href="http://w3layouts.com/">W3Layouts</a>
     </div>
 </body>
 </html>

@@ -16,42 +16,43 @@ var headers = [];
 var regions = ['South', 'East', 'West', 'Midwest'];
 
 // Headers that arent used in comparison for winner determination
-var nonStatHeaders = ['Region', 'Name', 'Rank', 'Games Won'];
+var nonStatHeaders = ['Rank', 'Region', 'Name', 'Games Won'];
 
 var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
 var urlWeightString = '';
-var latestYear = '2017';
+var latestYear = '2018';
 var currYear = latestYear;
 var showScore = true;
 var tournamentStarted = false;
 
 var descriptions = {
-    "Seed": "The seed number is assigned to a team by the selection committee. A one seed is the best and a 16 is the worst.",
-    "SS": "Strength of Schedule. A measurement of the team’s opponents. The more ranked and tough opponents a team plays, the higher their strength of schedule.",
-    "WP": "Winning percentage. This is the ratio of games won over games played for a given team.",
-    "SM": "The scoring margin is the average number of points a teams wins or loses by. This can be found by taking the difference between the Scoring Offense and Scoring Defense stats for a team.",
-    "SO": "Scoring Offense is the average number of points a team scores per game.",
-    "SD": "Scoring Defense is the average number of points a team allows their opponents to score per game.",
-    "FGP": "Field Goal Percentage. This is the ratio of a team’s made field goals over field goal attempts over the course of the season.",
-    "FGPD": "Field Goal Percentage Defense. This is the average field goal percentage that a team allows their opponents to shoot.",
-    "3FGP": "Three Point Field Goal Percentage. This is the ratio of a team’s made three pointers over three point attempts over the course of the season.",
-    "3FGPD": "Three Point Field Goal Percentage Defense. This is the average three point field goal percentage that a team allows their opponents to shoot.",
-    "FTP": "Free Throw Percentage. Ratio of made throws made over attempts for the team over the course of the season.",
-    "FTAG": "Free Throw Attempts per Game. This is the average number of free throw attempts a team gets per game. A team that is better at drawing fouls or just gets fouled more in general would have a high Free Throw Attempts per Game stat.",
-    "RM": "Rebound Margin is the average difference between a team’s rebounds per game and the number of rebounds that team allows their opponents to get per game. A team with a positive rebound margin, out rebounds their opponents. Where a team with a negative rebound margin, gets less rebounds on average than their opponents.",
-    "ORG": "Offensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on offense in a game. A team with a higher number of offensive rebounds per game has more second chances to score per offensive possession.",
-    "DRG": "Defensive Rebounds per Game. This is the average number of rebounds grabbed by a team while on defense in a game. A team with a higher number of defensive rebounds per game denies their opponent to score off second chance shots.",
-    "AT": "Assist to Turnover Ratio. This is the total number of assists a team makes divided by the total number of turnovers they commit. It can be thought of as a stat to measure how “clean” a teams offense is.",
-    "AG": "Assists per Game. This is the average number of assists a team has per game.",
-    "TM": "The turnover margin is the difference between a team’s turnovers per game and the turnovers their opponents commit per game. A positive Turnover Margin means the team turns the ball over less than their opponents.",
-    "TG": "Turnovers per game. This is the average number of turnovers a team commits per game. A team that turns the ball over less would be rated higher in this stat",
-    "BG": "Blocks per Game. This is the average number of blocks a team gets per game.",
-    "SG": "Steals per Game. This is the average number of steals a team gets per game.",
-    "FG": "Personal Fouls per Game. This is the average number of Personal Fouls a team commits per game. A team with a higher number of Personal Fouls per Game tends to allow their opponents to shoot more free throws.",
-    "R": "In this stat, a unique randomly assigned number between 0 and 1 is given to each team when the page is loaded. This random number will change every time the page is loaded. As a greater weight is applied to this number, it will more greatly influence a teams final outcome in the bracket, just as with any other stat. This was designed as a “wildcard” to mix up your bracket. Use Random at your own risk. We are not responsible if you lose your bracket because it chose Michigan to win it all. Like that would ever happen. Go State."
+    "Seed": "Team's position in the bracket. 1 seeds have the 'easiest' path to the final four. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "SS": "Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.",
+    "WP": "Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.",
+    "PG": "Average points a team scores per game.",
+    "OPG": " Average points a team's opponent scores per game. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "FGP": "Team Field Goal Percentage.",
+    "3PFGP": "Team 3-Point Field Goal Percentage.",
+    "FTP": "Team's Free Throw shooting percentage.",
+    "OR": "Estimate of points scored by a team per 100 possessions. Offensive Rating is different than points per game in that it eliminates the influence of a team's pace. A slow paced team will have less possessions per game and less opportunity to score, resulting in a lower points per game stat. However, if this team scores on almost every possession, they will have a high offensive rating.",
+    "DR": "Estimate of points a team allowed their opponents to score per 100 possessions. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "ASM": "Difference between a team's offense rating and defense rating. The Scoring Margin after 100 possessions.",
+    "RP": "Percentage of available rebounds a team grabs during a game.",
+    "ORP": "Percentage of available offensive rebounds a team grabs during a game. Offensive rebounds are important because they keep a possession alive and allow a team to get more chances at scoring.",
+    "EFGP": "Team's Total Field Goal percentage adjusted for the fact that a 3-point field goal is worth more than a 2-point field goal.",
+    "TSP": "Team's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws.",
+    "OTSP": " Opponent's combined shooting efficiency that takes into account 3 pointers, 2 point field goals, and free throws. A measure of how good a team is at making their opponent's miss. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "P": "Estimate of the number of possessions a team has per 40 minute game. Ranked by fastest paced teams. If you prefer slow paced teams, do not use this slider.",
+    "TP": "Estimate of turnovers a team commits per 100 offensive possessions. This stat is ranked inversely- the lowest value is ranked the highest.",
+    "OTP": "Estimate of turnovers a team forces their opponents to have per 100 defensive possessions.",
+    "TM": "Difference between the number of times a team loses the ball vs times their opponent loses the ball.",
+    "AP": "Percentage of team's field goals that were assisted.",
+    "AT": "Number of assists per turnover a team has.",
+    "FTFGA": "Free Throws made per Field Goal Attempt. Shows how effective a team is at getting fouled and making their free throws. A higher free throw rate mean's a team plays more aggressively and to draw contact in the paint and get fouled.",
+    "OFTFGA": "Opponent's Free Throws made per Field Goal Attempt. Shows a team's ability to avoid fouling their opponent. A low opponent's free throw rate means that a team is good at not fouling their opponent. This stat is ranked inversely- the lowest value is ranked the highest."
 };
 
 function getDefaultYear(urlValue) {
@@ -63,6 +64,15 @@ function getDefaultYear(urlValue) {
         defYear = '201' + Cookies.get('w').substring(0, 1);
     }
     return defYear;
+}
+
+function selectShare(inputTag) {
+    inputTag.select();
+    payload = {
+        action: 'share',
+        url: inputTag.value
+    }
+    $.get( "http://tracking.algebracket.com", payload);
 }
 
 function selectYear() {
@@ -108,11 +118,15 @@ $(function () {
     selectYear();
 });
 
+function mouseUp(id) {
+    submit(true)
+}
+
 function updateStat(id) {
     var newVal = $('#' + id + ' > input').val();
     currentWeights[id] = parseInt(newVal);
     $('#' + id + '-val').text(newVal);
-    submit();
+    submit(false);
 }
 
 function giveBeer() {
@@ -156,7 +170,6 @@ function parseData(year) {
             }
         }
         team.Name = abbreviateName(team.Name);
-        team.stats.R = Math.random();
         if (team.stats.Seed in bracketTeamsByRegionAndSeed[team.Region]) {
             firstFours.push([team, bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed]]);
             delete bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed];
@@ -175,7 +188,6 @@ function parseData(year) {
         }
     }
     
-    headers.push('Random');
     var headerCount = headers.length - nonStatHeaders.length;
     var sliderCounter = 0;
     $.each(headers, function (i, param) {
@@ -185,15 +197,10 @@ function parseData(year) {
             currentWeights[id] = 0;
             var column = Math.floor(sliderCounter * 3/ headerCount);
             $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')">')
-
+            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')" onmouseup="mouseUp(\'' + id + '\')">')
         }
         sliderCounter++;
     });
-    if ($('#donate').length === 0) {
-        $('#slider-col2 > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="donate">Give Beer $$$</label><div class="slider-wrapper"><div class="value" id="donate-val">$0</div><div id="donate"></div></div></li>');
-        $('#donate').append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="giveBeer()">')
-    }
     if (urlWeightString.length > 0) {
         URLToWeights(urlWeightString);
     }
@@ -203,14 +210,15 @@ function parseData(year) {
     $.each(headers, function (i, param) {
         var id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return true;
-        $('#' + id).on("change", function () {
-            ga('send', 'event', 'slider-adjust', param, '', this.value);
-        });
-
+        if (window.ga && ga.loaded) {
+            $('#' + id).on("change", function () {
+                ga('send', 'event', 'slider-adjust', param, '', this.value);
+            });
+        }
     });
     
     setupInitialMatches();
-    submit();
+    submit(false);
 }
 /*
  * Sets up the initial matchups based on seeding for a given region.
@@ -250,9 +258,6 @@ function setupInitialMatches() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text('0 / ' + totalGames);
         $('#score').text('0 / ' + totalScore);
-        if(currYear !== latestYear) {
-            ga('send', 'score', String(currYear), '', totalScore);
-        }
     } else {
         clearScoreDisplay();
     }
@@ -334,7 +339,7 @@ function getRound(gameNumber) {
  * Then loop through each matchup, determining the winner and updating the bracket
  */
 
-function submit() {
+function submit(logEvent) {
     var totalWeight = 0;
     $.each(headers, function (i, param) {
         var id = attrToID(param);
@@ -506,6 +511,15 @@ function submit() {
         clearScoreDisplay();
     }
     weightsToURL();
+    if(logEvent && (tournamentStarted || currYear !== latestYear)){
+        payload = {
+            action: 'render',
+            weights: saveCookie(),
+            correctScore: correctScore,
+            year: currYear
+        }
+        $.get( "http://tracking.algebracket.com", payload);
+    }
 }
 
 function clear() {
@@ -536,8 +550,7 @@ function resetSliders() {
     $.each(currentWeights, function (i, param) {
        currentWeights[i] = 0;
     });
-    //window.history.pushState({},"AlgeBracket", document.URL.split('?')[0]);
-    $.removeCookie('w');
+    Cookies.remove('w');
     clear();
 }
 
@@ -546,22 +559,25 @@ function resetSliders() {
  */
 
 function attrToID(attr) {
-    // TODO: might be able to remove this check? maybe leaver just seed
+    // TODO: might be able to remove this check? maybe leave just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    return attr.replace(/[ a-z%\.\/]/g, '');
+    short = attr.replace(/%/, 'P').replace(/[ a-z%\.\/]/g, '');
+    return short
 }
 
 function weightsToURL() {
     // Create the URL
     var weightValue = saveCookie();
-    ga('send', 'event', 'bracket', weightValue, '', '');
+    if(window.ga && ga.loaded) {
+        ga('send', 'event', 'bracket', 'build', '', weightValue);
+    }
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'http://' + path;
     } 
     
     $('#share').val(path);
-    $('#twitter').html('<a class="twitter-share-button" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
+    $('#twitter-share').html('<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
     if (twttr !== undefined && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
