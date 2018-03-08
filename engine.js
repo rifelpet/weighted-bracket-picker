@@ -25,7 +25,6 @@ var totalScore = 0; // This will be 192 except for the current year
 var urlWeightString = '';
 var latestYear = '2018';
 var currYear = latestYear;
-var showScore = true;
 var tournamentStarted = false;
 
 var descriptions = {
@@ -110,9 +109,6 @@ $(function () {
     if (urlParams.hasOwnProperty('w')) {
         urlWeightString = urlParams.w;
     }
-    if (urlParams.hasOwnProperty('showScore')) {
-        showScore = true;
-    }
     currYear = getDefaultYear(urlWeightString);
     $('select[name="year"]').val(currYear);
     selectYear();
@@ -129,26 +125,6 @@ function updateStat(id) {
     submit(false);
 }
 
-function giveBeer() {
-    var newVal = $('#donate > input').val();
-    $('#donate-val').text('$' + newVal);
-
-    if (newVal === 0 || isNaN(newVal)) {
-        return;
-    }
-    if (newVal === 1) {
-        $('[name="os0"]').val('1 Dollar');
-    } else {
-        $('[name="os0"]').val(String(newVal) + ' Dollars');
-    }
-    var modal = UIkit.modal("#payment-popup");
-
-    if (modal.isActive() ) {
-        modal.hide();
-    } else {
-        modal.show();
-    }
-}
 
 function parseData(year) {
     var lines = yearData[year].trim().split("\n"), result = [];
@@ -400,10 +376,7 @@ function submit(logEvent) {
 
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
 
-            $('#' + region + 'game' + gameNum).text(winner.stats.Seed + '. ' + winner.Name);
-            if (showScore) {
-                $('#' + region + 'game' + gameNum).append(' ' + winnerPct + '%');
-            }
+            $('#' + region + 'game' + gameNum).text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
             if (totalGames > 0 && (winner['Games Won'] > 0 || loser['Games Won'] > 0)) {
                 if (winner['Games Won'] > 0) {
                     correctCount++;
@@ -428,14 +401,11 @@ function submit(logEvent) {
             var winnerPct = winnerData[1];   
             var loser = winnerData[2];         
             gameWinners['game' + String(game)] = winner;
-            $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name);
-            if (showScore) {
-                $('#' + region + 'game' + game).append(' ' + winnerPct + '%');
-            }
+            $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
 
             var round = getRound(game);
             if (totalGames > 0 && (winner['Games Won'] >= round || loser['Games Won'] >= round)) {
-                if (winner['Games Won'] >= getRound(game)) {
+                if (winner['Games Won'] >= round) {
                     correctCount++;
                     if (game <= 12) correctScore += 2;
                     else if (game <= 14) correctScore += 4;
@@ -488,7 +458,7 @@ function submit(logEvent) {
     var winner = winnerData[0];
     var winnerPct = winnerData[1];
     var loser = winnerData[2];
-    if (totalGames > 0 &&  (winner['Games Won'] == 6 || loser['Games Won'] == 6)) {
+    if (totalGames > 0 && (winner['Games Won'] == 6 || loser['Games Won'] == 6)) {
         if (winner['Games Won'] == 6) {
             correctCount++;
             correctScore += 32;
@@ -499,10 +469,7 @@ function submit(logEvent) {
     } else {
         $('#championship').removeClass('correct').removeClass('incorrect');
     }
-    $('#championship').text(winner.stats.Seed + '. ' + winner.Name);
-    if (showScore) {
-        $('#championship').append(' ' + winnerPct + '%');
-    }
+    $('#championship').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
     if(tournamentStarted || currYear !== latestYear) {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
