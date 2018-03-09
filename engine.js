@@ -22,6 +22,8 @@ var firstFours = [];
 var totalGames = 0; // This will be 63 except for the current year
 var totalScore = 0; // This will be 192 except for the current year
 
+var highestGamesPlayed = -1; // This will be 6 except for the current year
+
 var urlWeightString = '';
 var latestYear = '2018';
 var currYear = latestYear;
@@ -161,6 +163,9 @@ function parseData(year) {
             }
         } else if (gamesWon < 0) {
             tournamentStarted = true
+        }
+        if(gamesWon > highestGamesPlayed) {
+            highestGamesPlayed = gamesWon;
         }
     }
     
@@ -414,6 +419,8 @@ function submit(logEvent) {
                 } else {
                     $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
                 }
+            } else if (totalGames > 1 && highestGamesPlayed >= winner['Games Won']) {
+                $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
             } else {
                 $('#' + region + 'game' + game).removeClass('correct').removeClass('incorrect');
             }
@@ -446,6 +453,8 @@ function submit(logEvent) {
             } else {
                 $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
             }
+        } else if (totalGames > 0 && highestGamesPlayed >= 5) {
+            $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
         } else {
             $('#' + sides[side] + 'game').removeClass('correct').removeClass('incorrect');
         }
@@ -463,6 +472,8 @@ function submit(logEvent) {
         } else {
             $('#championship').removeClass('correct').addClass('incorrect');
         }
+    } else if (totalGames > 0 && highestGamesPlayed == 6) {
+        $('#championship').removeClass('correct').addClass('incorrect');
     } else {
         $('#championship').removeClass('correct').removeClass('incorrect');
     }
