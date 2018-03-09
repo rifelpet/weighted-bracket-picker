@@ -437,10 +437,7 @@ function submit(logEvent) {
         var loser = winnerData[2];      
         championship[sides[side]] = winner;
         
-        $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name);
-        if (showScore) {
-            $('#' + sides[side] + 'game').append(' ' + winnerPct + '%');
-        }
+        $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
         if (totalGames > 0 &&  (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
             if (winner['Games Won'] >= 5) {
                 correctCount++;
