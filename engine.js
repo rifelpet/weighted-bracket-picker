@@ -82,7 +82,7 @@ function selectYear() {
     if (currYear !== latestYear) {
         $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
-        $('#alert').text('');
+        $('#alert').text('Projected seeding for 2018. Official bracket will be released Sunday 3/11');
     }
 
     var currCookie = Cookies.get('w');
