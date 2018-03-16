@@ -210,8 +210,10 @@ function setupInitialMatches() {
     $('#play-in').text('');
     if (firstFours.length == 1) {
         $('#play-in-title').text('Play-In');
-    } else {
+    } else if (firstFours.length != 0) {
         $('#play-in-title').text('First Four');
+    } else {
+        $('#play-in-title').text('')
     }
     for (var matchupID in firstFours) {
         matchup = firstFours[matchupID];
