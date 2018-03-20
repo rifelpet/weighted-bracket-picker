@@ -550,7 +550,7 @@ function weightsToURL() {
     }
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
-        path = 'http://' + path;
+        path = 'https://' + path;
     } 
     
     $('#share').val(path);
