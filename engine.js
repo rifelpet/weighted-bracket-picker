@@ -73,7 +73,7 @@ function selectShare(inputTag) {
         action: 'share',
         url: inputTag.value
     }
-    $.get( "http://tracking.algebracket.com", payload);
+    $.get( "https://tracking.algebracket.com", payload);
 }
 
 function selectYear() {
@@ -495,7 +495,7 @@ function submit(logEvent) {
             correctScore: correctScore,
             year: currYear
         }
-        $.get( "http://tracking.algebracket.com", payload);
+        $.get( "https://tracking.algebracket.com", payload);
     }
 }
 
