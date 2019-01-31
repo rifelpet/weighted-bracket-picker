@@ -95,7 +95,6 @@ function selectYearAndActivity() {
     var cacheKey = currActivity + currYear;
     if (typeof statCache[cacheKey] === "undefined") {
         var csvPath = 'data/' + currActivity + '/' + currYear + '.csv';
-        console.log(csvPath);
         $.get(csvPath, function (data) {
             statCache[cacheKey] = data;
             parseData(cacheKey);
