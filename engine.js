@@ -3,7 +3,7 @@
 var currentWeights = {};
 
 // Used as a cache so that we aren't re-requesting CSVs over and over
-var yearData = {};
+var statCache = {};
 
 var seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
 
@@ -26,6 +26,7 @@ var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlWeightString = '';
 var latestYear = '2018';
+var activity = 'ncaambb'
 var currYear = latestYear;
 var tournamentStarted = false;
 
@@ -90,13 +91,15 @@ function selectYear() {
         Cookies.set('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
     }
 
-    if (typeof yearData[currYear] === "undefined") {
-        $.get(currYear + '-data.csv', function (data) {
-            yearData[currYear] = data;
-            parseData(currYear);
+    var cacheKey = activity + currYear;
+    if (typeof statCache[cacheKey] === "undefined") {
+        var csvPath = 'data/' + activity + '/' + currYear + '.csv';
+        $.get(csvPath, function (data) {
+            statCache[cacheKey] = data;
+            parseData(cacheKey);
         });
     } else {
-        parseData(currYear);
+        parseData(cacheKey);
     }
 }
 
@@ -128,8 +131,8 @@ function updateStat(id) {
 }
 
 
-function parseData(year) {
-    var lines = yearData[year].trim().split("\n"), result = [];
+function parseData(cacheKey) {
+    var lines = statCache[cacheKey].trim().split("\n");
     headers = lines[0].trim().split(',');
     bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
     firstFours = [];
