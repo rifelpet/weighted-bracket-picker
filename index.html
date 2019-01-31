@@ -123,7 +123,7 @@
                 <div id="year-div">
                     <h1>Select Year</h1>
                     <div id="year-select">
-                        <select id="year" name="year" onchange="selectYear()">
+                        <select id="year" name="year" onchange="selectYearAndActivity()">
                             <option>2018</option>
                             <option>2017</option>
                             <option>2016</option>
@@ -133,6 +133,10 @@
                             <option>2012</option>
                             <option>2011</option>
                             <option>2010</option>
+                        </select>
+                        <select style="display:none;" id="activity" name="activity" onchange="selectYearAndActivity()">
+                            <option value="ncaambb">NCAA Men's Bball</option>
+                            <option value="ncaawbb">NCAA Women's Bball</option>
                         </select>
                     </div>
                 </div>

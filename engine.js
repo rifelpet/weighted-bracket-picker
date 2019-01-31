@@ -26,7 +26,7 @@ var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlWeightString = '';
 var latestYear = '2018';
-var activity = 'ncaambb'
+var currActivity = 'ncaambb'
 var currYear = latestYear;
 var tournamentStarted = false;
 
@@ -77,8 +77,9 @@ function selectShare(inputTag) {
     $.get( "https://tracking.algebracket.com", payload);
 }
 
-function selectYear() {
+function selectYearAndActivity() {
     currYear = $('select[name="year"]').val();
+    currActivity = $('select[name="activity"]').val();
 
     if (currYear !== latestYear) {
         $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
@@ -91,9 +92,10 @@ function selectYear() {
         Cookies.set('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
     }
 
-    var cacheKey = activity + currYear;
+    var cacheKey = currActivity + currYear;
     if (typeof statCache[cacheKey] === "undefined") {
-        var csvPath = 'data/' + activity + '/' + currYear + '.csv';
+        var csvPath = 'data/' + currActivity + '/' + currYear + '.csv';
+        console.log(csvPath);
         $.get(csvPath, function (data) {
             statCache[cacheKey] = data;
             parseData(cacheKey);
@@ -114,9 +116,15 @@ $(function () {
     if (urlParams.hasOwnProperty('w')) {
         urlWeightString = urlParams.w;
     }
+
     currYear = getDefaultYear(urlWeightString);
     $('select[name="year"]').val(currYear);
-    selectYear();
+
+    // Temporary until multi-activity goes live
+    if (urlParams.hasOwnProperty('multiactivity')) {
+        $('#activity').css('display', '');
+    }
+    selectYearAndActivity();
 });
 
 function mouseUp(id) {
