@@ -350,18 +350,18 @@ body {
 	padding:0 20px;
 }
 
-#play-in,#play-in-title {
+#play-in {
 	text-align:center;
-	padding-left:0;
-	padding-right:0;
-	margin-bottom:0;
 	margin-top:4px;
+	height: 8px;
 }
 
 #play-in-title {
 	font-weight:700;
 	padding-top:16px;
 	font-size:larger;
+	text-align:center;
+	height: 16px;
 }
 
 #top-bar {
@@ -372,10 +372,15 @@ body {
 	background-color:#BAD7E5;
 	padding:4px;
 	border-radius:10px;
+	position:absolute;
+	left: 480px;
+	width: 152px;
+	top: 225px;
+	z-index: 999;
 }
 
 #year-div > h1 {
-    font-weight:700;
+  font-weight:700;
 	font-size:24px;
 	text-align:center;
 }
@@ -395,14 +400,6 @@ body {
 
 #share-div,#correct-div,.menu {
     padding-left: 46px;
-}
-
-#year-div {
-    position:absolute;
-    left: 480px;
-    width: 152px;
-    top: 300px;
-    z-index: 999;
 }
 
 #play-in > li,#play-in > li > div {

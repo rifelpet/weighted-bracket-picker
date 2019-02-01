@@ -81,12 +81,6 @@ function selectYearAndActivity() {
     currYear = $('select[name="year"]').val();
     currActivity = $('select[name="activity"]').val();
 
-    if (currYear !== latestYear) {
-        $('#alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
-    } else {
-        $('#alert').text('');
-    }
-
     var currCookie = Cookies.get('w');
     if (currCookie !== undefined) {
         Cookies.set('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
