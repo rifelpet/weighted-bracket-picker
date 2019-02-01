@@ -29,12 +29,9 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
     width: 330px;
     height: 80px;
 }
-#alert { 
+.alert { 
     color: red;
     font-size: smaller;
-    position: absolute;
-    top: 248px;
-    width: 1080px;
     text-align: center;
     padding-left: 20px;
     z-index: 100;
