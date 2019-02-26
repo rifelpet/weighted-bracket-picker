@@ -92,6 +92,9 @@ function selectYearAndActivity() {
         $.get(csvPath, function (data) {
             statCache[cacheKey] = data;
             parseData(cacheKey);
+        }).fail(function() {
+            $('#play-in-title').addClass('alert').text('The selected year\'s data is not available for this activity. Please choose a different year.');
+            clear(false);
         });
     } else {
         parseData(cacheKey);
@@ -337,7 +340,7 @@ function submit(logEvent) {
         totalWeight += currentWeights[id];
     });
     if (totalWeight === 0) {
-        clear();
+        clear(true);
         weightsToURL();
         return;
     }
@@ -505,7 +508,7 @@ function submit(logEvent) {
     }
 }
 
-function clear() {
+function clear(setup) {
     // Easier to just wipe everything and rerun the setup
     for(var regionID in regions) {
         var regionName = regions[regionID].toLowerCase();
@@ -517,7 +520,16 @@ function clear() {
     $('#rightgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
     $('#championship').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
 
-    setupInitialMatches();
+    if (setup) {
+        setupInitialMatches();
+    } else {
+        for (var regionID = 0; regionID < regions.length; regionID++) {
+            for (var seed = 1; seed < 17; seed++) {
+                var region = regions[regionID].toLowerCase();
+                $('#' + region + 'seed' + seed).text('');
+            }
+        }
+    }
 }
 
 /*
@@ -534,7 +546,7 @@ function resetSliders() {
        currentWeights[i] = 0;
     });
     Cookies.remove('w');
-    clear();
+    clear(true);
 }
 
 /*
