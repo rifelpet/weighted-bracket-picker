@@ -25,7 +25,7 @@ var totalScore = 0; // This will be 192 except for the current year
 var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlWeightString = '';
-var latestYear = '2018';
+var latestYear = '2019';
 var currActivity = 'ncaambb'
 var currYear = latestYear;
 var tournamentStarted = false;
