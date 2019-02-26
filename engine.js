@@ -231,7 +231,6 @@ function setupInitialMatches() {
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
         var region = regions[regionID];
-        var list = $('<ul/>');
         regionTeams = bracketTeamsByRegionAndSeed[regionID];
         for (var seed = 1; seed < 9; seed++) {
             var high = regionTeams[seed];
