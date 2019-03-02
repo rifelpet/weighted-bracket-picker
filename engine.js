@@ -229,6 +229,7 @@ function setupInitialMatches() {
     } else if (firstFours.length != 0) {
         $('#play-in-title').text('First Four');
     }
+    $('#play-in').text('');
     for (var matchupID in firstFours) {
         matchup = firstFours[matchupID];
         $('#play-in').append('<li id="matchup' + matchupID + '"><div class="region"> (' + matchup[0].stats.Seed +
