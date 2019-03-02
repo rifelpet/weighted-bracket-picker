@@ -24,9 +24,10 @@ var totalScore = 0; // This will be 192 except for the current year
 
 var highestGamesPlayed = -1; // This will be 6 except for the current year
 
-var urlWeightString = '';
+var urlParams = {};
 var latestYear = '2019';
 var currActivity = 'ncaambb'
+var defaultActivity = 'ncaambb';
 var currYear = latestYear;
 var tournamentStarted = false;
 
@@ -62,7 +63,6 @@ function getDefaultYear(urlValue) {
     if (urlValue !== '') {
         defYear = '201' + urlValue[0];
     } else if (Cookies.get('w') !== undefined && !isNaN(parseInt(Cookies.get('w').substring(0, 1)))) {
-
         defYear = '201' + Cookies.get('w').substring(0, 1);
     }
     return defYear;
@@ -81,9 +81,14 @@ function selectYearAndActivity() {
     currYear = $('select[name="year"]').val();
     currActivity = $('select[name="activity"]').val();
 
-    var currCookie = Cookies.get('w');
-    if (currCookie !== undefined) {
-        Cookies.set('w', currYear.substring(3, 4) + currCookie.substring(1, currCookie.length));
+    var currWeightCookie = Cookies.get('w');
+    if (currWeightCookie !== undefined) {
+        Cookies.set('w', currYear.substring(3, 4) + currWeightCookie.substring(1, currWeightCookie.length));
+    }
+
+    var currActivityCookie = Cookies.get('a');
+    if (currActivityCookie !== undefined || currActivityCookie != currActivity) {
+        Cookies.set('activity', currActivity);
     }
 
     var cacheKey = currActivity + currYear;
@@ -102,19 +107,19 @@ function selectYearAndActivity() {
 }
 
 $(function () {
-    var urlParams = {};
     // Grab values from the url if any
     location.search.substr(1).split('&').forEach(function (item) {
         var key = item.split('=')[0];
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
 
-    if (urlParams.hasOwnProperty('w')) {
-        urlWeightString = urlParams.w;
+    if (urlParams.hasOwnProperty('a')) {
+        currActivity = urlParams.a;
     }
 
-    currYear = getDefaultYear(urlWeightString);
+    currYear = getDefaultYear(urlParams.hasOwnProperty('w') ? urlParams.w : '');
     $('select[name="year"]').val(currYear);
+    $('select[name="activity"]').val(currActivity);
 
     // Temporary until multi-activity goes live
     if (urlParams.hasOwnProperty('multiactivity')) {
@@ -189,8 +194,8 @@ function parseData(cacheKey) {
         }
         sliderCounter++;
     });
-    if (urlWeightString.length > 0) {
-        URLToWeights(urlWeightString);
+    if (urlParams.hasOwnProperty('w') && urlParams.w.length > 0) {
+        URLToWeights(urlParams);
     }
     weightsToURL();
     // Now that sliders have been built and values assigned,
@@ -568,6 +573,9 @@ function weightsToURL() {
     var path = document.URL.split('?')[0] + '?w=' + weightValue;
     if (path.substring(0, 4) != "http") {
         path = 'https://' + path;
+    }
+    if (currActivity != defaultActivity) {
+        path += '&a=' + currActivity;
     } 
     
     $('#share').val(path);
@@ -595,22 +603,25 @@ function saveCookie() {
         urlValue += weightVal;
     }
     Cookies.set('w', urlValue);
+    Cookies.set('activity', currActivity);
     return urlValue
 }
 
-function URLToWeights(urlValue) {
-    var weights = {};
+function URLToWeights(urlParams) {
     var sortedWeights = [];
     for (var k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    if (urlValue.length == 0 && Cookies.get('w') !== undefined) {
-        urlValue = Cookies.get('w');
+    if (urlParams.w.length == 0 && Cookies.get('w') !== undefined) {
+        urlParams.w = Cookies.get('w');
     }
-    year = '201' + urlValue[0];
-    for(var i=1; i < urlValue.length; i++) {
-        var weightVal = urlValue[i];
+    if ((!urlParams.hasOwnProperty('a') || urlParams.a.length == 0) && Cookies.get('activity') !== undefined) {
+        currActivity = Cookies.get('activity');
+    }
+    year = '201' + urlParams.w[0];
+    for(var i=1; i < urlParams.w.length; i++) {
+        var weightVal = urlParams.w[i];
         if (weightVal === 'A') {
             weightVal = 10;
         } else {
