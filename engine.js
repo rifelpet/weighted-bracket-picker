@@ -26,8 +26,8 @@ var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlParams = {};
 var latestYear = '2019';
-var currActivity = 'ncaambb'
-var defaultActivity = 'ncaambb';
+var currActivity = 'cbbm'
+const defaultActivity = 'cbbm';
 var currYear = latestYear;
 var tournamentStarted = false;
 
