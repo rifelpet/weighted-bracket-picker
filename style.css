@@ -372,7 +372,7 @@ body {
 	text-align:center;
 }
 
-#year-select {
+.select {
     text-align:center;
     padding-top:10px;
 }
