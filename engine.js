@@ -121,10 +121,6 @@ $(function () {
     $('select[name="year"]').val(currYear);
     $('select[name="activity"]').val(currActivity);
 
-    // Temporary until multi-activity goes live
-    if (urlParams.hasOwnProperty('multiactivity')) {
-        $('#activity').css('display', '');
-    }
     selectYearAndActivity();
 });
 
