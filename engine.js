@@ -74,7 +74,7 @@ function selectShare(inputTag) {
         action: 'share',
         url: inputTag.value
     }
-    $.get( "https://tracking.algebracket.com/algebracket-tracking", payload);
+    $.get( "https://us-central1-rock-groove-168905.cloudfunctions.net/algebracket-tracking", payload);
 }
 
 function selectYearAndActivity() {
@@ -505,7 +505,7 @@ function submit(logEvent) {
             correctScore: correctScore,
             year: currYear
         }
-        $.get( "https://tracking.algebracket.com/algebracket-tracking", payload);
+        $.get( "https://us-central1-rock-groove-168905.cloudfunctions.net/algebracket-tracking", payload);
     }
 }
 
