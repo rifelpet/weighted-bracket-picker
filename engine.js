@@ -502,6 +502,7 @@ function submit(logEvent) {
         payload = {
             action: 'render',
             weights: saveCookie(),
+            activity: currActivity,
             correctScore: correctScore,
             year: currYear
         }
