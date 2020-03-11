@@ -61,9 +61,9 @@ var descriptions = {
 function getDefaultYear(urlValue) {
     var defYear = currYear;
     if (urlValue !== '') {
-        defYear = '201' + urlValue[0];
-    } else if (Cookies.get('w') !== undefined && !isNaN(parseInt(Cookies.get('w').substring(0, 1)))) {
-        defYear = '201' + Cookies.get('w').substring(0, 1);
+        defYear = URLParamToYear(urlValue[0]);
+    } else if (Cookies.get('w') !== undefined && !isNaN(parseInt(Cookies.get('w').substring(0, 1), 36))) {
+        defYear = URLParamToYear(Cookies.get('w').substring(0, 1));
     }
     return defYear;
 }
@@ -83,7 +83,8 @@ function selectYearAndActivity() {
 
     var currWeightCookie = Cookies.get('w');
     if (currWeightCookie !== undefined) {
-        Cookies.set('w', currYear.substring(3, 4) + currWeightCookie.substring(1, currWeightCookie.length));
+        var yearParam = YearToURLParam(currYear);
+        Cookies.set('w', yearParam + currWeightCookie.substring(1, currWeightCookie.length));
     }
 
     var currActivityCookie = Cookies.get('a');
@@ -588,7 +589,7 @@ function weightsToURL() {
 
 function saveCookie() {
     var sortedWeights = [];
-    var urlValue = currYear.substring(3,4);
+    var urlValue = YearToURLParam(currYear);
     for (var k in currentWeights) {
         sortedWeights.push(k);
     }
@@ -617,7 +618,7 @@ function URLToWeights(urlParams) {
     if ((!urlParams.hasOwnProperty('a') || urlParams.a.length == 0) && Cookies.get('activity') !== undefined) {
         currActivity = Cookies.get('activity');
     }
-    year = '201' + urlParams.w[0];
+    year = URLParamToYear(urlParams.w[0]);
     for(var i=1; i < urlParams.w.length; i++) {
         var weightVal = urlParams.w[i];
         if (weightVal === 'A') {
@@ -630,4 +631,12 @@ function URLToWeights(urlParams) {
         currentWeights[weightName] = weightVal;
         $('#' + weightName + '-val').text(weightVal);
     }
+}
+
+function URLParamToYear(paramChar) {
+    return (2010 + parseInt(paramChar, 36)).toString();
+}
+
+function YearToURLParam(year) {
+    return (parseInt(year) - 2010).toString(36).toUpperCase();
 }
