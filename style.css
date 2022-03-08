@@ -343,7 +343,7 @@ body {
 	height: 8px;
 }
 
-#play-in-title {
+#play-in-title, #update {
 	font-weight:700;
 	padding-top:16px;
 	font-size:larger;
