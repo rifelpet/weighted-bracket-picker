@@ -28,7 +28,7 @@ var urlParams = {};
 var latestYear = '2022';
 var currActivity = 'cbbm'
 const defaultActivity = 'cbbm';
-var currYear = '2021'; //latestYear;
+var currYear = latestYear;
 var tournamentStarted = false;
 
 var descriptions = {
@@ -217,8 +217,7 @@ function parseData(cacheKey) {
 
 function setupInitialMatches() {
     if (currYear != latestYear) {
-        //$('#play-in-title').addClass('alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
-        $('#play-in-title').addClass('alert').text('The 2022 stats and bracket will be updated on Monday 3/14/2022. Happy pi day!');
+        $('#play-in-title').addClass('alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
         $('#play-in-title').removeClass('alert').text('');
     }
