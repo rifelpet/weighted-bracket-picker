@@ -237,10 +237,8 @@ function setupInitialMatches() {
         regionTeams = bracketTeamsByRegionAndSeed[regionID];
         for (var seed = 1; seed < 9; seed++) {
             var high = regionTeams[seed];
-            var lowString = '';
             if ((17 - seed) in regionTeams) {
                 var lowTeam = regionTeams[17 - seed];
-                lowString = lowTeam.stats.Seed + '. ' + lowTeam.Name;
                 $('#' + region.toLowerCase() + 'seed' + lowTeam.stats.Seed).text(lowTeam.stats.Seed + '. ' + lowTeam.Name);
             } else {
                 $('#' + region.toLowerCase() + 'seed' + (17 - seed)).html((17 - seed) + '. <i>Play-In winner</i>');
@@ -278,7 +276,7 @@ function clearScoreDisplay() {
  * Return the team object for the winning team.
  * Tie breaker is the higher overall rank
  */
-function runMatchup(team1, team2, round, team1Div, team2Div) {
+function runMatchup(team1, team2, team1Div, team2Div) {
     var team1Total = 0;
     var team2Total = 0;
     for (var weightName in currentWeights) {
@@ -349,14 +347,13 @@ function submit(logEvent) {
 
     relativeWeights = {};
     $.each(currentWeights, function (param) {
-        var id = attrToID(param);
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
 
     for (var matchupID in firstFours) {
         var team1Div = '#matchup' + matchupID + ' > .team1';
         var team2Div = '#matchup' + matchupID + ' > .team2';
-        var winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], -1, team1Div, team2Div);
+        var winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1Div, team2Div);
         var winner = winnerData[0];
         var winnerPct = winnerData[1];
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
@@ -386,7 +383,7 @@ function submit(logEvent) {
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
             
             bracketData.teams.push([high.stats.Seed + '. ' + high.Name, low.stats.Seed + '. ' + low.Name]);
-            var winnerData = runMatchup(high, low, 0, highDiv, lowDiv);
+            var winnerData = runMatchup(high, low, highDiv, lowDiv);
             var winner = winnerData[0];
             var winnerPct = winnerData[1];
             var loser = winnerData[2];
@@ -414,7 +411,7 @@ function submit(logEvent) {
             var low = gameWinners['game' + String(game + 1 - gameDiff)];
             var highDiv = '#' + region + 'game' + String(game - gameDiff);
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
-            var winnerData = runMatchup(high, low, getRound(game), highDiv, lowDiv);
+            var winnerData = runMatchup(high, low, highDiv, lowDiv);
             var winner = winnerData[0];
             var winnerPct = winnerData[1];   
             var loser = winnerData[2];         
@@ -451,7 +448,7 @@ function submit(logEvent) {
         var team1Div = '#' + regions[region1].toLowerCase() + 'game15';
         var team2Div = '#' + regions[region2].toLowerCase() + 'game15';
         var team2 = gameWinnerRegions[region2].game15;
-        var winnerData = runMatchup(team1, team2, 5, team1Div, team2Div);
+        var winnerData = runMatchup(team1, team2, team1Div, team2Div);
         var winner = winnerData[0];
         var winnerPct = winnerData[1];  
         var loser = winnerData[2];      
@@ -473,7 +470,7 @@ function submit(logEvent) {
         }
         regionID += 2;
     }
-    var winnerData = runMatchup(championship.left, championship.right, 6, '#leftgame', '#rightgame');
+    var winnerData = runMatchup(championship.left, championship.right, '#leftgame', '#rightgame');
     var winner = winnerData[0];
     var winnerPct = winnerData[1];
     var loser = winnerData[2];
