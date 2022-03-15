@@ -381,7 +381,7 @@ body {
 	display:inline-block;
 }
 
-#correct,#score {
+#correct,#score,#upset {
 	text-align:right;
 }
 
@@ -469,7 +469,7 @@ body {
 	text-align:center;
 	padding-top:50em;
 	height:10em;
-	width:320px;
+	width:362px;
 }
 
 #scoring-wrapper > div > h1 {
@@ -482,9 +482,9 @@ body {
 	float:left;
 }
 
-#correct-wrapper,#score-wrapper {
+#correct-wrapper,#score-wrapper,#upset-wrapper {
 	display:inline-block;
-	padding:20px;
+	padding:20px 0px;
 	width:108px;
 }
 

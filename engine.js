@@ -250,6 +250,7 @@ function setupInitialMatches() {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text('0 / ' + totalGames);
         $('#score').text('0 / ' + totalScore);
+        $('#upset').text('0');
     } else {
         clearScoreDisplay();
     }
@@ -299,12 +300,12 @@ function runMatchup(team1, team2, team1Div, team2Div) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team1Total, team2Total); 
-        return [team1, winningPct, team2];
+        return [team1, winningPct, team2, parseInt(team2.stats['Seed']) < parseInt(team1.stats['Seed'])];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
         $(team1Div).removeClass('winner').addClass('loser');
         winningPct = getWinningPct(team2Total, team1Total);
-        return [team2, winningPct, team1];
+        return [team2, winningPct, team1, parseInt(team1.stats['Seed']) < parseInt(team2.stats['Seed'])];
     }
 }
 
@@ -362,6 +363,7 @@ function submit(logEvent) {
     
     var correctCount = 0;
     var correctScore = 0;
+    var upsetCount = 0;
     var gameWinnerRegions = [{}, {}, {}, {}];
     for (var regionID in regions) {
     //{var regionID = 0; 
@@ -387,6 +389,10 @@ function submit(logEvent) {
             var winner = winnerData[0];
             var winnerPct = winnerData[1];
             var loser = winnerData[2];
+            var upset = winnerData[3];
+            if (upset) {
+                upsetCount++;
+            }
             gameWinners['game' + String(gameNum)] = winner;
 
             $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
@@ -413,8 +419,12 @@ function submit(logEvent) {
             var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
             var winnerData = runMatchup(high, low, highDiv, lowDiv);
             var winner = winnerData[0];
-            var winnerPct = winnerData[1];   
-            var loser = winnerData[2];         
+            var winnerPct = winnerData[1];
+            var loser = winnerData[2];
+            var upset = winnerData[3];
+            if (upset) {
+                upsetCount++;
+            }
             gameWinners['game' + String(game)] = winner;
             $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
 
@@ -450,8 +460,12 @@ function submit(logEvent) {
         var team2 = gameWinnerRegions[region2].game15;
         var winnerData = runMatchup(team1, team2, team1Div, team2Div);
         var winner = winnerData[0];
-        var winnerPct = winnerData[1];  
-        var loser = winnerData[2];      
+        var winnerPct = winnerData[1];
+        var loser = winnerData[2];
+        var upset = winnerData[3];
+        if (upset) {
+            upsetCount++;
+        }
         championship[sides[side]] = winner;
         
         $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
@@ -474,6 +488,10 @@ function submit(logEvent) {
     var winner = winnerData[0];
     var winnerPct = winnerData[1];
     var loser = winnerData[2];
+    var upset = winnerData[3];
+    if (upset) {
+        upsetCount++;
+    }
     if (totalGames > 0 && (winner['Games Won'] == 6 || loser['Games Won'] == 6)) {
         if (winner['Games Won'] == 6) {
             correctCount++;
@@ -488,6 +506,7 @@ function submit(logEvent) {
         $('#championship').removeClass('correct').removeClass('incorrect');
     }
     $('#championship').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
+    $('#upset').text(upsetCount);
     if(tournamentStarted || currYear !== latestYear) {
         $('#scoring-wrapper > div > h1').css('color', '');
         $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
@@ -521,6 +540,7 @@ function clear(setup) {
     $('#championship').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
 
     if (setup) {
+        $('#upset').text('0')
         setupInitialMatches();
     } else {
         for (var regionID = 0; regionID < regions.length; regionID++) {
