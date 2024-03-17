@@ -187,8 +187,8 @@ function parseData(cacheKey) {
         if ($('#' + id).length === 0) {
             currentWeights[id] = 0;
             var column = Math.floor(sliderCounter * 3/ headerCount);
-            $('#slider-col' + String(column) + ' > ul').append('<li class="uk-form-row"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-            $('#' + id).append('<input class="uk-form" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')" onmouseup="mouseUp(\'' + id + '\')">')
+            $('#slider-col' + String(column) + ' > ul').append('<li class="uk-margin"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
+            $('#' + id).append('<input class="uk-slider" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')" onmouseup="mouseUp(\'' + id + '\')">')
         }
         sliderCounter++;
     });

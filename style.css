@@ -291,6 +291,8 @@ body {
 	padding:0 7px;
 	margin:0;
 	display:inline;
+	line-height: 2em;
+	vertical-align: top;
 }
 
 .logo,.logo > a,.logo > a:visited {
