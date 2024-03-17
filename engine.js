@@ -26,7 +26,7 @@ var totalScore = 0; // This will be 192 except for the current year
 var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlParams = {};
-var latestYear = '2023';
+var latestYear = '2024';
 var currActivity = 'cbbm';
 const defaultActivity = 'cbbm';
 var currYear = latestYear;
@@ -229,7 +229,7 @@ function setupInitialMatches() {
     }
     $('#play-in').text('');
     for (var matchupID in firstFours) {
-        matchup = firstFours[matchupID];
+        var matchup = firstFours[matchupID];
         $('#play-in').append('<li id="matchup' + matchupID + '"><div class="region"> (' + matchup[0].stats.Seed +
         '):</div><div class="team1">' + matchup[0].Name + '</div> vs <div class="team2">' + matchup[1].Name + '</div></li>');
     }
