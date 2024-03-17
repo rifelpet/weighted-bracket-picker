@@ -1,5 +1,6 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert*/
+"use strict";
 var currentWeights = {};
 
 // Used as a cache so that we aren't re-requesting CSVs over and over
@@ -26,7 +27,7 @@ var highestGamesPlayed = -1; // This will be 6 except for the current year
 
 var urlParams = {};
 var latestYear = '2023';
-var currActivity = 'cbbm'
+var currActivity = 'cbbm';
 const defaultActivity = 'cbbm';
 var currYear = latestYear;
 var tournamentStarted = false;
@@ -73,7 +74,7 @@ function selectShare(inputTag) {
     payload = {
         action: 'share',
         url: inputTag.value
-    }
+    };
     $.get( "https://us-central1-rock-groove-168905.cloudfunctions.net/algebracket-tracking", payload);
 }
 
@@ -177,7 +178,7 @@ function parseData(cacheKey) {
             highestGamesPlayed = gamesWon;
         }
     }
-    
+
     var headerCount = headers.length - nonStatHeaders.length;
     var sliderCounter = 0;
     $.each(headers, function (i, param) {
@@ -206,7 +207,7 @@ function parseData(cacheKey) {
             });
         }
     });
-    
+
     setupInitialMatches();
     submit(false);
 }
@@ -234,7 +235,7 @@ function setupInitialMatches() {
     }
     for (var regionID = 0; regionID < regions.length; regionID++) {
         var region = regions[regionID];
-        regionTeams = bracketTeamsByRegionAndSeed[regionID];
+        var regionTeams = bracketTeamsByRegionAndSeed[regionID];
         for (var seed = 1; seed < 9; seed++) {
             var high = regionTeams[seed];
             if ((17 - seed) in regionTeams) {
@@ -281,7 +282,7 @@ function runMatchup(team1, team2, team1Div, team2Div) {
     var team1Total = 0;
     var team2Total = 0;
     for (var weightName in currentWeights) {
-        weight = currentWeights[weightName];
+        var weight = currentWeights[weightName];
         if (team1.stats[weightName] === undefined) {
             console.log('warning: missing stat for ' + team1.Name + ': ' + weightName);
             continue;
@@ -299,7 +300,7 @@ function runMatchup(team1, team2, team1Div, team2Div) {
     if ((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
         $(team1Div).removeClass('loser').addClass('winner');
         $(team2Div).removeClass('winner').addClass('loser');
-        winningPct = getWinningPct(team1Total, team2Total); 
+        winningPct = getWinningPct(team1Total, team2Total);
         return [team1, winningPct, team2, parseInt(team2.stats['Seed']) < parseInt(team1.stats['Seed'])];
     } else {
         $(team2Div).removeClass('loser').addClass('winner');
@@ -317,7 +318,7 @@ function getWinningPct(winnerTotal, loserTotal) {
     return winningPct;
 }
 
-/* 
+/*
  * Utility function for converting game numbers in gameWinners object to rounds.
  */
 function getRound(gameNumber) {
@@ -346,7 +347,7 @@ function submit(logEvent) {
         return;
     }
 
-    relativeWeights = {};
+    var relativeWeights = {};
     $.each(currentWeights, function (param) {
         relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
     });
@@ -360,13 +361,12 @@ function submit(logEvent) {
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
         $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text(winner.stats.Seed + '. ' + winner.Name);
     }
-    
+
     var correctCount = 0;
     var correctScore = 0;
     var upsetCount = 0;
     var gameWinnerRegions = [{}, {}, {}, {}];
     for (var regionID in regions) {
-    //{var regionID = 0; 
         var currentRegion = bracketTeamsByRegionAndSeed[regionID];
         var gameWinners = gameWinnerRegions[regionID];
         var bracketData = {
@@ -383,7 +383,7 @@ function submit(logEvent) {
             var gameNum = parseInt(index) + 1;
             var highDiv = '#' + region + 'seed' + high.stats.Seed;
             var lowDiv = '#' + region + 'seed' + low.stats.Seed;
-            
+
             bracketData.teams.push([high.stats.Seed + '. ' + high.Name, low.stats.Seed + '. ' + low.Name]);
             var winnerData = runMatchup(high, low, highDiv, lowDiv);
             var winner = winnerData[0];
@@ -467,7 +467,7 @@ function submit(logEvent) {
             upsetCount++;
         }
         championship[sides[side]] = winner;
-        
+
         $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
         if (totalGames > 0 &&  (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
             if (winner['Games Won'] >= 5) {
@@ -516,7 +516,7 @@ function submit(logEvent) {
     }
     weightsToURL();
     if(logEvent){
-        payload = {
+        var payload = {
             action: 'render',
             weights: saveCookie(),
             activity: currActivity,
@@ -576,7 +576,7 @@ function resetSliders() {
 function attrToID(attr) {
     // TODO: might be able to remove this check? maybe leave just seed
     if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
-    short = attr.replace(/%/, 'P').replace(/[ a-z%\.\/]/g, '');
+    const short = attr.replace(/%/, 'P').replace(/[\ a-z%\.\/]/g, '');
     return short
 }
 
@@ -592,15 +592,13 @@ function weightsToURL() {
     }
     if (currActivity != defaultActivity) {
         path += '&a=' + currActivity;
-    } 
-    
+    }
+
     $('#share').val(path);
     $('#twitter-share').html('<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
     if (twttr !== undefined && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
-    //$('.fb-share-button').attr('data-href', path);
-    //window.history.pushState({w:weightValue},"AlgeBracket", path);
     return path;
 }
 
