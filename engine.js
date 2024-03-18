@@ -641,7 +641,7 @@ function URLToWeights(urlParams) {
         } else {
             weightVal = parseInt(weightVal);
         }
-        weightName = sortedWeights[i - 1];
+        var weightName = sortedWeights[i - 1];
         $('#' + weightName + ' > input').val(weightVal);
         currentWeights[weightName] = weightVal;
         $('#' + weightName + '-val').text(weightVal);
