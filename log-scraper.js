@@ -21,10 +21,15 @@ var firstFoursByYear = {};
 
 var latestSeeds = {} // team to seed
 
+var bestScoreYear = '2023'; // track best scores for this year
+
+var mostCorrectWinnersWeights = '';
+var mostCorrectWinners = 0;
+var mostCorrectWinnersScore = 0;
+
 function main() {
-    //let years = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'];
-    //let years = [ '2013', '2014', '2015', '2016', '2017', '2019'];
-    let years = ['2019']
+    //let years = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2021', '2022', '2023'];
+    let years = ['2023']
     let cache = {} // weightparam to avg score
     
     for (let i = 0; i < years.length; i++) {
@@ -33,7 +38,7 @@ function main() {
     }
     
     let LineReaderSync = require("line-reader-sync")
-    let lrs = new LineReaderSync('weights.2021')
+    let lrs = new LineReaderSync('weights.total')
 
     console.log('lrs')
     let maxCount = 0;
@@ -58,14 +63,27 @@ function main() {
         let avgScore = 0
         let avgCount = 0
         let winner = ''
+        let winnerCorrectCount = 0;
         for (let i = 0; i < years.length; i++) {
             let year = years[i];
             //console.log(weightParam);
             let scoredata = submit(year, weightData.weights);
             avgCount += scoredata.count;
             avgScore += scoredata.score;
-            if (year === '2019') {
+            if (year === bestScoreYear) {
                 winner = scoredata.winner;
+            }
+            if (scoredata.winnerCorrect) {
+                winnerCorrectCount += 1;
+            }
+        }
+        if (winnerCorrectCount > mostCorrectWinners) {
+            mostCorrectWinners = winnerCorrectCount;
+            mostCorrectWinnersWeights = weightParam;
+        } else if (winnerCorrectCount == mostCorrectWinners) {
+            if (avgScore > mostCorrectWinnersScore) {
+                mostCorrectWinnersScore = avgScore;
+                mostCorrectWinnersWeights = weightParam;
             }
         }
         
@@ -130,6 +148,7 @@ function main() {
     });
     console.log('found a max score: ', maxScore, bestScoreWeights);
     console.log('found a max count: ', maxCount, bestCountWeights);
+    console.log('found most correct winners: ', mostCorrectWinners, mostCorrectWinnersScore, mostCorrectWinnersWeights)
     console.log(bestPerTeam);
     console.log('seed,team,maxScore,maxScoreWeights,maxPicks,maxPicksWeights');
     for(let team in bestPerTeam) {
@@ -144,7 +163,7 @@ main();
 
 
 function parseData(year) {
-    let lines = yearData[year].trim().split("\r\n"), result = [];
+    let lines = yearData[year].trim().split(/\r?\n/), result = [];
     let headers = lines[0].trim().split(',');
     bracketTeamsByRegionAndSeed[year] = [{}, {}, {}, {}];
     firstFoursByYear[year] = [];
@@ -167,7 +186,7 @@ function parseData(year) {
         } else {
             bracketTeamsByRegionAndSeed[year][team.Region][team.stats.Seed] = team;
         }
-        if(year === '2019') {
+        if(year === bestScoreYear) {
             latestSeeds[team.Name] = team.stats.Seed;
         }   
     }
@@ -217,7 +236,6 @@ function submit(year, weights) {
     let relativeWeights = {};
     for (let i=0; i < weights.length; i++) {
         let param = weights[i];
-        let id = attrToID(param);
         relativeWeights[param] = (weights[param] / totalWeight).toFixed(3);
     };
     for (let matchupID in firstFoursByYear[year]) {
@@ -245,8 +263,8 @@ function submit(year, weights) {
             
             let winner = runMatchup(high, low, weights);
             gameWinners['game' + String(gameNum)] = winner;
-            if (winner.stats.Seed == 16 && winner.Name == 'UMBC') {
-                umbcWon = true;
+            if (winner == undefined) {
+                console.log(winner);
             }
             if (winner['Games Won'] > 0) {
                 correctScore += 1;
@@ -273,6 +291,7 @@ function submit(year, weights) {
         }
     }
 
+    let winnerCorrect = false;
     //if (!umbcWon && year === '2018') {
     //    return {count: 0, score: 0, winner: '', umbc: false};
     //}
@@ -303,9 +322,10 @@ function submit(year, weights) {
     if (winner['Games Won'] == 6) {
         correctScore += 32;
         correctCount++;
+        winnerCorrect = true;
     }
     
-    return {count: correctCount, score: correctScore, winner: winner.Name, umbc: true};
+    return {count: correctCount, score: correctScore, winner: winner.Name, winnerCorrect: winnerCorrect};
 }
 
 function abbreviateName(name) {
