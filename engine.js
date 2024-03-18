@@ -1,6 +1,5 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert*/
-"use strict";
 var currentWeights = {};
 
 // Used as a cache so that we aren't re-requesting CSVs over and over
