@@ -30,6 +30,7 @@ var currActivity = 'cbbm';
 const defaultActivity = 'cbbm';
 var currYear = latestYear;
 var tournamentStarted = false;
+var initialLoad = true;
 
 var descriptions = {
     "Seed": "Team's position in the bracket. 1 seeds have the 'easiest' path to the final four. This stat is ranked inversely- the lowest value is ranked the highest.",
@@ -216,6 +217,7 @@ function parseData(cacheKey) {
  */
 
 function setupInitialMatches() {
+    initialLoad = false;
     if (currYear != latestYear) {
         $('#play-in-title').addClass('alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
     } else {
@@ -632,18 +634,19 @@ function URLToWeights(urlParams) {
     if ((!urlParams.hasOwnProperty('a') || urlParams.a.length == 0) && Cookies.get('activity') !== undefined) {
         currActivity = Cookies.get('activity');
     }
-    year = URLParamToYear(urlParams.w[0]);
-    for(var i=1; i < urlParams.w.length; i++) {
-        var weightVal = urlParams.w[i];
-        if (weightVal === 'A') {
-            weightVal = 10;
-        } else {
-            weightVal = parseInt(weightVal);
+    if (initialLoad) {
+        for(var i=1; i < urlParams.w.length; i++) {
+            var weightVal = urlParams.w[i];
+            if (weightVal === 'A') {
+                weightVal = 10;
+            } else {
+                weightVal = parseInt(weightVal);
+            }
+            var weightName = sortedWeights[i - 1];
+            $('#' + weightName + ' > input').val(weightVal);
+            currentWeights[weightName] = weightVal;
+            $('#' + weightName + '-val').text(weightVal);
         }
-        var weightName = sortedWeights[i - 1];
-        $('#' + weightName + ' > input').val(weightVal);
-        currentWeights[weightName] = weightVal;
-        $('#' + weightName + '-val').text(weightVal);
     }
 }
 
