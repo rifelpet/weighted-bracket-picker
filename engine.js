@@ -440,7 +440,7 @@ function submit(logEvent) {
                 } else {
                     $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
                 }
-            } else if (totalGames > 1 && highestGamesPlayed >= winner['Games Won']) {
+            } else if (totalGames > 1 && highestGamesPlayed > winner['Games Won']) {
                 $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
             } else {
                 $('#' + region + 'game' + game).removeClass('correct').removeClass('incorrect');
