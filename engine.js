@@ -85,7 +85,8 @@ function selectYearAndActivity() {
     var currWeightCookie = Cookies.get('w');
     if (currWeightCookie !== undefined) {
         var yearParam = YearToURLParam(currYear);
-        Cookies.set('w', yearParam + currWeightCookie.substring(1, currWeightCookie.length));
+        const newVal = yearParam + currWeightCookie.substring(1, currWeightCookie.length);
+        Cookies.set('w', newVal);
     }
 
     var currActivityCookie = Cookies.get('a');

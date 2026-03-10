@@ -21,7 +21,7 @@ var firstFoursByYear = {};
 
 var latestSeeds = {} // team to seed
 
-var bestScoreYear = '2023'; // track best scores for this year
+var bestScoreYear = '2025'; // track best scores for this year
 
 var mostCorrectWinnersWeights = '';
 var mostCorrectWinners = 0;
@@ -29,9 +29,15 @@ var mostCorrectWinnersScore = 0;
 
 function main() {
     //let years = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2021', '2022', '2023'];
-    let years = ['2023']
+    let years = ['2022', '2023', '2024', '2025']
+    //let years = ['2024']
     let cache = {} // weightparam to avg score
     
+    var weightsByScore = [];
+    for (let i =0; i < 192 * years.length; i++) {
+        weightsByScore.push([]);
+    }
+    console.log(weightsByScore);
     for (let i = 0; i < years.length; i++) {
         yearData[years[i]] = fs.readFileSync('data/cbbm/' + years[i] + '.csv', {encoding: 'utf-8'});
         parseData(years[i]);
@@ -40,7 +46,6 @@ function main() {
     let LineReaderSync = require("line-reader-sync")
     let lrs = new LineReaderSync('weights.total')
 
-    console.log('lrs')
     let maxCount = 0;
     let maxScore = 0;
     let bestScoreWeights = ''
@@ -49,13 +54,16 @@ function main() {
     let bestPerTeam = {}
     let scoreHistogram = [];
     let countHistogram = [];
+
+    //const pool = workerpool.pool()
+
     while(true){
         let weightParam = lrs.readline()
         if(weightParam === null){
             break;
         }
         lineCounter++;
-        if(weightParam in cache) {
+        if(weightParam in cache || weightParam.length !== 25) {
             continue
         }
         let weightData = URLToWeights(weightParam);
@@ -66,12 +74,12 @@ function main() {
         let winnerCorrectCount = 0;
         for (let i = 0; i < years.length; i++) {
             let year = years[i];
-            //console.log(weightParam);
             let scoredata = submit(year, weightData.weights);
             avgCount += scoredata.count;
             avgScore += scoredata.score;
             if (year === bestScoreYear) {
                 winner = scoredata.winner;
+                weightsByScore[avgScore].push(weightParam);
             }
             if (scoredata.winnerCorrect) {
                 winnerCorrectCount += 1;
@@ -149,7 +157,6 @@ function main() {
     console.log('found a max score: ', maxScore, bestScoreWeights);
     console.log('found a max count: ', maxCount, bestCountWeights);
     console.log('found most correct winners: ', mostCorrectWinners, mostCorrectWinnersScore, mostCorrectWinnersWeights)
-    console.log(bestPerTeam);
     console.log('seed,team,maxScore,maxScoreWeights,maxPicks,maxPicksWeights');
     for(let team in bestPerTeam) {
         if (bestPerTeam.hasOwnProperty(team)) {
@@ -157,13 +164,42 @@ function main() {
             console.log(latestSeeds[team] + ',' + team + ',' + stats.score + ',http://algebracket.com?w=' + stats.scoreWeight + ',' + stats.count + ',http://algebracket.com?w=' + stats.countWeight);
         }
     }
+    console.log('best weights:');
+    let bestWeights = 0;
+    let bestWeightIndex = weightsByScore.length - 1;
+    let weightCounts = Array(sortedWeights.length).fill(BigInt(0));
+    const bestThreshold = 1000;
+    while (bestWeights < bestThreshold && bestWeightIndex >= 0) {
+        for(let weightP in weightsByScore[bestWeightIndex]) {
+            let weight = weightsByScore[bestWeightIndex][weightP];
+            for (let i = 1; i < weight.length; i++) {
+                var weightVal = weight[i];
+                if (weightVal !== '0') {
+                    if (weightVal === 'A') {
+                        weightVal = 10;
+                    }
+                    weightCounts[i-1] += BigInt(parseInt(weightVal));
+                }
+            }
+            bestWeights += 1;
+            if (bestWeights > bestThreshold) {
+                break;
+            }
+        }
+        bestWeightIndex -= 1;
+    }
+    for (let i = 0; i < weightCounts.length; i++) {
+        console.log(sortedWeights[i],
+            Number((weightCounts[i] * BigInt(100) / BigInt(bestWeights)))
+        );
+    }
 }
 main();
 
 
 
 function parseData(year) {
-    let lines = yearData[year].trim().split(/\r?\n/), result = [];
+    let lines = yearData[year].trim().split(/\r?\n/);
     let headers = lines[0].trim().split(',');
     bracketTeamsByRegionAndSeed[year] = [{}, {}, {}, {}];
     firstFoursByYear[year] = [];
@@ -188,7 +224,7 @@ function parseData(year) {
         }
         if(year === bestScoreYear) {
             latestSeeds[team.Name] = team.stats.Seed;
-        }   
+        }
     }
 }
 
@@ -276,7 +312,7 @@ function submit(year, weights) {
         for (let game = 9; game < 16; game++) {
             let high = gameWinners['game' + String(game - gameDiff)];
             let low = gameWinners['game' + String(game + 1 - gameDiff)];
-            
+
             let winner = runMatchup(high, low, weights);
             gameWinners['game' + String(game)] = winner;
 
@@ -292,9 +328,6 @@ function submit(year, weights) {
     }
 
     let winnerCorrect = false;
-    //if (!umbcWon && year === '2018') {
-    //    return {count: 0, score: 0, winner: '', umbc: false};
-    //}
     // Final four and championship game
     let regionID = 0;
     let sides = ['left', 'right'];
@@ -304,14 +337,9 @@ function submit(year, weights) {
         let region2 = regionID + 1;
         let team1 = gameWinnerRegions[region1].game15;
         let team2 = gameWinnerRegions[region2].game15;
-        if ( team1 === undefined ){
-            console.log(gameWinnerRegions);
-        //    return {count: 0, score: 0, winner: ''};
- 
-        }
         let winner = runMatchup(team1, team2, weights);
         championship[sides[side]] = winner;
-        
+
         if (winner['Games Won'] >= 5) {
             correctScore += 16;
             correctCount++;
@@ -324,7 +352,7 @@ function submit(year, weights) {
         correctCount++;
         winnerCorrect = true;
     }
-    
+
     return {count: correctCount, score: correctScore, winner: winner.Name, winnerCorrect: winnerCorrect};
 }
 
