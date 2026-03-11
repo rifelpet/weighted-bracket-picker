@@ -1,5 +1,6 @@
 "use strict";
 var fs = require('fs');
+//const workerpool = require('workerpool');
 
 var sortedWeights = [ "3PFGP", "AP", "ASM", "AT", "DR", "EFGP", "FGP", "FTFGA", "FTP", "OFTFGA", "OPG", "OR", "ORP", "OTP", "OTSP", "P", "PG", "RP", "SS", "Seed", "TM", "TP", "TSP", "WP"];
 // Used as a cache so that we aren't re-requesting CSVs over and over
@@ -173,7 +174,7 @@ function main() {
         for(let weightP in weightsByScore[bestWeightIndex]) {
             let weight = weightsByScore[bestWeightIndex][weightP];
             for (let i = 1; i < weight.length; i++) {
-                var weightVal = weight[i];
+                var weightVal = weight[i]; 
                 if (weightVal !== '0') {
                     if (weightVal === 'A') {
                         weightVal = 10;
@@ -189,7 +190,7 @@ function main() {
         bestWeightIndex -= 1;
     }
     for (let i = 0; i < weightCounts.length; i++) {
-        console.log(sortedWeights[i],
+        console.log(sortedWeights[i], 
             Number((weightCounts[i] * BigInt(100) / BigInt(bestWeights)))
         );
     }

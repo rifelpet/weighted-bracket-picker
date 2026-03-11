@@ -1,38 +1,38 @@
-/*jslint browser: true*/
-/*global $, jQuery, alert*/
-var currentWeights = {};
+'use strict';
+
+const currentWeights = {};
 
 // Used as a cache so that we aren't re-requesting CSVs over and over
-var statCache = {};
+const statCache = {};
 
-var seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
+const seedMatchOrder = [1, 8, 5, 4, 6, 3, 7, 2];
 
 // array of regions, each representing hashmaps representing seed numbers
 // Does not contain losers of first-four matchups.
-var bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
+let bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
 
-var headers = [];
+let headers = [];
 // RegionIDs in the csv are the 'regions' indeces
-var regions = ['South', 'East', 'West', 'Midwest'];
+const regions = ['South', 'East', 'West', 'Midwest'];
 
 // Headers that arent used in comparison for winner determination
-var nonStatHeaders = ['Rank', 'Region', 'Name', 'Games Won'];
+const nonStatHeaders = ['Rank', 'Region', 'Name', 'Games Won'];
 
-var firstFours = [];
-var totalGames = 0; // This will be 63 except for the current year
-var totalScore = 0; // This will be 192 except for the current year
+let firstFours = [];
+let totalGames = 0; // This will be 63 except for the current year
+let totalScore = 0; // This will be 192 except for the current year
 
-var highestGamesPlayed = -1; // This will be 6 except for the current year
+let highestGamesPlayed = -1; // This will be 6 except for the current year
 
-var urlParams = {};
-var latestYear = '2025';
-var currActivity = 'cbbm';
+let urlParams = {};
+let latestYear;
+let currActivity;
 const defaultActivity = 'cbbm';
-var currYear = latestYear;
-var tournamentStarted = false;
-var initialLoad = true;
+let currYear;
+let tournamentStarted = false;
+let initialLoad = true;
 
-var descriptions = {
+const descriptions = {
     "Seed": "Team's position in the bracket. 1 seeds have the 'easiest' path to the final four. This stat is ranked inversely- the lowest value is ranked the highest.",
     "SS": "Strength of Schedule. A ranking of the team's opponents. A team who plays harder opponents will have a higher strength of schedule.",
     "WP": "Team's Wins / Total Games prior to the tournament. An undefeated team would have a win percentage of 100%.",
@@ -60,7 +60,7 @@ var descriptions = {
 };
 
 function getDefaultYear(urlValue) {
-    var defYear = currYear;
+    let defYear = currYear;
     if (urlValue !== '') {
         defYear = URLParamToYear(urlValue[0]);
     } else if (Cookies.get('w') !== undefined && !isNaN(parseInt(Cookies.get('w').substring(0, 1), 36))) {
@@ -71,48 +71,69 @@ function getDefaultYear(urlValue) {
 
 function selectShare(inputTag) {
     inputTag.select();
-    payload = {
+    const payload = {
         action: 'share',
         url: inputTag.value
     };
-    $.get( "https://alebracket-tracking-237201124851.us-central1.run.app", payload);
+    const params = new URLSearchParams(payload);
+    fetch("https://alebracket-tracking-237201124851.us-central1.run.app?" + params);
 }
 
 function selectYearAndActivity() {
-    currYear = $('select[name="year"]').val();
-    currActivity = $('select[name="activity"]').val();
+    currYear = document.querySelector('select[name="year"]').value;
+    currActivity = document.querySelector('select[name="activity"]').value;
 
-    var currWeightCookie = Cookies.get('w');
+    const currWeightCookie = Cookies.get('w');
+    console.log('currWeightCookie', currWeightCookie);
     if (currWeightCookie !== undefined) {
-        var yearParam = YearToURLParam(currYear);
+        const yearParam = YearToURLParam(currYear);
         const newVal = yearParam + currWeightCookie.substring(1, currWeightCookie.length);
+        console.log('newVal', newVal);
         Cookies.set('w', newVal);
     }
 
-    var currActivityCookie = Cookies.get('a');
-    if (currActivityCookie !== undefined || currActivityCookie != currActivity) {
+    const currActivityCookie = Cookies.get('a');
+    if (currActivityCookie !== undefined && currActivityCookie !== currActivity) {
         Cookies.set('activity', currActivity);
     }
 
-    var cacheKey = currActivity + currYear;
+    const cacheKey = currActivity + currYear;
     if (typeof statCache[cacheKey] === "undefined") {
-        var csvPath = 'data/' + currActivity + '/' + currYear + '.csv';
-        $.get(csvPath, function (data) {
-            statCache[cacheKey] = data;
-            parseData(cacheKey);
-        }).fail(function() {
-            $('#play-in-title').addClass('alert').text('The selected year\'s data is not available for this activity. Please choose a different year.');
-            clear(false);
-        });
+        const csvPath = 'data/' + currActivity + '/' + currYear + '.csv';
+        clear(false);
+        fetch(csvPath)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('CSV not found');
+                }
+                return response.text();
+            })
+            .then(function (data) {
+                statCache[cacheKey] = data;
+            })
+            .then(function () {
+                parseData(cacheKey);
+            })
+            .catch(function (err) {
+                console.error('Failed to load bracket data:', err);
+                document.getElementById('play-in-title').classList.add('alert');
+                document.getElementById('play-in-title').textContent = 'The selected year\'s data is not available for this activity. Please choose a different year.';
+                clear(false);
+            });
     } else {
         parseData(cacheKey);
     }
 }
 
-$(function () {
+document.addEventListener('DOMContentLoaded', function () {
+    // Derive latestYear from the first option in the year dropdown
+    latestYear = document.querySelector('#year option:first-child').textContent.trim();
+    currYear = latestYear;
+    currActivity = defaultActivity;
+
     // Grab values from the url if any
     location.search.substr(1).split('&').forEach(function (item) {
-        var key = item.split('=')[0];
+        const key = item.split('=')[0];
         urlParams[key] = decodeURIComponent(item.split('=')[1]).replace(/\//g, '');
     });
 
@@ -121,41 +142,48 @@ $(function () {
     }
 
     currYear = getDefaultYear(urlParams.hasOwnProperty('w') ? urlParams.w : '');
-    $('select[name="year"]').val(currYear);
-    $('select[name="activity"]').val(currActivity);
+    document.querySelector('select[name="year"]').value = currYear;
+    document.querySelector('select[name="activity"]').value = currActivity;
 
     selectYearAndActivity();
 });
 
 function mouseUp(id) {
-    submit(true)
+    submit(true);
 }
 
 function updateStat(id) {
-    var newVal = $('#' + id + ' > input').val();
-    currentWeights[id] = parseInt(newVal);
-    $('#' + id + '-val').text(newVal);
+    const input = document.getElementById(id).querySelector('input');
+    const newVal = input.value;
+    currentWeights[id] = parseInt(newVal, 10);
+    document.getElementById(id + '-val').textContent = newVal;
     submit(false);
 }
 
 
 function parseData(cacheKey) {
-    var lines = statCache[cacheKey].trim().split("\n");
+    const lines = statCache[cacheKey].trim().split("\n");
     headers = lines[0].trim().split(',');
     bracketTeamsByRegionAndSeed = [{}, {}, {}, {}];
     firstFours = [];
     totalGames = 0;
     totalScore = 0;
+    tournamentStarted = false;
+    highestGamesPlayed = -1;
 
-    for (var i = 1; i < lines.length; i++) {
-        var currentLine = lines[i].split(',');
-        var team = {};
+    for (let i = 1; i < lines.length; i++) {
+        const currentLine = lines[i].split(',');
+        const team = {};
         team.stats = {};
-        for (var j = 0; j < headers.length; j++) {
+        for (let j = 0; j < headers.length; j++) {
             if (nonStatHeaders.indexOf(headers[j]) > -1) {
-                team[headers[j]] = currentLine[j];
+                if (headers[j] === 'Name') {
+                    team[headers[j]] = currentLine[j];
+                } else {
+                    team[headers[j]] = parseInt(currentLine[j], 10);
+                }
             } else {
-                team.stats[attrToID(headers[j])] = currentLine[j];
+                team.stats[attrToID(headers[j])] = parseFloat(currentLine[j]);
             }
         }
         team.Name = abbreviateName(team.Name);
@@ -165,31 +193,30 @@ function parseData(cacheKey) {
         } else {
             bracketTeamsByRegionAndSeed[team.Region][team.stats.Seed] = team;
         }
-        var gamesWon = parseInt(team['Games Won']);
+        const gamesWon = team['Games Won'];
         if (gamesWon > 0) {
             totalGames += gamesWon;
             totalScore += Math.pow(2, gamesWon) - 1;
-            if(currYear === latestYear) {
+            if (currYear === latestYear) {
                 tournamentStarted = true;
             }
         } else if (gamesWon < 0) {
-            tournamentStarted = true
+            tournamentStarted = true;
         }
-        if(gamesWon > highestGamesPlayed) {
+        if (gamesWon > highestGamesPlayed) {
             highestGamesPlayed = gamesWon;
         }
     }
 
-    var headerCount = headers.length - nonStatHeaders.length;
-    var sliderCounter = 0;
-    $.each(headers, function (i, param) {
-        var id = attrToID(param);
-        if (nonStatHeaders.indexOf(id) > -1) return true;
-        if ($('#' + id).length === 0) {
+    const headerCount = headers.length - nonStatHeaders.length;
+    let sliderCounter = 0;
+    headers.forEach(function (param) {
+        const id = attrToID(param);
+        if (nonStatHeaders.indexOf(id) > -1) return;
+        if (!document.getElementById(id)) {
             currentWeights[id] = 0;
-            var column = Math.floor(sliderCounter * 3/ headerCount);
-            $('#slider-col' + String(column) + ' > ul').append('<li class="uk-margin"><label class="slider-label uk-text-nowrap uk-form-label" for="' + id + '" title="' + descriptions[id] + '">' + param + '</label><div class="slider-wrapper"><div class="value" id="' + id + '-val">0</div><div id="' + id + '"></div></div></li>');
-            $('#' + id).append('<input class="uk-slider" value="0" min="0" max="10" type="range" oninput="updateStat(\'' + id + '\')" onmouseup="mouseUp(\'' + id + '\')">')
+            const column = Math.floor(sliderCounter * 3 / headerCount);
+            createSlider(id, param, column);
         }
         sliderCounter++;
     });
@@ -199,11 +226,11 @@ function parseData(cacheKey) {
     weightsToURL();
     // Now that sliders have been built and values assigned,
     // setup the event handlers
-    $.each(headers, function (i, param) {
-        var id = attrToID(param);
-        if (nonStatHeaders.indexOf(id) > -1) return true;
+    headers.forEach(function (param) {
+        const id = attrToID(param);
+        if (nonStatHeaders.indexOf(id) > -1) return;
         if (window.ga && ga.loaded) {
-            $('#' + id).on("change", function () {
+            document.getElementById(id).querySelector('input').addEventListener('change', function () {
                 ga('send', 'event', 'slider-adjust', param, '', this.value);
             });
         }
@@ -212,48 +239,114 @@ function parseData(cacheKey) {
     setupInitialMatches();
     submit(false);
 }
+
+function createSlider(id, param, column) {
+    const li = document.createElement('li');
+    li.className = 'uk-margin';
+
+    const label = document.createElement('label');
+    label.className = 'slider-label uk-text-nowrap uk-form-label';
+    label.htmlFor = id;
+    label.title = descriptions[id] || '';
+    label.textContent = param;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'slider-wrapper';
+
+    const valueDiv = document.createElement('div');
+    valueDiv.className = 'value';
+    valueDiv.id = id + '-val';
+    valueDiv.textContent = '0';
+
+    const sliderDiv = document.createElement('div');
+    sliderDiv.id = id;
+
+    const input = document.createElement('input');
+    input.className = 'uk-slider';
+    input.type = 'range';
+    input.value = '0';
+    input.min = '0';
+    input.max = '10';
+    input.addEventListener('input', function () { updateStat(id); });
+    input.addEventListener('mouseup', function () { mouseUp(id); });
+
+    sliderDiv.appendChild(input);
+    wrapper.appendChild(valueDiv);
+    wrapper.appendChild(sliderDiv);
+    li.appendChild(label);
+    li.appendChild(wrapper);
+
+    document.querySelector('#slider-col' + column + ' > ul').appendChild(li);
+}
+
 /*
  * Sets up the initial matchups based on seeding for a given region.
  * Any teams with identical seed numbers and regions are treated as a "First Four" match.
  */
 
 function setupInitialMatches() {
+    console.log('setting initialLoad=false');
     initialLoad = false;
-    if (currYear != latestYear) {
-        $('#play-in-title').addClass('alert').text('The ' + latestYear + ' bracket is available. Switch the year below.');
+    const playInTitle = document.getElementById('play-in-title');
+    if (currYear !== latestYear) {
+        playInTitle.classList.add('alert');
+        playInTitle.textContent = 'The ' + latestYear + ' bracket is available. Switch the year below.';
     } else {
-        $('#play-in-title').removeClass('alert').text('');
+        playInTitle.classList.remove('alert');
+        playInTitle.textContent = '';
     }
-    if (firstFours.length == 1) {
-        $('#play-in-title').text('Play-In');
-    } else if (firstFours.length != 0) {
-        $('#play-in-title').text('First Four');
+    if (firstFours.length === 1) {
+        playInTitle.textContent = 'Play-In';
+    } else if (firstFours.length !== 0) {
+        playInTitle.textContent = 'First Four';
     }
-    $('#play-in').text('');
-    for (var matchupID in firstFours) {
-        var matchup = firstFours[matchupID];
-        $('#play-in').append('<li id="matchup' + matchupID + '"><div class="region"> (' + matchup[0].stats.Seed +
-        '):</div><div class="team1">' + matchup[0].Name + '</div> vs <div class="team2">' + matchup[1].Name + '</div></li>');
+    const playIn = document.getElementById('play-in');
+    playIn.textContent = '';
+    for (let matchupID = 0; matchupID < firstFours.length; matchupID++) {
+        const matchup = firstFours[matchupID];
+        const li = document.createElement('li');
+        li.id = 'matchup' + matchupID;
+
+        const regionDiv = document.createElement('div');
+        regionDiv.className = 'region';
+        regionDiv.textContent = ' (' + matchup[0].stats.Seed + '):';
+
+        const team1Div = document.createElement('div');
+        team1Div.className = 'team1';
+        team1Div.textContent = matchup[0].Name;
+
+        const vsText = document.createTextNode(' vs ');
+
+        const team2Div = document.createElement('div');
+        team2Div.className = 'team2';
+        team2Div.textContent = matchup[1].Name;
+
+        li.appendChild(regionDiv);
+        li.appendChild(team1Div);
+        li.appendChild(vsText);
+        li.appendChild(team2Div);
+        playIn.appendChild(li);
     }
-    for (var regionID = 0; regionID < regions.length; regionID++) {
-        var region = regions[regionID];
-        var regionTeams = bracketTeamsByRegionAndSeed[regionID];
-        for (var seed = 1; seed < 9; seed++) {
-            var high = regionTeams[seed];
+    for (let regionID = 0; regionID < regions.length; regionID++) {
+        const region = regions[regionID];
+        const regionTeams = bracketTeamsByRegionAndSeed[regionID];
+        for (let seed = 1; seed < 9; seed++) {
+            const high = regionTeams[seed];
             if ((17 - seed) in regionTeams) {
-                var lowTeam = regionTeams[17 - seed];
-                $('#' + region.toLowerCase() + 'seed' + lowTeam.stats.Seed).text(lowTeam.stats.Seed + '. ' + lowTeam.Name);
+                const lowTeam = regionTeams[17 - seed];
+                document.getElementById(region.toLowerCase() + 'seed' + lowTeam.stats.Seed).textContent = lowTeam.stats.Seed + '. ' + lowTeam.Name;
             } else {
-                $('#' + region.toLowerCase() + 'seed' + (17 - seed)).html((17 - seed) + '. <i>Play-In winner</i>');
+                document.getElementById(region.toLowerCase() + 'seed' + (17 - seed)).innerHTML = (17 - seed) + '. <i>Play-In winner</i>';
             }
-            $('#' + region.toLowerCase() + 'seed' + high.stats.Seed).text(high.stats.Seed + '. ' + high.Name);
+            document.getElementById(region.toLowerCase() + 'seed' + high.stats.Seed).textContent = high.stats.Seed + '. ' + high.Name;
         }
     }
-    if(tournamentStarted || currYear !== latestYear) {
-        $('#scoring-wrapper > div > h1').css('color', '');
-        $('#correct').text('0 / ' + totalGames);
-        $('#score').text('0 / ' + totalScore);
-        $('#upset').text('0');
+    const scoringH1s = document.querySelectorAll('#scoring-wrapper > div > h1');
+    if (tournamentStarted || currYear !== latestYear) {
+        scoringH1s.forEach(function (el) { el.style.color = ''; });
+        document.getElementById('correct').textContent = '0 / ' + totalGames;
+        document.getElementById('score').textContent = '0 / ' + totalScore;
+        document.getElementById('upset').textContent = '0';
     } else {
         clearScoreDisplay();
     }
@@ -270,9 +363,11 @@ function abbreviateName(name) {
  * and displays N/A instead of X/Y
  */
 function clearScoreDisplay() {
-    $('#scoring-wrapper > div > h1').css('color', 'grey');
-    $('#correct').text('N/A');
-    $('#score').text('N/A');
+    document.querySelectorAll('#scoring-wrapper > div > h1').forEach(function (el) {
+        el.style.color = 'grey';
+    });
+    document.getElementById('correct').textContent = 'N/A';
+    document.getElementById('score').textContent = 'N/A';
 }
 
 /*
@@ -280,16 +375,16 @@ function clearScoreDisplay() {
  * Return the team object for the winning team.
  * Tie breaker is the higher overall rank
  */
-function runMatchup(team1, team2, team1Div, team2Div) {
-    var team1Total = 0;
-    var team2Total = 0;
-    for (var weightName in currentWeights) {
-        var weight = currentWeights[weightName];
+function runMatchup(team1, team2, team1El, team2El) {
+    let team1Total = 0;
+    let team2Total = 0;
+    for (const weightName in currentWeights) {
+        const weight = currentWeights[weightName];
         if (team1.stats[weightName] === undefined) {
             console.log('warning: missing stat for ' + team1.Name + ': ' + weightName);
             continue;
         }
-        if (weightName == 'Seed') {
+        if (weightName === 'Seed') {
             // Higher seeds are worse, so invert the value range
             team1Total += (16 - team1.stats[weightName]) * weight / 16;
             team2Total += (16 - team2.stats[weightName]) * weight / 16;
@@ -298,22 +393,26 @@ function runMatchup(team1, team2, team1Div, team2Div) {
             team2Total += team2.stats[weightName] * weight;
         }
     }
-    var winningPct;
-    if ((team1Total == team2Total && parseInt(team1.Rank) < parseInt(team2.Rank)) || team1Total > team2Total) {
-        $(team1Div).removeClass('loser').addClass('winner');
-        $(team2Div).removeClass('winner').addClass('loser');
+    let winningPct;
+    if ((team1Total === team2Total && team1.Rank < team2.Rank) || team1Total > team2Total) {
+        team1El.classList.remove('loser');
+        team1El.classList.add('winner');
+        team2El.classList.remove('winner');
+        team2El.classList.add('loser');
         winningPct = getWinningPct(team1Total, team2Total);
-        return [team1, winningPct, team2, parseInt(team2.stats['Seed']) < parseInt(team1.stats['Seed'])];
+        return [team1, winningPct, team2, team2.stats.Seed < team1.stats.Seed];
     } else {
-        $(team2Div).removeClass('loser').addClass('winner');
-        $(team1Div).removeClass('winner').addClass('loser');
+        team2El.classList.remove('loser');
+        team2El.classList.add('winner');
+        team1El.classList.remove('winner');
+        team1El.classList.add('loser');
         winningPct = getWinningPct(team2Total, team1Total);
-        return [team2, winningPct, team1, parseInt(team1.stats['Seed']) < parseInt(team2.stats['Seed'])];
+        return [team2, winningPct, team1, team1.stats.Seed < team2.stats.Seed];
     }
 }
 
 function getWinningPct(winnerTotal, loserTotal) {
-    var winningPct = Math.ceil((2 * (100 * winnerTotal / (winnerTotal + loserTotal))) - 100);
+    let winningPct = Math.ceil((2 * (100 * winnerTotal / (winnerTotal + loserTotal))) - 100);
     if (isNaN(winningPct)) {
         winningPct = 0;
     }
@@ -327,7 +426,7 @@ function getRound(gameNumber) {
     if (gameNumber >= 1 && gameNumber <= 8) return 1;
     if (gameNumber >= 9 && gameNumber <= 12) return 2;
     if (gameNumber >= 13 && gameNumber <= 14) return 3;
-    if (gameNumber == 15) return 4;
+    if (gameNumber === 15) return 4;
     return null;
 }
 /*
@@ -336,10 +435,10 @@ function getRound(gameNumber) {
  */
 
 function submit(logEvent) {
-    var totalWeight = 0;
-    $.each(headers, function (i, param) {
-        var id = attrToID(param);
-        if (nonStatHeaders.indexOf(id) > -1) return true;
+    let totalWeight = 0;
+    headers.forEach(function (param) {
+        const id = attrToID(param);
+        if (nonStatHeaders.indexOf(id) > -1) return;
 
         totalWeight += currentWeights[id];
     });
@@ -349,206 +448,229 @@ function submit(logEvent) {
         return;
     }
 
-    var relativeWeights = {};
-    $.each(currentWeights, function (param) {
-        relativeWeights[param] = (currentWeights[param] / totalWeight).toFixed(3);
-    });
-
-    for (var matchupID in firstFours) {
-        var team1Div = '#matchup' + matchupID + ' > .team1';
-        var team2Div = '#matchup' + matchupID + ' > .team2';
-        var winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1Div, team2Div);
-        var winner = winnerData[0];
-        var winnerPct = winnerData[1];
+    for (let matchupID = 0; matchupID < firstFours.length; matchupID++) {
+        const matchupEl = document.getElementById('matchup' + matchupID);
+        const team1El = matchupEl.querySelector('.team1');
+        const team2El = matchupEl.querySelector('.team2');
+        const winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1El, team2El);
+        const winner = winnerData[0];
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
-        $('#' + regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).text(winner.stats.Seed + '. ' + winner.Name);
+        document.getElementById(regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).textContent = winner.stats.Seed + '. ' + winner.Name;
     }
 
-    var correctCount = 0;
-    var correctScore = 0;
-    var upsetCount = 0;
-    var gameWinnerRegions = [{}, {}, {}, {}];
-    for (var regionID in regions) {
-        var currentRegion = bracketTeamsByRegionAndSeed[regionID];
-        var gameWinners = gameWinnerRegions[regionID];
-        var bracketData = {
-            teams: [],
-            scores: []
-        };
-        var region = regions[regionID].toLowerCase();
+    let correctCount = 0;
+    let correctScore = 0;
+    let upsetCount = 0;
+    const gameWinnerRegions = [{}, {}, {}, {}];
+    for (let regionID = 0; regionID < regions.length; regionID++) {
+        const currentRegion = bracketTeamsByRegionAndSeed[regionID];
+        const gameWinners = gameWinnerRegions[regionID];
+        const region = regions[regionID].toLowerCase();
         // First round of 64
-        for (var index in seedMatchOrder) {
-            var seed = seedMatchOrder[index];
-            var high = currentRegion[seed];
-            var low = currentRegion[17 - seed];
+        for (let index = 0; index < seedMatchOrder.length; index++) {
+            const seed = seedMatchOrder[index];
+            const high = currentRegion[seed];
+            const low = currentRegion[17 - seed];
             // game numbers #ids are 1-indexed rather than 0-indexed
-            var gameNum = parseInt(index) + 1;
-            var highDiv = '#' + region + 'seed' + high.stats.Seed;
-            var lowDiv = '#' + region + 'seed' + low.stats.Seed;
+            const gameNum = index + 1;
+            const highEl = document.getElementById(region + 'seed' + high.stats.Seed);
+            const lowEl = document.getElementById(region + 'seed' + low.stats.Seed);
 
-            bracketData.teams.push([high.stats.Seed + '. ' + high.Name, low.stats.Seed + '. ' + low.Name]);
-            var winnerData = runMatchup(high, low, highDiv, lowDiv);
-            var winner = winnerData[0];
-            var winnerPct = winnerData[1];
-            var loser = winnerData[2];
-            var upset = winnerData[3];
+            const winnerData = runMatchup(high, low, highEl, lowEl);
+            const winner = winnerData[0];
+            const winnerPct = winnerData[1];
+            const loser = winnerData[2];
+            const upset = winnerData[3];
             if (upset) {
                 upsetCount++;
             }
             gameWinners['game' + String(gameNum)] = winner;
 
-            $('#' + region + 'seed' + winner.stats.Seed).removeClass('loser').addClass('winner');
+            document.getElementById(region + 'seed' + winner.stats.Seed).classList.remove('loser');
+            document.getElementById(region + 'seed' + winner.stats.Seed).classList.add('winner');
 
-            $('#' + region + 'game' + gameNum).text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
+            const gameEl = document.getElementById(region + 'game' + gameNum);
+            gameEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
             if (totalGames > 0 && (winner['Games Won'] > 0 || loser['Games Won'] > 0)) {
                 if (winner['Games Won'] > 0) {
                     correctCount++;
                     correctScore += 1;
-                    $('#' + region + 'game' + gameNum).removeClass('incorrect').addClass('correct');
+                    gameEl.classList.remove('incorrect');
+                    gameEl.classList.add('correct');
                 } else {
-                    $('#' + region + 'game' + gameNum).removeClass('correct').addClass('incorrect');
+                    gameEl.classList.remove('correct');
+                    gameEl.classList.add('incorrect');
                 }
             } else {
-                $('#' + region + 'game' + gameNum).removeClass('incorrect').removeClass('correct');
+                gameEl.classList.remove('incorrect');
+                gameEl.classList.remove('correct');
             }
         }
         // Round of 32 through the Elite 8
-        var gameDiff = 8;
-        for (var game = 9; game < 16; game++) {
-            var high = gameWinners['game' + String(game - gameDiff)];
-            var low = gameWinners['game' + String(game + 1 - gameDiff)];
-            var highDiv = '#' + region + 'game' + String(game - gameDiff);
-            var lowDiv = '#' + region + 'game' + String(game + 1- gameDiff);
-            var winnerData = runMatchup(high, low, highDiv, lowDiv);
-            var winner = winnerData[0];
-            var winnerPct = winnerData[1];
-            var loser = winnerData[2];
-            var upset = winnerData[3];
+        let gameDiff = 8;
+        for (let game = 9; game < 16; game++) {
+            const high = gameWinners['game' + String(game - gameDiff)];
+            const low = gameWinners['game' + String(game + 1 - gameDiff)];
+            const highEl = document.getElementById(region + 'game' + String(game - gameDiff));
+            const lowEl = document.getElementById(region + 'game' + String(game + 1 - gameDiff));
+            const winnerData = runMatchup(high, low, highEl, lowEl);
+            const winner = winnerData[0];
+            const winnerPct = winnerData[1];
+            const loser = winnerData[2];
+            const upset = winnerData[3];
             if (upset) {
                 upsetCount++;
             }
             gameWinners['game' + String(game)] = winner;
-            $('#' + region + 'game' + game).text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
+            const gameEl = document.getElementById(region + 'game' + game);
+            gameEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
 
-            var round = getRound(game);
+            const round = getRound(game);
             if (totalGames > 0 && (winner['Games Won'] >= round || loser['Games Won'] >= round)) {
                 if (winner['Games Won'] >= round) {
                     correctCount++;
                     if (game <= 12) correctScore += 2;
                     else if (game <= 14) correctScore += 4;
                     else correctScore += 8;
-                    $('#' + region + 'game' + game).removeClass('incorrect').addClass('correct');
+                    gameEl.classList.remove('incorrect');
+                    gameEl.classList.add('correct');
                 } else {
-                    $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
+                    gameEl.classList.remove('correct');
+                    gameEl.classList.add('incorrect');
                 }
             } else if (totalGames > 1 && highestGamesPlayed > winner['Games Won']) {
-                $('#' + region + 'game' + game).removeClass('correct').addClass('incorrect');
+                gameEl.classList.remove('correct');
+                gameEl.classList.add('incorrect');
             } else {
-                $('#' + region + 'game' + game).removeClass('correct').removeClass('incorrect');
+                gameEl.classList.remove('correct');
+                gameEl.classList.remove('incorrect');
             }
             gameDiff--;
         }
     }
     // Final four and championship game
-    var regionID = 0;
-    var sides = ['left', 'right'];
-    var championship = {};
-    for (var side in sides) {
-        var region1 = regionID;
-        var region2 = regionID + 1;
-        var team1 = gameWinnerRegions[region1].game15;
-        var team1Div = '#' + regions[region1].toLowerCase() + 'game15';
-        var team2Div = '#' + regions[region2].toLowerCase() + 'game15';
-        var team2 = gameWinnerRegions[region2].game15;
-        var winnerData = runMatchup(team1, team2, team1Div, team2Div);
-        var winner = winnerData[0];
-        var winnerPct = winnerData[1];
-        var loser = winnerData[2];
-        var upset = winnerData[3];
+    let regionID = 0;
+    const sides = ['left', 'right'];
+    const championship = {};
+    for (let side = 0; side < sides.length; side++) {
+        const region1 = regionID;
+        const region2 = regionID + 1;
+        const team1 = gameWinnerRegions[region1].game15;
+        const team1El = document.getElementById(regions[region1].toLowerCase() + 'game15');
+        const team2El = document.getElementById(regions[region2].toLowerCase() + 'game15');
+        const team2 = gameWinnerRegions[region2].game15;
+        const winnerData = runMatchup(team1, team2, team1El, team2El);
+        const winner = winnerData[0];
+        const winnerPct = winnerData[1];
+        const loser = winnerData[2];
+        const upset = winnerData[3];
         if (upset) {
             upsetCount++;
         }
         championship[sides[side]] = winner;
 
-        $('#' + sides[side] + 'game').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
-        if (totalGames > 0 &&  (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
+        const sideEl = document.getElementById(sides[side] + 'game');
+        sideEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+        if (totalGames > 0 && (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
             if (winner['Games Won'] >= 5) {
                 correctCount++;
                 correctScore += 16;
-                $('#' + sides[side] + 'game').removeClass('incorrect').addClass('correct');
+                sideEl.classList.remove('incorrect');
+                sideEl.classList.add('correct');
             } else {
-                $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
+                sideEl.classList.remove('correct');
+                sideEl.classList.add('incorrect');
             }
         } else if (totalGames > 0 && highestGamesPlayed >= 5) {
-            $('#' + sides[side] + 'game').removeClass('correct').addClass('incorrect');
+            sideEl.classList.remove('correct');
+            sideEl.classList.add('incorrect');
         } else {
-            $('#' + sides[side] + 'game').removeClass('correct').removeClass('incorrect');
+            sideEl.classList.remove('correct');
+            sideEl.classList.remove('incorrect');
         }
         regionID += 2;
     }
-    var winnerData = runMatchup(championship.left, championship.right, '#leftgame', '#rightgame');
-    var winner = winnerData[0];
-    var winnerPct = winnerData[1];
-    var loser = winnerData[2];
-    var upset = winnerData[3];
+    const leftEl = document.getElementById('leftgame');
+    const rightEl = document.getElementById('rightgame');
+    const champEl = document.getElementById('championship');
+    const winnerData = runMatchup(championship.left, championship.right, leftEl, rightEl);
+    const winner = winnerData[0];
+    const winnerPct = winnerData[1];
+    const loser = winnerData[2];
+    const upset = winnerData[3];
     if (upset) {
         upsetCount++;
     }
-    if (totalGames > 0 && (winner['Games Won'] == 6 || loser['Games Won'] == 6)) {
-        if (winner['Games Won'] == 6) {
+    if (totalGames > 0 && (winner['Games Won'] === 6 || loser['Games Won'] === 6)) {
+        if (winner['Games Won'] === 6) {
             correctCount++;
             correctScore += 32;
-            $('#championship').removeClass('incorrect').addClass('correct');
+            champEl.classList.remove('incorrect');
+            champEl.classList.add('correct');
         } else {
-            $('#championship').removeClass('correct').addClass('incorrect');
+            champEl.classList.remove('correct');
+            champEl.classList.add('incorrect');
         }
-    } else if (totalGames > 0 && highestGamesPlayed == 6) {
-        $('#championship').removeClass('correct').addClass('incorrect');
+    } else if (totalGames > 0 && highestGamesPlayed === 6) {
+        champEl.classList.remove('correct');
+        champEl.classList.add('incorrect');
     } else {
-        $('#championship').removeClass('correct').removeClass('incorrect');
+        champEl.classList.remove('correct');
+        champEl.classList.remove('incorrect');
     }
-    $('#championship').text(winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%');
-    $('#upset').text(upsetCount);
-    if(tournamentStarted || currYear !== latestYear) {
-        $('#scoring-wrapper > div > h1').css('color', '');
-        $('#correct').text(String(correctCount) + ' / ' + String(totalGames));
-        $('#score').text(String(correctScore) + ' / ' + String(totalScore));
+    champEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+    document.getElementById('upset').textContent = upsetCount;
+    if (tournamentStarted || currYear !== latestYear) {
+        document.querySelectorAll('#scoring-wrapper > div > h1').forEach(function (el) {
+            el.style.color = '';
+        });
+        document.getElementById('correct').textContent = String(correctCount) + ' / ' + String(totalGames);
+        document.getElementById('score').textContent = String(correctScore) + ' / ' + String(totalScore);
     } else {
         clearScoreDisplay();
     }
     weightsToURL();
-    if(logEvent){
-        var payload = {
+    if (logEvent) {
+        const payload = {
             action: 'render',
             weights: saveCookie(),
             activity: currActivity,
             correctScore: correctScore,
             year: currYear
-        }
-        $.get( "https://alebracket-tracking-237201124851.us-central1.run.app", payload);
+        };
+        const params = new URLSearchParams(payload);
+        fetch("https://alebracket-tracking-237201124851.us-central1.run.app?" + params);
     }
 }
 
 function clear(setup) {
+    const classesToRemove = ['winner', 'loser', 'correct', 'incorrect'];
     // Easier to just wipe everything and rerun the setup
-    for(var regionID in regions) {
-        var regionName = regions[regionID].toLowerCase();
-        $('[id^=' + regionName + 'game]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
-        $('[id^=' + regionName + 'seed]').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect');
+    for (let regionID = 0; regionID < regions.length; regionID++) {
+        const regionName = regions[regionID].toLowerCase();
+        document.querySelectorAll('[id^=' + regionName + 'game]').forEach(function (el) {
+            el.classList.remove(...classesToRemove);
+            el.textContent = '';
+        });
+        document.querySelectorAll('[id^=' + regionName + 'seed]').forEach(function (el) {
+            el.classList.remove(...classesToRemove);
+        });
     }
-    $('#play-in').text('');
-    $('#leftgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
-    $('#rightgame').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
-    $('#championship').removeClass('winner').removeClass('loser').removeClass('correct').removeClass('incorrect').text('');
+    document.getElementById('play-in').textContent = '';
+    ['leftgame', 'rightgame', 'championship'].forEach(function (id) {
+        const el = document.getElementById(id);
+        el.classList.remove(...classesToRemove);
+        el.textContent = '';
+    });
 
     if (setup) {
-        $('#upset').text('0')
+        document.getElementById('upset').textContent = '0';
         setupInitialMatches();
     } else {
-        for (var regionID = 0; regionID < regions.length; regionID++) {
-            for (var seed = 1; seed < 17; seed++) {
-                var region = regions[regionID].toLowerCase();
-                $('#' + region + 'seed' + seed).text('');
+        for (let regionID = 0; regionID < regions.length; regionID++) {
+            for (let seed = 1; seed < 17; seed++) {
+                const region = regions[regionID].toLowerCase();
+                document.getElementById(region + 'seed' + seed).textContent = '';
             }
         }
     }
@@ -558,15 +680,17 @@ function clear(setup) {
  * Resets all sliders to zero, clearing the bracket.
  */
 function resetSliders() {
-    $.each(headers, function (i, param) {
-        if (param in nonStatHeaders) return true;
+    headers.forEach(function (param) {
+        if (param in nonStatHeaders) return;
 
-        $('#' + attrToID(param) + ' > input').val(0);
-        $('#' + attrToID(param) + '-val').text('0');
+        const container = document.getElementById(attrToID(param));
+        if (container) container.querySelector('input').value = 0;
+        const valEl = document.getElementById(attrToID(param) + '-val');
+        if (valEl) valEl.textContent = '0';
     });
-    $.each(currentWeights, function (i, param) {
-       currentWeights[i] = 0;
-    });
+    for (const key in currentWeights) {
+        currentWeights[key] = 0;
+    }
     Cookies.remove('w');
     clear(true);
 }
@@ -576,43 +700,42 @@ function resetSliders() {
  */
 
 function attrToID(attr) {
-    // TODO: might be able to remove this check? maybe leave just seed
-    if (nonStatHeaders.indexOf(attr) > -1 || attr == 'Seed') return attr;
+    if (nonStatHeaders.indexOf(attr) > -1 || attr === 'Seed') return attr;
     const short = attr.replace(/%/, 'P').replace(/[\ a-z%\.\/]/g, '');
-    return short
+    return short;
 }
 
 function weightsToURL() {
     // Create the URL
-    var weightValue = saveCookie();
-    if(window.ga && ga.loaded) {
+    const weightValue = saveCookie();
+    if (window.ga && ga.loaded) {
         ga('send', 'event', 'bracket', 'build', '', weightValue);
     }
-    var path = document.URL.split('?')[0] + '?w=' + weightValue;
-    if (path.substring(0, 4) != "http") {
+    let path = document.URL.split('?')[0] + '?w=' + weightValue;
+    if (path.substring(0, 4) !== "http") {
         path = 'https://' + path;
     }
-    if (currActivity != defaultActivity) {
+    if (currActivity !== defaultActivity) {
         path += '&a=' + currActivity;
     }
 
-    $('#share').val(path);
-    $('#twitter-share').html('<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>')
-    if (twttr !== undefined && twttr.widgets !== undefined) {
+    document.getElementById('share').value = path;
+    document.getElementById('twitter-share').innerHTML = '<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>';
+    if (typeof twttr !== 'undefined' && twttr.widgets !== undefined) {
         twttr.widgets.load();
     }
     return path;
 }
 
 function saveCookie() {
-    var sortedWeights = [];
-    var urlValue = YearToURLParam(currYear);
-    for (var k in currentWeights) {
+    const sortedWeights = [];
+    let urlValue = YearToURLParam(currYear);
+    for (const k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    for(var weightName in sortedWeights) {
-        var weightVal = String(currentWeights[sortedWeights[weightName]]);
+    for (let i = 0; i < sortedWeights.length; i++) {
+        let weightVal = String(currentWeights[sortedWeights[i]]);
         if (weightVal === '10') {
             weightVal = 'A';
         }
@@ -620,33 +743,36 @@ function saveCookie() {
     }
     Cookies.set('w', urlValue);
     Cookies.set('activity', currActivity);
-    return urlValue
+    return urlValue;
 }
 
 function URLToWeights(urlParams) {
-    var sortedWeights = [];
-    for (var k in currentWeights) {
+    console.log('URLToWeights', urlParams);
+    const sortedWeights = [];
+    for (const k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    if (urlParams.w.length == 0 && Cookies.get('w') !== undefined) {
+    if (urlParams.w.length === 0 && Cookies.get('w') !== undefined) {
         urlParams.w = Cookies.get('w');
     }
-    if ((!urlParams.hasOwnProperty('a') || urlParams.a.length == 0) && Cookies.get('activity') !== undefined) {
+    if ((!urlParams.hasOwnProperty('a') || urlParams.a.length === 0) && Cookies.get('activity') !== undefined) {
         currActivity = Cookies.get('activity');
     }
     if (initialLoad) {
-        for(var i=1; i < urlParams.w.length; i++) {
-            var weightVal = urlParams.w[i];
+        for (let i = 1; i < urlParams.w.length; i++) {
+            let weightVal = urlParams.w[i];
             if (weightVal === 'A') {
                 weightVal = 10;
             } else {
-                weightVal = parseInt(weightVal);
+                weightVal = parseInt(weightVal, 10);
             }
-            var weightName = sortedWeights[i - 1];
-            $('#' + weightName + ' > input').val(weightVal);
+            const weightName = sortedWeights[i - 1];
+            const container = document.getElementById(weightName);
+            if (container) container.querySelector('input').value = weightVal;
             currentWeights[weightName] = weightVal;
-            $('#' + weightName + '-val').text(weightVal);
+            const valEl = document.getElementById(weightName + '-val');
+            if (valEl) valEl.textContent = weightVal;
         }
     }
 }
@@ -656,5 +782,5 @@ function URLParamToYear(paramChar) {
 }
 
 function YearToURLParam(year) {
-    return (parseInt(year) - 2010).toString(36).toUpperCase();
+    return (parseInt(year, 10) - 2010).toString(36).toUpperCase();
 }

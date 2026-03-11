@@ -124,20 +124,6 @@ a {
 	text-decoration:none;
 }
 
-.txt-rt {
-	text-align:right;
-}
-
-/* text align right */
-.txt-lt {
-	text-align:left;
-}
-
-/* text align left */
-.txt-center {
-	text-align:center;
-}
-
 .adsense {
 	width:160px;
 	height:600px;
@@ -154,49 +140,10 @@ a {
 	width: 300px;
 }
 
-/* text align center */
-.float-rt {
-	float:right;
-}
-
-/* float right */
-.float-lt {
-	float:left;
-}
-
-/* float left */
 .clear {
 	clear:both;
 }
 
-/* clear float */
-.pos-relative {
-	position:relative;
-}
-
-/* Position Relative */
-.pos-absolute {
-	position:absolute;
-}
-
-/* Position Absolute */
-.vertical-base {
-	vertical-align:baseline;
-}
-
-/* vertical align baseline */
-.vertical-top {
-	vertical-align:top;
-}
-
-/* vertical align top */
-.underline {
-	padding-bottom:5px;
-	border-bottom:1px solid #eee;
-	margin:0 0 20px;
-}
-
-/* Add 5px bottom padding and a underline */
 nav.vertical ul li {
 	display:block;
 }
@@ -647,10 +594,6 @@ body {
 /* display with 840px  */
 .top-nav {
 	display:none;
-}
-
-.nav_bg {
-	background:#464646;
 }
 
 .clearfix {
