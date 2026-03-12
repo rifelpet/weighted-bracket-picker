@@ -392,25 +392,18 @@ body {
 	background-size:contain;
 	letter-spacing:-.5px;
 	-webkit-print-color-adjust:exact;
-	position:relative;
 }
 
 .bracket-scroll-hint {
 	display: none;
 }
 
-/* On desktop, the sticky bar wrapper is a transparent passthrough overlay */
+/* On desktop, mobile-sticky-bar is a transparent wrapper — display:contents
+   removes it from layout entirely so absolutely-positioned children
+   (#year-div etc.) find their original containing block, preserving the
+   original desktop positioning. */
 .mobile-sticky-bar {
-	position:absolute;
-	top:0;
-	left:0;
-	width:100%;
-	height:0;
-	overflow:visible;
-	pointer-events:none;
-}
-.mobile-sticky-bar > * {
-	pointer-events:auto;
+	display:contents;
 }
 
 #championship {
