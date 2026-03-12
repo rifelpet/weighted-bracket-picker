@@ -893,14 +893,15 @@ input[type=range]::-moz-focus-outer {
   }
   /* Unified control panel: column layout — row 1 then row 2 */
   .mobile-sticky-bar {
-    display: flex;
-    flex-direction: column;
-    position: static;
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 100;
     height: auto;
     overflow: visible;
     pointer-events: auto;
     background: #BAD7E5;
-    border-radius: 10px;
+    border-radius: 0 0 10px 10px;
     padding: 8px 10px 2px;
     margin-bottom: 8px;
   }
@@ -1006,6 +1007,7 @@ input[type=range]::-moz-focus-outer {
   /* Scrollable bracket area */
   .bracket-scroll {
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     width: 100%;
     position: relative;
