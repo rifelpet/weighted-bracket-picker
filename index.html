@@ -94,11 +94,12 @@
     
                 <div class="top-nav">
                     <nav class="clearfix">
+                        <a href="#" id="pull">Menu</a>
                         <ul>
                             <li><a href="/">Home</a></li>
                             <li><a href="about.html">About</a></li>
                             <li><a href="contact.html">Contact</a></li>
-                        </ul><a href="#" id="pull">Menu</a>
+                        </ul>
                     </nav>
                 </div>
             </div>
@@ -129,61 +130,63 @@
             (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
+        <div class="mobile-sticky-wrap">
+        <div class="mobile-sticky-bar">
+        <div class="bracket-controls-row">
+        <div id="year-div">
+            <h1>Select Bracket</h1>
+            <div class="select">
+                <select id="year" name="year" onchange="selectYearAndActivity()">
+                    <option>2025</option>
+                    <option>2024</option>
+                    <option>2023</option>
+                    <option>2022</option>
+                    <option>2021</option>
+                    <option disabled>2020</option>
+                    <option>2019</option>
+                    <option>2018</option>
+                    <option>2017</option>
+                    <option>2016</option>
+                    <option>2015</option>
+                    <option>2014</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                    <option>2011</option>
+                    <option>2010</option>
+                </select>
+            </div>
+            <div class="select">
+                <select id="activity" name="activity" onchange="selectYearAndActivity()">
+                    <option value="cbbm">NCAA Men's Bball</option>
+                    <option value="cbbw">NCAA Women's Bball</option>
+                </select>
+            </div>
+        </div>
+        <button class="mobile-clear" onclick="resetSliders()">Clear</button>
+        </div><!-- .bracket-controls-row -->
+
+        <div id="scoring-wrapper">
+            <div id="correct-wrapper">
+                <h1>Correct:</h1>
+                <h1 id="correct"></h1>
+            </div>
+            <div id="score-wrapper">
+                <h1>Score:</h1>
+                <h1 id="score"></h1>
+            </div>
+            <div id="upset-wrapper">
+                <h1>Upsets:</h1>
+                <h1 id="upset"></h1>
+            </div>
+            <button id="clear" onclick="resetSliders()">Clear</button>
+        </div>
+        </div><!-- .mobile-sticky-bar -->
+        <div class="bracket-scroll-hint">&#8592; Scroll to see full bracket &#8594;</div>
+        </div><!-- .mobile-sticky-wrap -->
         <div id="teams">
             <h4 id="play-in-title"></h4>
             <ul id="play-in"></ul>
             <div class="bracket-container">
-                <div class="mobile-sticky-bar">
-                <div class="bracket-controls-row">
-                <div id="year-div">
-                    <h1>Select Bracket</h1>
-                    <div class="select">
-                        <select id="year" name="year" onchange="selectYearAndActivity()">
-                            <option>2025</option>
-                            <option>2024</option>
-                            <option>2023</option>
-                            <option>2022</option>
-                            <option>2021</option>
-                            <option disabled>2020</option>
-                            <option>2019</option>
-                            <option>2018</option>
-                            <option>2017</option>
-                            <option>2016</option>
-                            <option>2015</option>
-                            <option>2014</option>
-                            <option>2013</option>
-                            <option>2012</option>
-                            <option>2011</option>
-                            <option>2010</option>
-                        </select>
-                    </div>
-                    <div class="select">
-                        <select id="activity" name="activity" onchange="selectYearAndActivity()">
-                            <option value="cbbm">NCAA Men's Bball</option>
-                            <option value="cbbw">NCAA Women's Bball</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="mobile-clear" onclick="resetSliders()">Clear</button>
-                </div><!-- .bracket-controls-row -->
-
-                <div id="scoring-wrapper">
-                    <div id="correct-wrapper">
-                        <h1>Correct:</h1>
-                        <h1 id="correct"></h1>
-                    </div>
-                    <div id="score-wrapper">
-                        <h1>Score:</h1>
-                        <h1 id="score"></h1>
-                    </div>
-                    <div id="upset-wrapper">
-                        <h1>Upsets:</h1>
-                        <h1 id="upset"></h1>
-                    </div>
-                    <button id="clear" onclick="resetSliders()">Clear</button>
-                </div>
-                </div><!-- .mobile-sticky-bar -->
-                <div class="bracket-scroll-hint">&#8592; Scroll to see full bracket &#8594;</div>
                 <div class="bracket-scroll">
                 <div class="tournament32-wrap ltor fl">
                     <div class="round6-top winner6 fr championship-left" id="leftgame"></div>
