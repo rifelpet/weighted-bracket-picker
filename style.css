@@ -131,6 +131,14 @@ a {
 	left:1109px;
 	top:10px;
 }
+.adsense ins {
+	display: inline-block;
+	width: 160px;
+	height: 600px;
+}
+.adsense ins + ins {
+	display: none;
+}
 
 #payment-popup {
     text-align: center;
@@ -838,7 +846,28 @@ input[type=range]::-moz-focus-outer {
     padding-right: 20px;
   }
   .adsense {
+    display: block;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 200;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+  }
+  .adsense ins {
+    display: inline-block;
+    width: 320px;
+    height: 50px;
+  }
+  .adsense ins + ins {
     display: none;
+  }
+  body {
+    padding-bottom: 50px;
   }
   #social-footer {
     padding-left: 20px;
