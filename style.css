@@ -398,6 +398,15 @@ body {
 	display: none;
 }
 
+.mobile-clear {
+	display: none;
+}
+
+/* On desktop, transparent wrapper — children position as if directly in .bracket-container */
+.bracket-controls-row {
+	display: contents;
+}
+
 /* On desktop, mobile-sticky-bar is a transparent wrapper — display:contents
    removes it from layout entirely so absolutely-positioned children
    (#year-div etc.) find their original containing block, preserving the
@@ -429,7 +438,6 @@ body {
 	left:380px;
 	text-align:center;
 	padding-top:50em;
-	height:10em;
 	width:362px;
 }
 
@@ -871,66 +879,147 @@ input[type=range]::-moz-focus-outer {
   }
   /* Move bracket controls into normal flow above the bracket on mobile */
   .bracket-container {
+    width: 100% !important;
     height: auto !important;
     background: none !important;
   }
-  #year-div {
-    position: static !important;
-    margin: 10px auto;
-    max-width: 300px;
-    z-index: 10;
-  }
   #championship {
-    position: static !important;
-    line-height: normal !important;
-    height: auto !important;
+    position: absolute;
+    left: 516px;
+    line-height: 65em;
+    height: 30em;
+    width: 60px;
     text-align: center;
-    padding: 5px 0;
   }
-  #scoring-wrapper {
-    position: static !important;
-    padding: 8px 0;
-    width: auto;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    box-sizing: border-box;
-  }
-  #scoring-wrapper > div {
-    padding: 2px 0;
-    width: auto;
-  }
-  #scoring-wrapper h1 {
-    font-size: 16px !important;
-    text-align: center !important;
-  }
-  /* On mobile, sticky bar is a normal block above the bracket */
+  /* Unified control panel: column layout — row 1 then row 2 */
   .mobile-sticky-bar {
+    display: flex;
+    flex-direction: column;
     position: static;
     height: auto;
     overflow: visible;
     pointer-events: auto;
-    background: #f5f5f5;
-    border-bottom: 1px solid #ddd;
-    padding: 8px 0;
+    background: #BAD7E5;
+    border-radius: 10px;
+    padding: 8px 10px 2px;
+    margin-bottom: 8px;
+  }
+  /* Row 1 wrapper: flex-wrap so heading is on its own line above dropdowns */
+  .bracket-controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  /* Make year-div transparent — its children (h1, selects) join .bracket-controls-row flex */
+  #year-div {
+    display: contents;
+    position: static !important;
+  }
+  /* "Select Bracket" heading: full width row A */
+  #year-div > h1 {
+    flex-basis: 100%;
+    order: 1;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 0 2px;
+    margin: 0;
+  }
+  /* Two dropdowns: row B, share space equally */
+  #year-div .select {
+    flex: 1;
+    min-width: 0;
+    order: 2;
+    padding-top: 0;
+  }
+  /* Selects fill their container without overflowing */
+  #year-div .select select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  /* Mobile-only Clear button: row B alongside dropdowns */
+  .mobile-clear {
+    display: block !important;
+    flex-shrink: 0;
+    order: 2;
+    width: auto;
+    padding: 5px 12px;
+    margin: 0;
+  }
+  /* Hide the desktop Clear (inside #scoring-wrapper) on mobile */
+  #clear {
+    display: none;
+  }
+  /* Row 2: stats spanning full width */
+  #scoring-wrapper {
+    position: static !important;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid rgba(0,0,0,0.15);
+    padding: 3px 0 6px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  #correct-wrapper,
+  #score-wrapper,
+  #upset-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    width: auto;
+    float: none;
+    gap: 1px;
+  }
+  /* Stat label (first h1) — small */
+  #correct-wrapper h1:first-child,
+  #score-wrapper h1:first-child,
+  #upset-wrapper h1:first-child {
+    font-size: 11px !important;
+    font-weight: 600;
+    text-align: center !important;
+    padding: 0;
+    margin: 0;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+  /* Stat value (second h1) — large, fills column width */
+  #correct-wrapper h1:last-child,
+  #score-wrapper h1:last-child,
+  #upset-wrapper h1:last-child {
+    font-size: min(6vw, 22px) !important;
+    font-weight: 700;
+    text-align: center !important;
+    padding: 0;
+    margin: 0;
+    line-height: 1.1;
   }
   /* Scrollable bracket area */
   .bracket-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: 100%;
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
     background: url(bracket.svg) no-repeat top left;
     background-size: 1080px 643px;
     background-attachment: local;
     min-height: 643px;
   }
-  .bracket-scroll::after {
-    content: '';
-    display: table;
-    clear: both;
-  }
   .tournament32-wrap {
-    min-width: 540px;
+    width: 540px;
+    flex-shrink: 0;
+    float: none !important;
   }
   /* Swipe hint for bracket */
   .bracket-scroll-hint {
@@ -993,25 +1082,24 @@ input[type=range]::-moz-focus-outer {
 /* Landscape phone */
 @media screen and (max-height: 500px) and (orientation: landscape) {
   .mobile-sticky-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
     padding: 4px 10px;
+    border-radius: 6px;
   }
-  #year-div {
-    margin: 0;
-    padding: 4px;
+  .mobile-sticky-bar::after {
+    margin: 4px 0 2px;
   }
   #year-div > h1 {
     display: none;
   }
-  #scoring-wrapper {
-    padding: 4px 0;
-    gap: 8px;
+  #correct-wrapper h1,
+  #score-wrapper h1,
+  #upset-wrapper h1 {
+    font-size: 11px !important;
   }
-  #scoring-wrapper h1 {
-    font-size: 13px !important;
+  #correct-wrapper h1:last-child,
+  #score-wrapper h1:last-child,
+  #upset-wrapper h1:last-child {
+    font-size: 14px !important;
   }
   .bracket-scroll-hint {
     display: none;
