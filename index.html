@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bracket picking tool that allows you to create a custom bracket based on the stats you think are most important to a teams success.">
     <meta name="keywords" content="Basketball,NCAA,March Madness,Tournament,Bracket,Algebracket,Statistics">
     <meta name="author" content="Peter Rifel &amp; Adam Wilcox">
@@ -132,6 +133,7 @@
             <h4 id="play-in-title"></h4>
             <ul id="play-in"></ul>
             <div class="bracket-container">
+                <div class="mobile-sticky-bar">
                 <div id="year-div">
                     <h1>Select Bracket</h1>
                     <div class="select">
@@ -178,6 +180,9 @@
                     </div>
                     <button id="clear" onclick="resetSliders()">Clear</button>
                 </div>
+                </div><!-- .mobile-sticky-bar -->
+                <div class="bracket-scroll-hint">&#8592; Scroll to see full bracket &#8594;</div>
+                <div class="bracket-scroll">
                 <div class="tournament32-wrap ltor fl">
                     <div class="round6-top winner6 fr championship-left" id="leftgame"></div>
                     <div class="round5-topwrap fl">
@@ -428,6 +433,7 @@
                         </div>
                     </div>
                 </div>
+                </div><!-- .bracket-scroll -->
             </div>
         </div>
         <div class="uk-margin-top uk-margin-bottom" id="sliders">

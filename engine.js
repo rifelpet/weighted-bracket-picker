@@ -146,6 +146,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('select[name="activity"]').value = currActivity;
 
     selectYearAndActivity();
+
+    // Mobile menu toggle
+    const pullBtn = document.getElementById('pull');
+    if (pullBtn) {
+        pullBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const menu = this.parentNode.querySelector('ul');
+            if (menu) {
+                menu.classList.toggle('open');
+            }
+        });
+    }
 });
 
 function mouseUp(id) {
@@ -269,6 +281,7 @@ function createSlider(id, param, column) {
     input.max = '10';
     input.addEventListener('input', function () { updateStat(id); });
     input.addEventListener('mouseup', function () { mouseUp(id); });
+    input.addEventListener('touchend', function () { mouseUp(id); });
 
     sliderDiv.appendChild(input);
     wrapper.appendChild(valueDiv);

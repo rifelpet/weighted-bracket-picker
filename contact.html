@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A March Madness bracket picking tool that lets you choose how important different statistics are for determining a winner.">
     <meta name="keywords" content="Basketball,NCAA,March Madness,Tournament,Bracket">
     <meta name="author" content="Peter Rifel and Adam Wilcox">
@@ -19,6 +20,18 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-58912106-1', 'auto');
   ga('send', 'pageview');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var pull = document.getElementById('pull');
+    if (pull) {
+        pull.addEventListener('click', function (e) {
+            e.preventDefault();
+            var menu = this.parentNode.querySelector('ul');
+            if (menu) menu.classList.toggle('open');
+        });
+    }
+});
 </script>
 </head>
 <body>
@@ -51,9 +64,9 @@
         </div>
     </div>
     
-    <div id="body" style="text-align: center; height: 900px;">
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfQyRPhJ8QYjd1latpufmZBSQepgbKRbJ26yJPuK9pOFTGHwg/viewform?embedded=true" width="640" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>    </div>
-        <div id="footer" style="position:fixed;">
+    <div id="body" style="text-align: center;">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfQyRPhJ8QYjd1latpufmZBSQepgbKRbJ26yJPuK9pOFTGHwg/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>    </div>
+        <div id="footer">
 Copyright &copy; 2025 Algebracket. All Rights Reserved. Template by <a href="https://w3layouts.com/">W3Layouts</a>
         </div>
     </div>

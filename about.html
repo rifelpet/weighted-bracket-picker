@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A March Madness bracket picking tool that lets you choose how important different statistics are for determining a winner.">
     <meta name="keywords" content="Basketball,NCAA,March Madness,Tournament,Bracket">
     <meta name="author" content="Peter Rifel and Adam Wilcox">
@@ -17,6 +18,18 @@
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
     ga('create', 'UA-58912106-1', 'auto');
     ga('send', 'pageview');
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var pull = document.getElementById('pull');
+        if (pull) {
+            pull.addEventListener('click', function (e) {
+                e.preventDefault();
+                var menu = this.parentNode.querySelector('ul');
+                if (menu) menu.classList.toggle('open');
+            });
+        }
+    });
     </script>
 </head>
 <body>
