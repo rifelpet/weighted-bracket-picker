@@ -161,6 +161,19 @@ document.addEventListener('DOMContentLoaded', function () {
     let slidersVisible = false;
     let bracketVisible = true;
     let miniVisibilityTimer = null;
+    let miniHeightMeasured = false;
+    let teamsObserver = null;
+    const miniBracketEl = document.getElementById('mini-final-four');
+
+    function createTeamsObserver(rootMarginTopPx) {
+        if (teamsObserver) { teamsObserver.disconnect(); }
+        teamsObserver = new IntersectionObserver(function(entries) {
+            bracketVisible = entries[0].isIntersecting;
+            updateMiniVisibility();
+        }, { threshold: 0, rootMargin: rootMarginTopPx + 'px 0px 0px 0px' });
+        teamsObserver.observe(teamsEl);
+    }
+
     function updateMiniVisibility() {
         clearTimeout(miniVisibilityTimer);
         miniVisibilityTimer = setTimeout(function() {
@@ -168,9 +181,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.classList.toggle('bracket-visible', bracketVisible);
             if (slidersVisible && !bracketVisible) {
                 requestAnimationFrame(updateMiniConnector);
+                // On first show, measure the mini bracket's rendered height and tighten
+                // the threshold so the mini bracket only appears when the visible portion
+                // of the main bracket is smaller than the mini bracket itself.
+                if (!miniHeightMeasured && miniBracketEl) {
+                    var h = miniBracketEl.offsetHeight;
+                    if (h > 0) {
+                        miniHeightMeasured = true;
+                        createTeamsObserver(-h);
+                    }
+                }
             }
         }, 150);
     }
+
     const slidersEl = document.getElementById('sliders');
     const teamsEl = document.getElementById('teams');
     if (slidersEl && teamsEl && window.IntersectionObserver) {
@@ -178,10 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
             slidersVisible = entries[0].isIntersecting;
             updateMiniVisibility();
         }, { threshold: 0 }).observe(slidersEl);
-        new IntersectionObserver(function(entries) {
-            bracketVisible = entries[0].isIntersecting;
-            updateMiniVisibility();
-        }, { threshold: 0 }).observe(teamsEl);
+        createTeamsObserver(0);
     } else {
         document.body.classList.add('sliders-visible');
         document.body.classList.remove('bracket-visible');
