@@ -84,11 +84,9 @@ function selectYearAndActivity() {
     currActivity = document.querySelector('select[name="activity"]').value;
 
     const currWeightCookie = Cookies.get('w');
-    console.log('currWeightCookie', currWeightCookie);
     if (currWeightCookie !== undefined) {
         const yearParam = YearToURLParam(currYear);
         const newVal = yearParam + currWeightCookie.substring(1, currWeightCookie.length);
-        console.log('newVal', newVal);
         Cookies.set('w', newVal);
     }
 
@@ -351,7 +349,6 @@ function createSlider(id, param, column) {
  */
 
 function setupInitialMatches() {
-    console.log('setting initialLoad=false');
     initialLoad = false;
     const playInTitle = document.getElementById('play-in-title');
     if (currYear !== latestYear) {
