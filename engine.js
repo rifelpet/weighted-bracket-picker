@@ -158,7 +158,42 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // Show mini bracket only when sliders section is visible (bracket scrolled off-screen)
+    const slidersEl = document.getElementById('sliders');
+    if (slidersEl && window.IntersectionObserver) {
+        new IntersectionObserver(function(entries) {
+            // sliders visible → bracket off-screen → remove bracket-visible → mini shows
+            document.body.classList.toggle('bracket-visible', !entries[0].isIntersecting);
+        }, { threshold: 0 }).observe(slidersEl);
+    } else {
+        // Fallback: always treat bracket as not visible so mini can show
+        document.body.classList.remove('bracket-visible');
+    }
 });
+
+function updateMiniConnector() {
+    const svg = document.getElementById('mini-connector-svg');
+    if (!svg) return;
+    const svgRect = svg.getBoundingClientRect();
+    const W = svgRect.width;
+    const H = svgRect.height;
+    if (H === 0 || W === 0) return;
+    const l1 = document.getElementById('mini-ff-left-1').getBoundingClientRect();
+    const l2 = document.getElementById('mini-ff-left-2').getBoundingClientRect();
+    const r1 = document.getElementById('mini-ff-right-1').getBoundingClientRect();
+    const r2 = document.getElementById('mini-ff-right-2').getBoundingClientRect();
+    const svgTop = svgRect.top;
+    // Y of the gap between each pair of teams, relative to SVG top
+    const y1 = (l1.bottom + l2.top) / 2 - svgTop;
+    const y2 = (r1.bottom + r2.top) / 2 - svgTop;
+    // "]" bracket: horizontal at y1, vertical on right from y1→y2, horizontal at y2
+    const d = 'M 0 ' + y1.toFixed(1) + ' H ' + W.toFixed(1) +
+              ' V ' + y2.toFixed(1) + ' H 0';
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    svg.innerHTML = '<path d="' + d + '" fill="none" stroke="#7ab8d4" stroke-width="2" stroke-linejoin="round"/>';
+}
 
 function mouseUp(id) {
     submit(true);
@@ -601,6 +636,24 @@ function submit(logEvent) {
             sideEl.classList.remove('correct');
             sideEl.classList.remove('incorrect');
         }
+        // Populate mini FF game (both teams)
+        const miniPrefix = 'mini-ff-' + sides[side] + '-';
+        const miniEl1 = document.getElementById(miniPrefix + '1');
+        const miniEl2 = document.getElementById(miniPrefix + '2');
+        if (miniEl1 && miniEl2) {
+            const isTeam1Winner = winner === team1;
+            const miniWinEl = isTeam1Winner ? miniEl1 : miniEl2;
+            const miniLoseEl = isTeam1Winner ? miniEl2 : miniEl1;
+            miniEl1.textContent = team1.stats.Seed + '. ' + team1.Name;
+            miniEl2.textContent = team2.stats.Seed + '. ' + team2.Name;
+            miniLoseEl.classList.remove('correct', 'incorrect', 'mini-winner');
+            miniLoseEl.classList.add('mini-loser');
+            miniWinEl.classList.remove('mini-loser');
+            miniWinEl.classList.add('mini-winner');
+            ['correct', 'incorrect'].forEach(function(cls) {
+                miniWinEl.classList.toggle(cls, sideEl.classList.contains(cls));
+            });
+        }
         regionID += 2;
     }
     const leftEl = document.getElementById('leftgame');
@@ -632,6 +685,27 @@ function submit(logEvent) {
         champEl.classList.remove('incorrect');
     }
     champEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+
+    // Populate mini championship (both teams)
+    const miniChamp1El = document.getElementById('mini-champ-1');
+    const miniChamp2El = document.getElementById('mini-champ-2');
+    if (miniChamp1El && miniChamp2El) {
+        const isLeftWinner = winner === championship.left;
+        const miniChampWinEl = isLeftWinner ? miniChamp1El : miniChamp2El;
+        const miniChampLoseEl = isLeftWinner ? miniChamp2El : miniChamp1El;
+        miniChamp1El.textContent = championship.left.stats.Seed + '. ' + championship.left.Name;
+        miniChamp2El.textContent = championship.right.stats.Seed + '. ' + championship.right.Name;
+        miniChampLoseEl.classList.remove('correct', 'incorrect', 'mini-winner');
+        miniChampLoseEl.classList.add('mini-loser');
+        miniChampWinEl.classList.remove('mini-loser');
+        miniChampWinEl.classList.add('mini-winner');
+        ['correct', 'incorrect'].forEach(function(cls) {
+            miniChampWinEl.classList.toggle(cls, champEl.classList.contains(cls));
+        });
+        document.getElementById('mini-final-four').classList.add('visible');
+        requestAnimationFrame(updateMiniConnector);
+    }
+
     document.getElementById('upset').textContent = upsetCount;
     if (tournamentStarted || currYear !== latestYear) {
         document.querySelectorAll('#scoring-wrapper > div > h1').forEach(function (el) {
