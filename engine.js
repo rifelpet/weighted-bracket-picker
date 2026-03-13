@@ -159,15 +159,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Show mini bracket only when sliders section is visible (bracket scrolled off-screen)
+    // Mini bracket: show only when sliders visible AND main bracket off-screen
+    let slidersVisible = false;
+    let bracketVisible = true;
+    function updateMiniVisibility() {
+        document.body.classList.toggle('sliders-visible', slidersVisible);
+        document.body.classList.toggle('bracket-visible', bracketVisible);
+        if (slidersVisible && !bracketVisible) {
+            requestAnimationFrame(updateMiniConnector);
+        }
+    }
     const slidersEl = document.getElementById('sliders');
-    if (slidersEl && window.IntersectionObserver) {
+    const teamsEl = document.getElementById('teams');
+    if (slidersEl && teamsEl && window.IntersectionObserver) {
         new IntersectionObserver(function(entries) {
-            // sliders visible → bracket off-screen → remove bracket-visible → mini shows
-            document.body.classList.toggle('bracket-visible', !entries[0].isIntersecting);
+            slidersVisible = entries[0].isIntersecting;
+            updateMiniVisibility();
         }, { threshold: 0 }).observe(slidersEl);
+        new IntersectionObserver(function(entries) {
+            bracketVisible = entries[0].isIntersecting;
+            updateMiniVisibility();
+        }, { threshold: 0 }).observe(teamsEl);
     } else {
-        // Fallback: always treat bracket as not visible so mini can show
+        document.body.classList.add('sliders-visible');
         document.body.classList.remove('bracket-visible');
     }
 });
@@ -702,7 +716,6 @@ function submit(logEvent) {
         ['correct', 'incorrect'].forEach(function(cls) {
             miniChampWinEl.classList.toggle(cls, champEl.classList.contains(cls));
         });
-        document.getElementById('mini-final-four').classList.add('visible');
         requestAnimationFrame(updateMiniConnector);
     }
 
@@ -749,6 +762,16 @@ function clear(setup) {
         el.classList.remove(...classesToRemove);
         el.textContent = '';
     });
+    ['mini-ff-left-1', 'mini-ff-left-2', 'mini-ff-right-1', 'mini-ff-right-2',
+     'mini-champ-1', 'mini-champ-2'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = '';
+            el.classList.remove('correct', 'incorrect', 'mini-winner', 'mini-loser');
+        }
+    });
+    const connSvg = document.getElementById('mini-connector-svg');
+    if (connSvg) { connSvg.innerHTML = ''; }
 
     if (setup) {
         document.getElementById('upset').textContent = '0';

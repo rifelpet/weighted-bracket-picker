@@ -944,7 +944,7 @@ input[type=range]::-moz-focus-outer {
     overflow: visible;
     pointer-events: auto;
     background: #BAD7E5;
-    border-radius: 0 0 10px 10px;
+    border-radius: 0;
     padding: 8px 10px 2px;
   }
   /* Row 1 wrapper: flex-wrap so heading is on its own line above dropdowns */
@@ -1117,78 +1117,78 @@ input[type=range]::-moz-focus-outer {
   #footer {
     padding: 24px 20px;
   }
-  /* Show only when populated AND main bracket is off-screen */
-  body:not(.bracket-visible) #mini-final-four.visible {
+  /* Show when sliders visible AND main bracket off-screen */
+  body.sliders-visible:not(.bracket-visible) #mini-final-four {
     display: flex;
     flex-direction: column;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     box-sizing: border-box;
-    background: #d4ecf7;
-    padding: 5px 12px 4px;
-    gap: 3px;
+    background: #BAD7E5;
+    border-top: 1px solid #9dc2d4;
+    padding: 8px 12px 8px;
+    gap: 2px;
+  }
+  /* Hide scroll hint when mini bracket is visible */
+  body.sliders-visible:not(.bracket-visible) .bracket-scroll-hint {
+    display: none;
   }
   /* Labels row */
   .mini-header {
     display: flex;
     align-items: center;
-    gap: 0;
   }
-  .mini-header .mini-bracket-label { flex: 1; }
+  .mini-header .mini-bracket-label { flex: 1; padding-left: 9px; }
   .mini-conn-spacer { width: 20px; flex-shrink: 0; }
-  .mini-champ-label { flex: 1; text-align: center; }
-  /* Body row: FF games + connector + champ game, vertically centered */
+  .mini-champ-label { flex: 1; padding-left: 9px; }
+  /*
+   * Body: 5-row CSS grid.
+   * Rows 1-2 = FF game 1, row 3 = 3px separator, rows 4-5 = FF game 2.
+   * Champ boxes land at rows 2 and 4, bracketed by the connector.
+   * This eliminates the centering dead-space of the previous flex layout.
+   */
   .mini-body {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 20px 1fr;
+    grid-template-rows: auto auto 3px auto auto;
+    row-gap: 2px;
   }
-  .mini-ff-games {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .mini-game {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    width: 100%;
-  }
-  .mini-bracket-connector {
-    width: 20px;
-    flex-shrink: 0;
-    align-self: stretch;
+  #mini-ff-left-1  { grid-row: 1; grid-column: 1; }
+  #mini-ff-left-2  { grid-row: 2; grid-column: 1; }
+  #mini-ff-right-1 { grid-row: 4; grid-column: 1; }
+  #mini-ff-right-2 { grid-row: 5; grid-column: 1; }
+  .mini-connector-col {
+    grid-row: 1 / 6;
+    grid-column: 2;
+    position: relative;
   }
   #mini-connector-svg {
-    display: block;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     overflow: visible;
+    display: block;
   }
-  .mini-champ-game {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+  #mini-champ-1 { grid-row: 2; grid-column: 3; }
+  #mini-champ-2 { grid-row: 4; grid-column: 3; }
   .mini-bracket-label {
     font-size: 9px;
     font-weight: 700;
     color: #555;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    line-height: 1;
   }
   .mini-team {
     display: block;
     font-size: 11px;
     font-weight: 600;
-    padding: 3px 6px;
+    line-height: 1;
+    padding: 2px 6px;
+    min-height: 15px;
     background: #fff;
-    border-radius: 4px;
-    border-left: 3px solid #7ab8d4;
+    border-radius: 3px;
+    border-left: 3px solid transparent;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1196,17 +1196,14 @@ input[type=range]::-moz-focus-outer {
     width: 100%;
     box-sizing: border-box;
   }
-  .mini-champion {
-    border-left: 4px solid #e8a000;
-  }
   .mini-team.mini-winner {
     font-weight: 700;
   }
   .mini-team.mini-loser {
     opacity: 0.5;
   }
-  .mini-team.correct { color: #090; }
-  .mini-team.incorrect { color: #900; }
+  .mini-team.correct { color: #090; border-left-color: #090; }
+  .mini-team.incorrect { color: #900; border-left-color: #900; }
 }
 
 /* Phone */
@@ -1234,7 +1231,7 @@ input[type=range]::-moz-focus-outer {
 @media screen and (max-height: 500px) and (orientation: landscape) {
   .mobile-sticky-bar {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 0;
   }
   .mobile-sticky-bar::after {
     margin: 4px 0 2px;
