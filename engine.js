@@ -162,12 +162,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Mini bracket: show only when sliders visible AND main bracket off-screen
     let slidersVisible = false;
     let bracketVisible = true;
+    let miniVisibilityTimer = null;
     function updateMiniVisibility() {
-        document.body.classList.toggle('sliders-visible', slidersVisible);
-        document.body.classList.toggle('bracket-visible', bracketVisible);
-        if (slidersVisible && !bracketVisible) {
-            requestAnimationFrame(updateMiniConnector);
-        }
+        clearTimeout(miniVisibilityTimer);
+        miniVisibilityTimer = setTimeout(function() {
+            document.body.classList.toggle('sliders-visible', slidersVisible);
+            document.body.classList.toggle('bracket-visible', bracketVisible);
+            if (slidersVisible && !bracketVisible) {
+                requestAnimationFrame(updateMiniConnector);
+            }
+        }, 150);
     }
     const slidersEl = document.getElementById('sliders');
     const teamsEl = document.getElementById('teams');
