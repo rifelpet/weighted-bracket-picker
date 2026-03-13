@@ -224,9 +224,14 @@ function updateMiniConnector() {
     // Y of the gap between each pair of teams, relative to SVG top
     const y1 = (l1.bottom + l2.top) / 2 - svgTop;
     const y2 = (r1.bottom + r2.top) / 2 - svgTop;
-    // "]" bracket: horizontal at y1, vertical on right from y1→y2, horizontal at y2
-    const d = 'M 0 ' + y1.toFixed(1) + ' H ' + W.toFixed(1) +
-              ' V ' + y2.toFixed(1) + ' H 0';
+    // Tree bracket: "[" on the left (two horizontals from FF games meeting a centered
+    // vertical bar), then a single horizontal from the midpoint of that bar to the
+    // championship column on the right.
+    const xMid = (W / 2).toFixed(1);
+    const yMid = ((y1 + y2) / 2).toFixed(1);
+    const d = 'M 0 ' + y1.toFixed(1) + ' H ' + xMid +
+              ' V ' + y2.toFixed(1) + ' H 0' +
+              ' M ' + xMid + ' ' + yMid + ' H ' + W.toFixed(1);
     svg.setAttribute('width', W);
     svg.setAttribute('height', H);
     svg.innerHTML = '<path d="' + d + '" fill="none" stroke="#7ab8d4" stroke-width="2" stroke-linejoin="round"/>';
