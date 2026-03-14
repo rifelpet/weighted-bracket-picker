@@ -189,6 +189,11 @@ body {
 	display:block;*/
 }
 
+/* Stat tooltip (hidden on desktop — title attr handles hover there) */
+.stat-tooltip {
+    display: none;
+}
+
 .slider-wrapper {
 	display:inline-block;
 	float:right;
@@ -1106,6 +1111,34 @@ input[type=range]::-moz-focus-outer {
   }
   .slider-wrapper > div.value {
     font-size: 20px;
+  }
+  /* Stat tooltip on mobile */
+  .stat-tooltip {
+    display: none;
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+    background: #007AC3;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 12px 16px;
+    border-radius: 8px;
+    z-index: 10000;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .stat-tooltip.visible {
+    display: block;
+  }
+  .stat-tooltip-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .slider-label[title] {
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    cursor: pointer;
   }
   /* Hide "Basic Stats" / "Advanced Stats" column headings on mobile */
   #sliders > .uk-grid:first-child {

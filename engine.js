@@ -540,6 +540,25 @@ function parseData(cacheKey) {
     submit(false);
 }
 
+var statTooltipTimer = null;
+function showStatTooltip(name, text) {
+    var el = document.getElementById('stat-tooltip');
+    if (!el) return;
+    el.innerHTML = '<div class="stat-tooltip-title">' + name + '</div>' + text;
+    el.classList.add('visible');
+    clearTimeout(statTooltipTimer);
+    statTooltipTimer = setTimeout(function() { el.classList.remove('visible'); }, 5000);
+}
+// Single global dismiss handler — hide tooltip when tapping anything that isn't a label or the tooltip
+document.addEventListener('click', function(e) {
+    var el = document.getElementById('stat-tooltip');
+    if (!el || !el.classList.contains('visible')) return;
+    if (el.contains(e.target)) return;
+    if (e.target.closest('.slider-label')) return;
+    el.classList.remove('visible');
+    clearTimeout(statTooltipTimer);
+});
+
 function createSlider(id, param, column) {
     const li = document.createElement('li');
     li.className = 'uk-margin';
@@ -549,6 +568,15 @@ function createSlider(id, param, column) {
     label.htmlFor = id;
     label.title = descriptions[id] || '';
     label.textContent = param;
+    if (descriptions[id]) {
+        label.addEventListener('click', function(e) {
+            if (window.matchMedia('(max-width: 1024px)').matches) {
+                e.preventDefault();
+                e.stopPropagation();
+                showStatTooltip(param, descriptions[id]);
+            }
+        });
+    }
 
     const wrapper = document.createElement('div');
     wrapper.className = 'slider-wrapper';
