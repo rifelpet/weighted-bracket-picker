@@ -319,7 +319,7 @@ body {
 }
 
 #year-div {
-	background: #fff;
+	background: #BAD7E5;
 	padding: 8px 12px;
 	border-radius: 3px;
 	width: 168px;
@@ -338,7 +338,7 @@ body {
 	font-size: 13px;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
-	color: #999;
+	color: #555;
 	text-align: center;
 	margin-bottom: 6px;
 }
