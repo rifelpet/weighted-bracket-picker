@@ -170,7 +170,7 @@ body {
 	font-family:trebuchet ms,arial,sans-serif !important;
 	font-size:100% !important;
 	line-height: initial;
-	background:#fff;
+	background:#f0f4f8;
 	color:#555;
     height:100%;
     min-height:100%;
@@ -321,11 +321,10 @@ body {
 	background-color:#BAD7E5;
 	padding:4px;
 	border-radius:10px;
-	position:absolute;
-	left: 472px;
 	width: 168px;
-	top: 225px;
+	margin: 10px auto;
 	z-index: 999;
+	text-align: center;
 }
 
 #year-div > h1 {
@@ -364,15 +363,7 @@ body {
 	display:none;
 }
 
-.rtol {
-	float:right;
-	text-align:right;
-}
-
-.ltor {
-	float:left;
-	text-align:left;
-}
+.cf::after { content: ''; display: block; clear: both; }
 
 .fl {
 	float:left;
@@ -382,29 +373,27 @@ body {
 	float:right;
 }
 
-.winner {
-	color:#000;
-}
-
-.loser {
-	color:grey;
-}
-
-.correct {
-	color:#090;
-}
-
-.incorrect {
-	color:#900;
-}
+/* Winner/loser/correct/incorrect */
+.winner { font-weight: 700; color: #000; }
+.r1.winner { border-left-color: #007AC3; }
+.r2.winner::before, .r3.winner::before, .r4.winner::before,
+.r5.winner::before, .r6.winner::before { background: #007AC3; }
+.loser { opacity: 0.5; color: #555; }
+.correct { color: #090 !important; }
+.r1.correct { border-left-color: #090 !important; }
+.r2.correct::before, .r3.correct::before, .r4.correct::before,
+.r5.correct::before, .r6.correct::before { background: #090 !important; }
+.incorrect { color: #900 !important; }
+.r1.incorrect { border-left-color: #900 !important; }
+.r2.incorrect::before, .r3.incorrect::before, .r4.incorrect::before,
+.r5.incorrect::before, .r6.incorrect::before { background: #900 !important; }
 
 .bracket-container {
-	width:1080px;
-	height:643px;
-	background:url(bracket.svg) no-repeat top left;
-	background-size:contain;
-	letter-spacing:-.5px;
-	-webkit-print-color-adjust:exact;
+	width: 1080px;
+	height: auto;
+	background: none;
+	letter-spacing: -.5px;
+	-webkit-print-color-adjust: exact;
 }
 
 .bracket-scroll-hint {
@@ -431,31 +420,104 @@ body {
 	display:contents;
 }
 
-#championship {
-	font-weight:700;
-	position:absolute;
-	left:516px;
-	text-align:center;
-	line-height:65em;
-	height:30em;
+/* Bracket layout: flex container */
+.bracket-scroll {
+	display: flex;
+	align-items: stretch;
+}
+.bracket-half { display: flex; flex-direction: column; }
+.bracket-center {
+	display: flex;
+	align-items: center;
+	padding: 0 4px;
+	min-width: 100px;
+}
+.ff-column { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.r6-column { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.r7-column { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+/* Round sizing — desktop */
+.r1 {
+	width: 110px; min-height: 28px; line-height: normal;
+	overflow: hidden; white-space: nowrap;
+	border-left: 3px solid transparent;
+}
+.r2 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
+	float: none; position: absolute; right: 0; }
+.r2-wrap { width: 200px; height: 72px; position: relative; }
+.r3 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
+	float: none; position: absolute; right: 0; }
+.r3-wrap { width: 290px; height: 144px; position: relative; }
+.r4 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
+	float: none; position: absolute; right: 0; }
+.r4-wrap { width: 380px; position: relative; }
+
+/* Team box style */
+.r1, .r2, .r3, .r4 {
+	background: #fff; border-radius: 3px;
+	padding: 2px 5px; font-size: 10px; margin: 1px 0;
+	box-sizing: border-box;
+}
+.r2-wrap, .r3-wrap, .r4-wrap { box-sizing: border-box; }
+.tname { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pct { display: block; white-space: nowrap; font-size: 9px; color: #888;
+	font-weight: 400; line-height: 1.4; }
+
+/* Status indicator bar for R2+ */
+.r2, .r3, .r4 { padding-left: 5px; padding-right: 3px; overflow: hidden; }
+.r2::before, .r3::before, .r4::before {
+	content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+	width: 3px; background: transparent; border-radius: 1px;
 }
 
-.championship-left {
-	line-height:54em;
-}
+/* Matchup pairing anchoring */
+.r3-wrap > .r2-wrap:nth-child(2) > .r2 { bottom: 0; }
+.r3-wrap > .r2-wrap:nth-child(3) > .r2 { top: 0; }
+.r4-wrap > .r3-wrap:nth-child(2) > .r3 { bottom: 0; }
+.r4-wrap > .r3-wrap:nth-child(3) > .r3 { top: 0; }
+.upper-half > .r4 { bottom: 0; }
+.lower-half > .r4 { top: 0; }
 
-.championship-right {
-	line-height:76em;
+/* RTL regions */
+.region-wrap.rtol { direction: rtl; }
+.region-wrap.rtol * { direction: ltr; }
+.region-wrap.rtol .r1 { border-left: none; border-right: 3px solid transparent; }
+.region-wrap.rtol .r2,
+.region-wrap.rtol .r3,
+.region-wrap.rtol .r4 {
+	right: auto; left: 0;
 }
+.region-wrap.rtol .r2::before,
+.region-wrap.rtol .r3::before,
+.region-wrap.rtol .r4::before {
+	left: auto; right: 0;
+}
+/* RTL winner/correct/incorrect border flip */
+.region-wrap.rtol .r1.winner { border-left-color: transparent; border-right-color: #007AC3; }
+.region-wrap.rtol .r1.correct { border-left-color: transparent !important; border-right-color: #090 !important; }
+.region-wrap.rtol .r1.incorrect { border-left-color: transparent !important; border-right-color: #900 !important; }
+
+
+/* R5 (Final Four), R6 (FF winners), R7 (Championship) */
+.r5, .r6, .r7 {
+	background: #fff; border-radius: 3px;
+	padding: 2px 5px; font-size: 10px; margin: 2px 0;
+	width: 80px; text-align: center;
+	box-sizing: border-box; position: relative;
+	min-height: 28px;
+}
+.r5::before, .r6::before {
+	content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+	width: 3px; background: transparent; border-radius: 1px;
+}
+.r7 { font-weight: 700; }
 
 #scoring-wrapper {
 	font-weight:700;
 	font-size:10px;
-	position:absolute;
-	left:380px;
 	text-align:center;
-	padding-top:57em;
 	width:362px;
+	margin: 10px auto;
 }
 
 #scoring-wrapper > div > h1 {
@@ -479,115 +541,6 @@ body {
 	margin:0 auto;
 }
 
-/****** round 1 ******/
-.round1-top,.round1-bottom {
-	width:90px;
-	height:3em;
-}
-
-.round1-top {
-	line-height:3em;
-}
-
-.round2-topwrap .round1-bottom {
-	width:89px;
-}
-
-.round2-bottomwrap .round1-top {
-	width:89px;
-}
-
-/****** round 2 ******/
-.round2-top,.round2-bottom {
-	width:86px;
-	height:4em;
-	line-height:5em;
-}
-
-.round3-topwrap .round2-bottom {
-	width:86px;
-}
-
-.round3-bottomwrap .round2-top {
-	width:86px;
-}
-
-.tournament4-wrap .round2-top {
-}
-
-.round2-topwrap,.round2-bottomwrap {
-	width:180px;
-	height:4em;
-}
-
-/****** round 3 ******/
-.round3-top,.round3-bottom {
-	width:86px;
-	height:8em;
-	line-height:9em;
-}
-
-.round4-topwrap .round3-bottom {
-	width:86px;
-}
-
-.round4-bottomwrap .round3-top {
-	width:86px;
-}
-
-.tournament8-wrap .round3-top {
-}
-
-.round3-topwrap,.round3-bottomwrap {
-	width:270px;
-	height:8em;
-}
-
-/****** round 4 ******/
-.round4-top,.round4-bottom {
-	width:86px;
-	height:16em;
-	line-height:17em;
-}
-
-.round5-topwrap .round4-bottom {
-	width:86px;
-}
-
-.round5-bottomwrap .round4-top {
-	width:86px;
-}
-
-.round4-topwrap,.round4-bottomwrap {
-	width:360px;
-}
-
-.tournament16-wrap .round4-top {
-}
-
-/****** round 5 ******/
-.round5-top,.round5-bottom {
-	width:86px;
-	height:32em;
-	line-height:33em;
-}
-
-.tournament32-wrap .round5-top {
-}
-
-.round5-topwrap,.round5-bottomwrap,.tournament16-wrap {
-	width:450px;
-}
-
-/****** round 6 ******/
-.round6-top,.round6-bottom {
-	width:86px;
-	height:32em;
-}
-
-.tournament32-wrap {
-	width:540px;
-}
 
 .cssmenu {
 	float:right;
@@ -893,9 +846,6 @@ input[type=range]::-moz-focus-outer {
 
 /* Tablet and below */
 @media screen and (max-width: 1024px) {
-  body {
-    background: #f0f4f8;
-  }
   /* Hide desktop menu, show mobile menu */
   .cssmenu {
     display: none !important;
@@ -935,14 +885,6 @@ input[type=range]::-moz-focus-outer {
     width: 100% !important;
     height: auto !important;
     background: none !important;
-  }
-  #championship {
-    position: absolute;
-    left: 516px;
-    line-height: 65em;
-    height: 30em;
-    width: 60px;
-    text-align: center;
   }
   /* Sticky wrapper: holds the blue box + hint text together */
   .mobile-sticky-wrap {
@@ -1062,30 +1004,6 @@ input[type=range]::-moz-focus-outer {
     padding: 0;
     margin: 0;
     line-height: 1.1;
-  }
-  /* Scrollable bracket area */
-  .bracket-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-wrap: nowrap;
-    background: url(bracket.svg) no-repeat top left;
-    background-size: 1080px 643px;
-    background-attachment: local;
-    min-height: 643px;
-  }
-  .bracket-scroll::-webkit-scrollbar {
-    display: none; /* Chrome/Safari/WebKit */
-  }
-  .tournament32-wrap {
-    width: 540px;
-    flex-shrink: 0;
-    float: none !important;
   }
   /* Swipe hint — hidden on mobile (replaced by region nav) */
   .bracket-scroll-hint {

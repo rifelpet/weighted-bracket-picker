@@ -1,5 +1,9 @@
 'use strict';
 
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 const currentWeights = {};
 
 // Used as a cache so that we aren't re-requesting CSVs over and over
@@ -396,31 +400,28 @@ function syncMobileBracket() {
             var gameId = el.getAttribute('data-game');
             if (gameId) {
                 var gameEl = document.getElementById(gameId);
-                if (gameEl && gameEl.textContent) {
-                    var gamePctMatch = gameEl.textContent.match(/(\d+)%$/);
-                    if (gamePctMatch) {
-                        var pctVal = parseInt(gamePctMatch[1], 10);
-                        var pct = document.createElement('span');
-                        pct.className = 'mb-pct';
-                        // Winner gets the game pct, loser gets the inverse
-                        pct.textContent = srcEl.classList.contains('winner') ? pctVal + '%' : (100 - pctVal) + '%';
-                        el.appendChild(pct);
-                    }
+                var gamePctSpan = gameEl ? gameEl.querySelector('.pct') : null;
+                if (gamePctSpan) {
+                    var pctVal = parseInt(gamePctSpan.textContent, 10);
+                    var pct = document.createElement('span');
+                    pct.className = 'mb-pct';
+                    pct.textContent = srcEl.classList.contains('winner') ? pctVal + '%' : (100 - pctVal) + '%';
+                    el.appendChild(pct);
                 }
             }
         } else {
-            // Game element (R32+): split into tname + pct spans
-            var text = srcEl.textContent;
-            var pctMatch = text.match(/(\d+%)$/);
+            // Game element (R32+): read from tname/pct spans
+            var srcTname = srcEl.querySelector('.tname');
+            var srcPct = srcEl.querySelector('.pct');
             el.innerHTML = '';
             var tname = document.createElement('span');
             tname.className = 'mb-tname';
-            tname.textContent = pctMatch ? text.replace(/\s*\d+%$/, '') : text;
+            tname.textContent = srcTname ? srcTname.textContent : srcEl.textContent;
             el.appendChild(tname);
-            if (pctMatch) {
+            if (srcPct) {
                 var pct = document.createElement('span');
                 pct.className = 'mb-pct';
-                pct.textContent = pctMatch[1];
+                pct.textContent = srcPct.textContent;
                 el.appendChild(pct);
             }
         }
@@ -788,7 +789,7 @@ function submit(logEvent) {
         const winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1El, team2El);
         const winner = winnerData[0];
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
-        document.getElementById(regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).textContent = winner.stats.Seed + '. ' + winner.Name;
+        document.getElementById(regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).innerHTML = escapeHtml(winner.stats.Seed + '. ' + winner.Name);
     }
 
     let correctCount = 0;
@@ -823,7 +824,7 @@ function submit(logEvent) {
             document.getElementById(region + 'seed' + winner.stats.Seed).classList.add('winner');
 
             const gameEl = document.getElementById(region + 'game' + gameNum);
-            gameEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+            gameEl.innerHTML = '<span class="tname">' + escapeHtml(winner.stats.Seed + '. ' + winner.Name) + '</span><span class="pct">' + winnerPct + '%</span>';
             if (totalGames > 0 && (winner['Games Won'] > 0 || loser['Games Won'] > 0)) {
                 if (winner['Games Won'] > 0) {
                     correctCount++;
@@ -856,7 +857,7 @@ function submit(logEvent) {
             }
             gameWinners['game' + String(game)] = winner;
             const gameEl = document.getElementById(region + 'game' + game);
-            gameEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+            gameEl.innerHTML = '<span class="tname">' + escapeHtml(winner.stats.Seed + '. ' + winner.Name) + '</span><span class="pct">' + winnerPct + '%</span>';
 
             const round = getRound(game);
             if (totalGames > 0 && (winner['Games Won'] >= round || loser['Games Won'] >= round)) {
@@ -903,7 +904,7 @@ function submit(logEvent) {
         championship[sides[side]] = winner;
 
         const sideEl = document.getElementById(sides[side] + 'game');
-        sideEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+        sideEl.innerHTML = '<span class="tname">' + escapeHtml(winner.stats.Seed + '. ' + winner.Name) + '</span><span class="pct">' + winnerPct + '%</span>';
         if (totalGames > 0 && (winner['Games Won'] >= 5 || loser['Games Won'] >= 5)) {
             if (winner['Games Won'] >= 5) {
                 correctCount++;
@@ -969,7 +970,7 @@ function submit(logEvent) {
         champEl.classList.remove('correct');
         champEl.classList.remove('incorrect');
     }
-    champEl.textContent = winner.stats.Seed + '. ' + winner.Name + ' ' + winnerPct + '%';
+    champEl.innerHTML = '<span class="tname">' + escapeHtml(winner.stats.Seed + '. ' + winner.Name) + '</span><span class="pct">' + winnerPct + '%</span>';
 
     // Populate mini championship (both teams)
     const miniChamp1El = document.getElementById('mini-champ-1');
