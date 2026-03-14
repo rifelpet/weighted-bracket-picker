@@ -650,6 +650,7 @@ function setupInitialMatches() {
     } else {
         clearScoreDisplay();
     }
+    syncMobileBracket();
 }
 
 function abbreviateName(name) {

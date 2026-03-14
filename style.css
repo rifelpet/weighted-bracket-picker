@@ -841,6 +841,7 @@ input[type=range]::-moz-focus-outer {
   #teams {
     width: 100% !important;
     box-sizing: border-box;
+    padding: 0 8px;
   }
   #body {
     width: 100% !important;
@@ -1272,7 +1273,7 @@ input[type=range]::-moz-focus-outer {
 
   /* ─── Mobile bracket round sizing ─── */
   .mb-r1 {
-    width: 86px;
+    width: 92px;
     height: auto;
     line-height: normal;
     overflow: hidden;
@@ -1280,11 +1281,11 @@ input[type=range]::-moz-focus-outer {
     border-left: 3px solid transparent;
   }
   .mb-r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r2-wrap { width: 168px; height: 72px; position: relative; }
+  .mb-r2-wrap { width: 182px; height: 72px; position: relative; }
   .mb-r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r3-wrap { width: 256px; height: 144px; position: relative; }
+  .mb-r3-wrap { width: 272px; height: 144px; position: relative; }
   .mb-r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r4-wrap { width: 344px; position: relative; }
+  .mb-r4-wrap { width: 362px; position: relative; }
 
   /* ─── Mobile bracket team box style ─── */
   .mb-r1, .mb-r2, .mb-r3, .mb-r4,
@@ -1297,6 +1298,7 @@ input[type=range]::-moz-focus-outer {
     padding: 2px 5px;
     font-size: 10px;
     margin: 1px 0;
+    min-height: 28px;
   }
   .mb-r2, .mb-r3, .mb-r4 {
     overflow: hidden;
@@ -1383,10 +1385,10 @@ input[type=range]::-moz-focus-outer {
   /* ─── Round column headers ─── */
   .round-headers {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 2px;
   }
-  .rh-r64 { width: 86px; }
+  .rh-r64 { width: 92px; }
   .rh-r32, .rh-s16, .rh-e8 { width: 80px; }
   .round-headers span {
     font-size: 9px;
