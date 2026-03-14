@@ -257,6 +257,20 @@ body {
     padding-right: 18px;
 }
 
+#round-weight-controls {
+	width: 1080px;
+	padding: 10px 20px 0;
+	box-sizing: border-box;
+}
+.round-controls-row {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 4px;
+}
+#round-tabs {
+	margin: 0;
+}
+
 #sliders {
 	width:1080px;
 	padding:20px;
@@ -940,6 +954,29 @@ input[type=range]::-moz-focus-outer {
     width: 100% !important;
     box-sizing: border-box;
     padding: 0 10px;
+  }
+  #round-weight-controls {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 8px 8px 0;
+  }
+  #round-weight-controls .round-controls-row {
+    margin-bottom: 2px;
+  }
+  #round-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  #round-tabs > li {
+    flex: 1;
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #round-tabs > li > a {
+    padding: 5px 0;
+    font-size: 12px;
+    text-align: center;
   }
   #sliders {
     width: 100% !important;

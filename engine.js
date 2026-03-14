@@ -6,6 +6,12 @@ function escapeHtml(str) {
 
 const currentWeights = {};
 
+const ROUNDS = ['R64', 'R32', 'S16', 'E8', 'F4', 'CHAMP'];
+const roundWeights = { R64: {}, R32: {}, S16: {}, E8: {}, F4: {}, CHAMP: {} };
+let activeRound = 'R64';
+let roundsLinked = true;
+let suppressSubmit = false;
+
 // Used as a cache so that we aren't re-requesting CSVs over and over
 const statCache = {};
 
@@ -151,7 +157,33 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('year').value = currYear;
     document.getElementById('activity').value = currActivity;
 
+    // Check for round-weights opt-in via URL query parameter only
+    if (urlParams.rw === '1') {
+        var pendingRoundWeights = true;
+    }
+
     selectYearAndActivity();
+
+    // Enable round weights after initial data load if requested
+    if (typeof pendingRoundWeights !== 'undefined' && pendingRoundWeights) {
+        enableRoundWeights();
+    }
+
+    // Round tab click handlers
+    var roundTabs = document.querySelectorAll('#round-tabs > li > a');
+    roundTabs.forEach(function (a, i) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            switchRound(ROUNDS[i]);
+        });
+    });
+    // Copy to all rounds button
+    var copyBtn = document.getElementById('copy-all-rounds');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+            copyToAllRounds();
+        });
+    }
 
     // Mobile menu toggle
     const pullBtn = document.getElementById('pull');
@@ -446,10 +478,64 @@ function mouseUp(id) {
 
 function updateStat(id) {
     const input = document.getElementById(id).querySelector('input');
-    const newVal = input.value;
-    currentWeights[id] = parseInt(newVal, 10);
+    const newVal = parseInt(input.value, 10);
+    currentWeights[id] = newVal;
+    roundWeights[activeRound][id] = newVal;
+    if (roundsLinked) {
+        ROUNDS.forEach(function (r) { roundWeights[r][id] = newVal; });
+    }
     document.getElementById(id + '-val').textContent = newVal;
-    submit(false);
+    if (!suppressSubmit) {
+        submit(false);
+    }
+}
+
+function enableRoundWeights() {
+    roundsLinked = false;
+    var ctrl = document.getElementById('round-weight-controls');
+    if (ctrl) ctrl.style.display = 'block';
+}
+
+function switchRound(round) {
+    activeRound = round;
+    // Point currentWeights at the chosen round
+    var src = roundWeights[round];
+    suppressSubmit = true;
+    for (var key in currentWeights) {
+        currentWeights[key] = src[key] || 0;
+        var container = document.getElementById(key);
+        if (container) container.querySelector('input').value = currentWeights[key];
+        var valEl = document.getElementById(key + '-val');
+        if (valEl) valEl.textContent = currentWeights[key];
+    }
+    suppressSubmit = false;
+    // Update active tab
+    var tabs = document.querySelectorAll('#round-tabs > li');
+    tabs.forEach(function (li, i) {
+        if (ROUNDS[i] === round) {
+            li.classList.add('uk-active');
+        } else {
+            li.classList.remove('uk-active');
+        }
+    });
+}
+
+function copyToAllRounds() {
+    var src = roundWeights[activeRound];
+    ROUNDS.forEach(function (r) {
+        for (var key in src) {
+            roundWeights[r][key] = src[key];
+        }
+    });
+    submit(true);
+}
+
+function gameToRoundKey(game) {
+    if (game >= 1 && game <= 8) return 'R64';
+    if (game >= 9 && game <= 12) return 'R32';
+    if (game >= 13 && game <= 14) return 'S16';
+    if (game === 15) return 'E8';
+    return 'R64';
 }
 
 
@@ -507,6 +593,7 @@ function parseData(cacheKey) {
         if (nonStatHeaders.indexOf(id) > -1) return;
         if (!document.getElementById(id)) {
             currentWeights[id] = 0;
+            ROUNDS.forEach(function (r) { roundWeights[r][id] = 0; });
             const column = Math.floor(sliderCounter * 3 / headerCount);
             createSlider(id, param, column);
         }
@@ -514,6 +601,10 @@ function parseData(cacheKey) {
     });
     if (urlParams.hasOwnProperty('w') && urlParams.w.length > 0) {
         URLToWeights(urlParams);
+    }
+    // Enable round weights UI if requested via URL query parameter (handles async load case)
+    if (urlParams.rw === '1') {
+        enableRoundWeights();
     }
     weightsToURL();
     // Now that sliders have been built and values assigned,
@@ -700,11 +791,12 @@ function clearScoreDisplay() {
  * Return the team object for the winning team.
  * Tie breaker is the higher overall rank
  */
-function runMatchup(team1, team2, team1El, team2El) {
+function runMatchup(team1, team2, team1El, team2El, round) {
+    const weights = round ? roundWeights[round] : currentWeights;
     let team1Total = 0;
     let team2Total = 0;
-    for (const weightName in currentWeights) {
-        const weight = currentWeights[weightName];
+    for (const weightName in weights) {
+        const weight = weights[weightName];
         if (team1.stats[weightName] === undefined) {
             // missing stat — skip
             continue;
@@ -764,8 +856,12 @@ function submit(logEvent) {
     headers.forEach(function (param) {
         const id = attrToID(param);
         if (nonStatHeaders.indexOf(id) > -1) return;
-
-        totalWeight += currentWeights[id];
+        if (!roundsLinked) {
+            // Check all rounds for any non-zero weight
+            ROUNDS.forEach(function (r) { totalWeight += (roundWeights[r][id] || 0); });
+        } else {
+            totalWeight += currentWeights[id];
+        }
     });
     if (totalWeight === 0) {
         clear(true);
@@ -777,7 +873,7 @@ function submit(logEvent) {
         const matchupEl = document.getElementById('matchup' + matchupID);
         const team1El = matchupEl.querySelector('.team1');
         const team2El = matchupEl.querySelector('.team2');
-        const winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1El, team2El);
+        const winnerData = runMatchup(firstFours[matchupID][0], firstFours[matchupID][1], team1El, team2El, 'R64');
         const winner = winnerData[0];
         bracketTeamsByRegionAndSeed[winner.Region][winner.stats.Seed] = winner;
         document.getElementById(regions[winner.Region].toLowerCase() + 'seed' + winner.stats.Seed).innerHTML = escapeHtml(winner.stats.Seed + '. ' + winner.Name);
@@ -801,7 +897,7 @@ function submit(logEvent) {
             const highEl = document.getElementById(region + 'seed' + high.stats.Seed);
             const lowEl = document.getElementById(region + 'seed' + low.stats.Seed);
 
-            const winnerData = runMatchup(high, low, highEl, lowEl);
+            const winnerData = runMatchup(high, low, highEl, lowEl, 'R64');
             const winner = winnerData[0];
             const winnerPct = winnerData[1];
             const loser = winnerData[2];
@@ -838,7 +934,7 @@ function submit(logEvent) {
             const low = gameWinners['game' + String(game + 1 - gameDiff)];
             const highEl = document.getElementById(region + 'game' + String(game - gameDiff));
             const lowEl = document.getElementById(region + 'game' + String(game + 1 - gameDiff));
-            const winnerData = runMatchup(high, low, highEl, lowEl);
+            const winnerData = runMatchup(high, low, highEl, lowEl, gameToRoundKey(game));
             const winner = winnerData[0];
             const winnerPct = winnerData[1];
             const loser = winnerData[2];
@@ -884,7 +980,7 @@ function submit(logEvent) {
         const team1El = document.getElementById(regions[region1].toLowerCase() + 'game15');
         const team2El = document.getElementById(regions[region2].toLowerCase() + 'game15');
         const team2 = gameWinnerRegions[region2].game15;
-        const winnerData = runMatchup(team1, team2, team1El, team2El);
+        const winnerData = runMatchup(team1, team2, team1El, team2El, 'F4');
         const winner = winnerData[0];
         const winnerPct = winnerData[1];
         const loser = winnerData[2];
@@ -936,7 +1032,7 @@ function submit(logEvent) {
     const leftEl = document.getElementById('leftgame');
     const rightEl = document.getElementById('rightgame');
     const champEl = document.getElementById('championship');
-    const winnerData = runMatchup(championship.left, championship.right, leftEl, rightEl);
+    const winnerData = runMatchup(championship.left, championship.right, leftEl, rightEl, 'CHAMP');
     const winner = winnerData[0];
     const winnerPct = winnerData[1];
     const loser = winnerData[2];
@@ -1069,6 +1165,11 @@ function resetSliders() {
     });
     for (const key in currentWeights) {
         currentWeights[key] = 0;
+        ROUNDS.forEach(function (r) { roundWeights[r][key] = 0; });
+    }
+    activeRound = 'R64';
+    if (!roundsLinked) {
+        switchRound('R64');
     }
     Cookies.remove('w');
     clear(true);
@@ -1097,6 +1198,9 @@ function weightsToURL() {
     if (currActivity !== defaultActivity) {
         path += '&a=' + currActivity;
     }
+    if (urlParams.rw === '1') {
+        path += '&rw=1';
+    }
 
     document.getElementById('share').value = path;
     document.getElementById('twitter-share').innerHTML = '<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>';
@@ -1106,23 +1210,55 @@ function weightsToURL() {
     return path;
 }
 
+function encodeWeightChar(val) {
+    return val === 10 ? 'A' : String(val);
+}
+
 function saveCookie() {
     const sortedWeights = [];
-    let urlValue = YearToURLParam(currYear);
     for (const k in currentWeights) {
         sortedWeights.push(k);
     }
     sortedWeights.sort();
-    for (let i = 0; i < sortedWeights.length; i++) {
-        let weightVal = String(currentWeights[sortedWeights[i]]);
-        if (weightVal === '10') {
-            weightVal = 'A';
+
+    // Check if all rounds are identical
+    let allSame = true;
+    if (!roundsLinked) {
+        for (let i = 0; i < sortedWeights.length && allSame; i++) {
+            var key = sortedWeights[i];
+            var base = roundWeights.R64[key] || 0;
+            for (let r = 1; r < ROUNDS.length; r++) {
+                if ((roundWeights[ROUNDS[r]][key] || 0) !== base) {
+                    allSame = false;
+                    break;
+                }
+            }
         }
-        urlValue += weightVal;
     }
+
+    let urlValue = YearToURLParam(currYear);
+    if (!roundsLinked && !allSame) {
+        // Round-specific format: year_char + 'R' + 6×N weight chars
+        urlValue += 'R';
+        ROUNDS.forEach(function (r) {
+            for (let i = 0; i < sortedWeights.length; i++) {
+                urlValue += encodeWeightChar(roundWeights[r][sortedWeights[i]] || 0);
+            }
+        });
+    } else {
+        // Legacy format: year_char + N weight chars
+        for (let i = 0; i < sortedWeights.length; i++) {
+            urlValue += encodeWeightChar(currentWeights[sortedWeights[i]]);
+        }
+    }
+
     Cookies.set('w', urlValue);
     Cookies.set('activity', currActivity);
     return urlValue;
+}
+
+function decodeWeightChar(ch) {
+    return ch === 'A' ? 10 : parseInt(ch, 10);
 }
 
 function URLToWeights(urlParams) {
@@ -1138,19 +1274,38 @@ function URLToWeights(urlParams) {
         currActivity = Cookies.get('activity');
     }
     if (initialLoad) {
-        for (let i = 1; i < urlParams.w.length; i++) {
-            let weightVal = urlParams.w[i];
-            if (weightVal === 'A') {
-                weightVal = 10;
-            } else {
-                weightVal = parseInt(weightVal, 10);
+        const w = urlParams.w;
+        const numStats = sortedWeights.length;
+        // Detect round-specific format: second char is 'R' and length matches
+        if (w.length > 1 && w[1] === 'R' && w.length === 2 + 6 * numStats) {
+            roundsLinked = false;
+            for (let r = 0; r < ROUNDS.length; r++) {
+                var offset = 2 + r * numStats;
+                for (let i = 0; i < numStats; i++) {
+                    var val = decodeWeightChar(w[offset + i]);
+                    roundWeights[ROUNDS[r]][sortedWeights[i]] = val;
+                }
             }
-            const weightName = sortedWeights[i - 1];
-            const container = document.getElementById(weightName);
-            if (container) container.querySelector('input').value = weightVal;
-            currentWeights[weightName] = weightVal;
-            const valEl = document.getElementById(weightName + '-val');
-            if (valEl) valEl.textContent = weightVal;
+            // Set currentWeights to activeRound
+            for (let i = 0; i < numStats; i++) {
+                currentWeights[sortedWeights[i]] = roundWeights[activeRound][sortedWeights[i]];
+            }
+        } else {
+            // Legacy format — populate all rounds identically
+            for (let i = 1; i < w.length; i++) {
+                var val = decodeWeightChar(w[i]);
+                var weightName = sortedWeights[i - 1];
+                currentWeights[weightName] = val;
+                ROUNDS.forEach(function (r) { roundWeights[r][weightName] = val; });
+            }
+        }
+        // Update slider display for activeRound
+        for (let i = 0; i < numStats; i++) {
+            var weightName = sortedWeights[i];
+            var container = document.getElementById(weightName);
+            if (container) container.querySelector('input').value = currentWeights[weightName];
+            var valEl = document.getElementById(weightName + '-val');
+            if (valEl) valEl.textContent = currentWeights[weightName];
         }
     }
 }
