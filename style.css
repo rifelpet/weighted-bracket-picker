@@ -426,6 +426,25 @@ body {
 	align-items: stretch;
 }
 .bracket-half { display: flex; flex-direction: column; }
+
+/* Desktop round column headers */
+.desktop-round-headers {
+	display: flex;
+	padding-bottom: 4px;
+}
+.desktop-round-headers span {
+	font-size: 9px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #999;
+	font-weight: 700;
+	text-align: center;
+	box-sizing: border-box;
+}
+.dh-r64 { width: 110px; }
+.dh-r32 { width: 90px; }
+.dh-s16 { width: 90px; }
+.dh-e8 { width: 90px; }
 .bracket-center {
 	display: flex;
 	align-items: center;
