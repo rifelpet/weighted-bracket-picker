@@ -1255,7 +1255,7 @@ input[type=range]::-moz-focus-outer {
   }
   #mobile-bracket {
     display: block;
-    padding: 8px;
+    padding: 0px;
   }
 
   /* ─── Region panels ─── */
@@ -1272,22 +1272,25 @@ input[type=range]::-moz-focus-outer {
 
   /* ─── Mobile bracket round sizing ─── */
   .mb-r1 {
-    width: 110px;
+    width: 86px;
     height: auto;
     line-height: normal;
     overflow: hidden;
     white-space: nowrap;
     border-left: 3px solid transparent;
-    border-right: 2px solid rgba(0,0,0,0.12);
   }
   .mb-r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r2-wrap { width: 200px; height: 72px; position: relative; }
+  .mb-r2-wrap { width: 168px; height: 72px; position: relative; }
   .mb-r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r3-wrap { width: 290px; height: 144px; position: relative; }
+  .mb-r3-wrap { width: 256px; height: 144px; position: relative; }
   .mb-r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r4-wrap { width: 380px; position: relative; }
+  .mb-r4-wrap { width: 344px; position: relative; }
 
   /* ─── Mobile bracket team box style ─── */
+  .mb-r1, .mb-r2, .mb-r3, .mb-r4,
+  .mb-r2-wrap, .mb-r3-wrap, .mb-r4-wrap {
+    box-sizing: border-box;
+  }
   .mb-r1, .mb-r2, .mb-r3, .mb-r4 {
     background: #fff;
     border-radius: 3px;
@@ -1298,7 +1301,6 @@ input[type=range]::-moz-focus-outer {
   .mb-r2, .mb-r3, .mb-r4 {
     overflow: hidden;
     font-size: 10px;
-    border-right: 2px solid rgba(0,0,0,0.12);
     padding-left: 5px;
     padding-right: 3px;
   }
@@ -1381,10 +1383,10 @@ input[type=range]::-moz-focus-outer {
   /* ─── Round column headers ─── */
   .round-headers {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 2px;
   }
-  .rh-r64 { width: 110px; }
+  .rh-r64 { width: 86px; }
   .rh-r32, .rh-s16, .rh-e8 { width: 80px; }
   .round-headers span {
     font-size: 9px;
@@ -1395,34 +1397,6 @@ input[type=range]::-moz-focus-outer {
     text-align: center;
   }
 
-  /* ─── Bracket connecting lines (gradient-based) ─── */
-  .mb-r2-wrap::before,
-  .mb-r3-wrap::before,
-  .mb-r4-wrap::before {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-    width: 10px;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
-      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
-      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
-      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15));
-    background-size: 7px 1px, 7px 1px, 1px 100%, 3px 1px;
-    background-position: 0 0, 0 100%, 6px 0, 7px 50%;
-    background-repeat: no-repeat;
-  }
-  .mb-r2-wrap::before { left: 110px; top: 16px; bottom: 23px; }
-  .mb-r3-wrap::before { left: 200px; top: 33px; bottom: 39px; }
-  .mb-r4-wrap::before { left: 290px; top: 69px; bottom: 75px; }
-
-  /* RTL bracket lines */
-  .region-wrap.rtol .mb-r2-wrap::before,
-  .region-wrap.rtol .mb-r3-wrap::before,
-  .region-wrap.rtol .mb-r4-wrap::before {
-    left: 80px;
-    background-position: 3px 0, 3px 100%, 3px 0, 0 50%;
-  }
 
   /* ─── Float utilities for mobile bracket ─── */
   .mb-fl { float: left; }
