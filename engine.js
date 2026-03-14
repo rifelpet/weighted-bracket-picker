@@ -392,23 +392,10 @@ function syncMobileBracket() {
         var isSeed = srcId.indexOf('seed') !== -1;
 
         if (isSeed) {
-            // R64 seed: show "Seed. Name" + pct from game element
+            // R64 seed: show "Seed. Name" only (no pct)
             var seedText = srcEl.textContent;
             el.innerHTML = '';
-            el.appendChild(document.createTextNode(seedText + ' '));
-            // Get pct from the associated game element
-            var gameId = el.getAttribute('data-game');
-            if (gameId) {
-                var gameEl = document.getElementById(gameId);
-                var gamePctSpan = gameEl ? gameEl.querySelector('.pct') : null;
-                if (gamePctSpan) {
-                    var pctVal = parseInt(gamePctSpan.textContent, 10);
-                    var pct = document.createElement('span');
-                    pct.className = 'mb-pct';
-                    pct.textContent = srcEl.classList.contains('winner') ? pctVal + '%' : (100 - pctVal) + '%';
-                    el.appendChild(pct);
-                }
-            }
+            el.appendChild(document.createTextNode(seedText));
         } else {
             // Game element (R32+): read from tname/pct spans
             var srcTname = srcEl.querySelector('.tname');
