@@ -1176,8 +1176,8 @@ input[type=range]::-moz-focus-outer {
   #footer {
     padding: 24px 20px;
   }
-  /* Show when sliders visible AND main bracket off-screen */
-  body.sliders-visible:not(.bracket-visible) #mini-final-four {
+  /* Always show mini final four on mobile */
+  #mini-final-four {
     display: flex;
     flex-direction: column;
     width: 100vw;
@@ -1510,9 +1510,11 @@ input[type=range]::-moz-focus-outer {
   }
 }
 
-/* Mini Final Four bracket (mobile sticky) */
-#mini-final-four {
-    display: none;
+/* Mini Final Four bracket — hidden on desktop */
+@media screen and (min-width: 1025px) {
+  #mini-final-four {
+      display: none;
+  }
 }
 
 /* Contact page iframe */
