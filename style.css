@@ -323,9 +323,12 @@ body {
 	padding:4px;
 	border-radius:10px;
 	width: 168px;
-	margin: 10px auto;
 	z-index: 999;
 	text-align: center;
+	position: absolute;
+	left: 556px;
+	transform: translateX(-50%);
+	top: 380px;
 }
 
 #year-div > h1 {
@@ -959,6 +962,9 @@ input[type=range]::-moz-focus-outer {
   #year-div {
     display: contents;
     position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
   }
   /* "Select Bracket" heading: full width row A */
   #year-div > h1 {
