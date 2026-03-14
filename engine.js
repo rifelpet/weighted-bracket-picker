@@ -544,7 +544,11 @@ var statTooltipTimer = null;
 function showStatTooltip(name, text) {
     var el = document.getElementById('stat-tooltip');
     if (!el) return;
-    el.innerHTML = '<div class="stat-tooltip-title">' + name + '</div>' + text;
+    el.innerHTML = '<div class="stat-tooltip-header"><div class="stat-tooltip-title">' + name + '</div><button class="stat-tooltip-close" aria-label="Close">&times;</button></div>' + text;
+    el.querySelector('.stat-tooltip-close').addEventListener('click', function() {
+        el.classList.remove('visible');
+        clearTimeout(statTooltipTimer);
+    });
     el.classList.add('visible');
     clearTimeout(statTooltipTimer);
     statTooltipTimer = setTimeout(function() { el.classList.remove('visible'); }, 5000);

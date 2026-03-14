@@ -1119,6 +1119,10 @@ input[type=range]::-moz-focus-outer {
     left: 12px;
     right: 12px;
     bottom: 16px;
+    max-width: calc(100vw - 24px);
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     background: #007AC3;
     color: #fff;
     font-size: 14px;
@@ -1131,9 +1135,28 @@ input[type=range]::-moz-focus-outer {
   .stat-tooltip.visible {
     display: block;
   }
+  .stat-tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
   .stat-tooltip-title {
     font-weight: 700;
-    margin-bottom: 4px;
+  }
+  .stat-tooltip-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 0 0 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+  .stat-tooltip-close:active {
+    opacity: 1;
   }
   .slider-label[title] {
     text-decoration: underline dotted;
