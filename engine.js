@@ -131,6 +131,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Derive latestYear from the first option in the year dropdown
     latestYear = document.querySelector('#year option:first-child').textContent.trim();
     currYear = latestYear;
+
+    // Update description text with the latest year
+    var descYearEl = document.getElementById('description-year');
+    if (descYearEl) descYearEl.textContent = latestYear;
     currActivity = defaultActivity;
 
     // Grab values from the url if any
