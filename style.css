@@ -1586,27 +1586,73 @@ input[type=range]::-moz-focus-outer {
   }
 }
 
-/* Landscape phone */
-@media screen and (max-height: 500px) and (orientation: landscape) {
+/* Landscape phone — 2×2 grid layout for sticky controls */
+@media screen and (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+  .mobile-sticky-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0;
+    background: #BAD7E5;
+  }
+  /* Flatten .mobile-sticky-bar so its children join the grid */
   .mobile-sticky-bar {
-    padding: 4px 10px;
-    border-radius: 0;
+    display: contents;
+    background: none;
   }
   .mobile-sticky-bar::after {
-    margin: 4px 0 2px;
+    display: none;
+  }
+  /* Top-left: year/sport/clear */
+  .bracket-controls-row {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 4px;
+    padding: 4px 8px;
   }
   #year-div > h1 {
     display: none;
   }
-  #correct-wrapper h1,
-  #score-wrapper h1,
-  #upset-wrapper h1 {
-    font-size: 11px !important;
+  /* Top-right: correct/score/upsets */
+  #scoring-wrapper {
+    grid-column: 2;
+    grid-row: 1;
+    border-top: none;
+    margin-top: 0;
+    padding: 4px 8px;
+  }
+  #correct-wrapper h1:first-child,
+  #score-wrapper h1:first-child,
+  #upset-wrapper h1:first-child {
+    font-size: 9px !important;
   }
   #correct-wrapper h1:last-child,
   #score-wrapper h1:last-child,
   #upset-wrapper h1:last-child {
     font-size: 14px !important;
+  }
+  /* Bottom-left: mini final four */
+  #mini-final-four {
+    grid-column: 1;
+    grid-row: 2;
+    width: auto;
+    margin-left: 0;
+    border-top: 1px solid #9dc2d4;
+    padding: 4px 4px;
+  }
+  /* Bottom-right: region nav */
+  #region-nav {
+    grid-column: 2;
+    grid-row: 2;
+    width: auto;
+    margin-left: 0;
+    border-top: 1px solid #9dc2d4;
+    padding: 4px 4px;
+    gap: 3px;
+  }
+  .nav-btn {
+    padding: 4px 3px;
+    font-size: 11px;
   }
   .bracket-scroll-hint {
     display: none;
