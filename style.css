@@ -512,7 +512,7 @@ body {
 	content: ''; position: absolute; left: 0; top: 0; bottom: 0;
 	width: 3px; background: transparent; border-radius: 1px;
 }
-.r7 { font-weight: 700; }
+.r7 { font-weight: 700; margin-top: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
 
 #scoring-wrapper {
 	font-weight:700;
