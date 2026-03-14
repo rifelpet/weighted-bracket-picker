@@ -531,7 +531,20 @@ body {
 	content: ''; position: absolute; left: 0; top: 0; bottom: 0;
 	width: 3px; background: transparent; border-radius: 1px;
 }
-.r7 { font-weight: 700; margin-top: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+.r7 { font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+.r7-column {
+	display: flex; flex-direction: column;
+	justify-content: center; align-items: center;
+	margin-bottom: 100px;
+}
+.r7-label {
+	font-size: 9px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #999;
+	font-weight: 700;
+	margin-bottom: 2px;
+}
 
 #scoring-wrapper {
 	font-weight:700;
