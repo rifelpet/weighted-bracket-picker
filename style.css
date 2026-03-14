@@ -457,6 +457,7 @@ body {
 	background: #fff; border-radius: 3px;
 	padding: 2px 5px; font-size: 10px; margin: 1px 0;
 	box-sizing: border-box;
+	box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
 }
 .r2-wrap, .r3-wrap, .r4-wrap { box-sizing: border-box; }
 .tname { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -505,6 +506,7 @@ body {
 	width: 80px; text-align: center;
 	box-sizing: border-box; position: relative;
 	min-height: 28px;
+	box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
 }
 .r5::before, .r6::before {
 	content: ''; position: absolute; left: 0; top: 0; bottom: 0;
@@ -821,7 +823,7 @@ input[type=range]::-moz-focus-outer {
     width: 100%;
     height: auto;
     z-index: 200;
-    background: #fff;
+    background: #f0f4f8;
     text-align: center;
     box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
   }
@@ -1273,6 +1275,7 @@ input[type=range]::-moz-focus-outer {
     font-size: 10px;
     margin: 1px 0;
     min-height: 28px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
   }
   .mb-r2, .mb-r3, .mb-r4 {
     overflow: hidden;
