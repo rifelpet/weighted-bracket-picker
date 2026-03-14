@@ -295,7 +295,7 @@ body {
 
 #teams {
 	font-size:10px;
-	width:1080px;
+	width:1180px;
 	padding:0 20px;
 }
 
@@ -389,7 +389,7 @@ body {
 .r5.incorrect::before, .r6.incorrect::before { background: #900 !important; }
 
 .bracket-container {
-	width: 1080px;
+	width: 1180px;
 	height: auto;
 	background: none;
 	letter-spacing: -.5px;
@@ -425,7 +425,9 @@ body {
 	display: flex;
 	align-items: stretch;
 }
-.bracket-half { display: flex; flex-direction: column; }
+.bracket-half { display: flex; flex-direction: column; flex-shrink: 0; }
+.bracket-left { padding-right: 10px; }
+.bracket-right { padding-left: 10px; }
 
 /* Desktop round column headers */
 .desktop-round-headers {
@@ -441,7 +443,7 @@ body {
 	text-align: center;
 	box-sizing: border-box;
 }
-.dh-r64 { width: 110px; }
+.dh-r64 { width: 80px; }
 .dh-r32 { width: 90px; }
 .dh-s16 { width: 90px; }
 .dh-e8 { width: 90px; }
@@ -449,27 +451,28 @@ body {
 	display: flex;
 	align-items: center;
 	padding: 0 4px;
-	min-width: 100px;
+	flex-shrink: 0;
 }
-.ff-column { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.ff-column { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 8px; }
 .r6-column { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .r7-column { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
 /* Round sizing — desktop */
 .r1 {
-	width: 110px; min-height: 16px; line-height: normal;
+	width: 80px; min-height: 16px; line-height: normal;
 	overflow: hidden; white-space: nowrap;
 	border-left: 3px solid transparent;
+	clear: both;
 }
 .r2 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
 	float: none; position: absolute; right: 0; }
-.r2-wrap { width: 200px; height: 48px; position: relative; }
+.r2-wrap { width: 170px; height: 48px; position: relative; }
 .r3 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
 	float: none; position: absolute; right: 0; }
-.r3-wrap { width: 290px; height: 96px; position: relative; }
+.r3-wrap { width: 260px; height: 96px; position: relative; }
 .r4 { width: 80px; min-height: 28px; line-height: normal; font-size: 10px;
 	float: none; position: absolute; right: 0; }
-.r4-wrap { width: 380px; position: relative; }
+.r4-wrap { width: 350px; position: relative; }
 
 /* Team box style */
 .r1, .r2, .r3, .r4 {
@@ -1281,19 +1284,20 @@ input[type=range]::-moz-focus-outer {
 
   /* ─── Mobile bracket round sizing ─── */
   .mb-r1 {
-    width: 92px;
+    width: 80px;
     min-height: 16px;
     line-height: normal;
     overflow: hidden;
     white-space: nowrap;
     border-left: 3px solid transparent;
+    clear: both;
   }
   .mb-r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r2-wrap { width: 182px; height: 48px; position: relative; }
+  .mb-r2-wrap { width: 170px; height: 48px; position: relative; }
   .mb-r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r3-wrap { width: 272px; height: 96px; position: relative; }
+  .mb-r3-wrap { width: 260px; height: 96px; position: relative; }
   .mb-r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
-  .mb-r4-wrap { width: 362px; position: relative; }
+  .mb-r4-wrap { width: 350px; position: relative; }
 
   /* ─── Mobile bracket team box style ─── */
   .mb-r1, .mb-r2, .mb-r3, .mb-r4,
@@ -1398,7 +1402,7 @@ input[type=range]::-moz-focus-outer {
     gap: 10px;
     margin-bottom: 2px;
   }
-  .rh-r64 { width: 92px; }
+  .rh-r64 { width: 80px; }
   .rh-r32, .rh-s16, .rh-e8 { width: 80px; }
   .round-headers span {
     font-size: 9px;
