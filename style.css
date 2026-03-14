@@ -293,6 +293,7 @@ body {
 	float:right;
 }
 
+#body-container { position: relative; }
 #teams {
 	font-size:10px;
 	width:1180px;
@@ -451,6 +452,7 @@ body {
 	display: flex;
 	align-items: center;
 	padding: 0 4px;
+  margin: 0 -44px;
 	flex-shrink: 0;
 }
 .ff-column { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 8px; }
@@ -554,7 +556,10 @@ body {
 	font-size:10px;
 	text-align:center;
 	width:362px;
-	margin: 10px auto;
+	position: absolute;
+	left: 556px;
+	transform: translateX(-50%);
+	top: 760px;
 }
 
 #scoring-wrapper > div > h1 {
@@ -995,6 +1000,9 @@ input[type=range]::-moz-focus-outer {
   /* Row 2: stats spanning full width */
   #scoring-wrapper {
     position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
     width: 100%;
     display: flex;
     justify-content: space-around;
