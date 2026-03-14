@@ -129,16 +129,16 @@ body { font-family: trebuchet ms, arial, sans-serif; font-size: 13px;
 /* ─── Round sizing ─── */
 /* Seed slots: Round of 64 — two lines (name + pct), clipped if too long */
 .r1 {
-  width: 110px; height: 34px; line-height: normal;
+  width: 110px; height: auto; line-height: normal;
   overflow: hidden;
 }
 /* Later round team boxes: absolutely positioned so they shrink to text height.
    The -wrap containers define the slot heights; boxes anchor top/bottom within. */
-.r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-.r2-wrap { width: 200px; height: 72px; position: relative; } /* 110 + 10gap + 80; 72px = 2×36px r1 slots */
-.r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
+.r2-wrap { width: 200px; height: 72px; position: relative; } /* 110 + 10gap + 80; 72px = 2×two-line r1 */
+.r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
 .r3-wrap { width: 290px; height: 144px; position: relative; } /* 200 + 10gap + 80 */
-.r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
 .r4-wrap { width: 380px;               position: relative; } /* 290 + 10gap + 80 */
 
 /* ─── Team box style: white box + colored border-left ─── */
@@ -214,7 +214,16 @@ body { font-family: trebuchet ms, arial, sans-serif; font-size: 13px;
   border-radius: 1px;
 }
 
-/* R32/S16/E8 teams are vertically centered via top:50%+transform on .r2/.r3/.r4 */
+/* ─── Matchup pairing: upper team anchors to bottom of slot, lower to top ─── */
+/* R32 */
+.r3-wrap > .r2-wrap:nth-child(2) > .r2 { bottom: 0; }
+.r3-wrap > .r2-wrap:nth-child(3) > .r2 { top: 0; }
+/* S16 */
+.r4-wrap > .r3-wrap:nth-child(2) > .r3 { bottom: 0; }
+.r4-wrap > .r3-wrap:nth-child(3) > .r3 { top: 0; }
+/* E8 */
+.upper-half > .r4 { bottom: 0; }
+.lower-half > .r4 { top: 0; }
 .winner {
   font-weight: 700;
   color: #000;
@@ -270,22 +279,17 @@ body { font-family: trebuchet ms, arial, sans-serif; font-size: 13px;
   position: absolute;
   pointer-events: none;
   width: 10px;
-  background-image:
-    linear-gradient(#ccc, #ccc),
-    linear-gradient(#ccc, #ccc),
-    linear-gradient(#ccc, #ccc),
-    linear-gradient(#ccc, #ccc);
-  background-size: 7px 2px, 7px 2px, 2px 100%, 3px 2px;
+  background-size: 7px 1px, 7px 1px, 1px 100%, 3px 1px;
   background-position: 0 0, 0 100%, 6px 0, 7px 50%;
   background-repeat: no-repeat;
 }
-/* top/bottom = centers of the teams being connected.
-   R64 slots are 36px each: centers at 18px, 54px → midpoint 36px = R32 center
-   R32 centers at 36px, 108px within r3-wrap → midpoint 72px = S16 center
-   S16 centers at 72px, 216px within r4-wrap → midpoint 144px = E8 center */
-.r2-wrap::before { left: 110px; top: 18px;  bottom: 18px; } /* R64 team centers */
-.r3-wrap::before { left: 200px; top: 36px;  bottom: 36px; } /* R32 team centers */
-.r4-wrap::before { left: 290px; top: 72px;  bottom: 72px; } /* S16 team centers */
+/* top/bottom = midpoints of the previous round's bracket connectors.
+   R64 team centers: y=16.3, y=48.9 within r2-wrap → midpoint=32.6
+   R32→S16 ticks at those midpoints: y=32.6, y=104.6 within r3-wrap → midpoint=68.6
+   S16→E8 ticks at those midpoints: y=68.6, y=212.6 within r4-wrap */
+.r2-wrap::before { left: 110px; top: 16px;  bottom: 23px; } /* R64 team centers */
+.r3-wrap::before { left: 200px; top: 33px;  bottom: 39px; } /* R64→R32 bracket midpoints */
+.r4-wrap::before { left: 290px; top: 69px;  bottom: 75px; } /* R32→S16 bracket midpoints */
 
 /* RTL: ticks on right (toward teams at x=90), vertical at x=3, midpoint goes left */
 .region-wrap.rtol .r2-wrap::before,

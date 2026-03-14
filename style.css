@@ -817,6 +817,14 @@ input[type=range]::-moz-focus-outer {
   border: 0;
 }
 
+/* Region nav + mobile bracket: hidden on desktop */
+#region-nav {
+    display: none;
+}
+#mobile-bracket {
+    display: none;
+}
+
 /****** Responsive / Mobile ******/
 
 /* Make major containers fluid */
@@ -879,6 +887,9 @@ input[type=range]::-moz-focus-outer {
 
 /* Tablet and below */
 @media screen and (max-width: 1024px) {
+  body {
+    background: #f0f4f8;
+  }
   /* Hide desktop menu, show mobile menu */
   .cssmenu {
     display: none !important;
@@ -1070,18 +1081,9 @@ input[type=range]::-moz-focus-outer {
     flex-shrink: 0;
     float: none !important;
   }
-  /* Swipe hint for bracket */
+  /* Swipe hint — hidden on mobile (replaced by region nav) */
   .bracket-scroll-hint {
-    display: block;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    box-sizing: border-box;
-    text-align: center;
-    font-size: 11px;
-    color: #777;
-    padding: 3px 0 4px;
-    letter-spacing: 0.5px;
-    background: #fff;
+    display: none;
   }
   /* Touch targets for sliders */
   .uk-list.uk-list-divider > li {
@@ -1204,6 +1206,228 @@ input[type=range]::-moz-focus-outer {
   }
   .mini-team.correct { color: #090; border-left-color: #090; }
   .mini-team.incorrect { color: #900; border-left-color: #900; }
+
+  /* ─── Region Nav: 2×2 mini-map ─── */
+  #region-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 6px 8px 4px;
+    background: #BAD7E5;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    box-sizing: border-box;
+  }
+  .nav-btn {
+    border: 2px solid #7ab8d4;
+    background: #e8f4fb;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    padding: 7px 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn.active {
+    background: #007AC3;
+    border-color: #005a8e;
+    color: #fff;
+  }
+  .nav-btn:active {
+    background: #005a8e;
+    color: #fff;
+  }
+  .nav-btn:nth-child(1), .nav-btn:nth-child(2) {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+  .nav-btn:nth-child(3), .nav-btn:nth-child(4) {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+  }
+
+  /* ─── Mobile bracket: hide desktop, show mobile ─── */
+  .bracket-scroll {
+    display: none !important;
+  }
+  #mobile-bracket {
+    display: block;
+    padding: 8px;
+  }
+
+  /* ─── Region panels ─── */
+  .region-panel { display: none; }
+  .region-panel.visible { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ─── LTR vs RTL region layout ─── */
+  .region-wrap.rtol {
+    direction: rtl;
+  }
+  .region-wrap.rtol * {
+    direction: ltr;
+  }
+
+  /* ─── Mobile bracket round sizing ─── */
+  .mb-r1 {
+    width: 110px;
+    height: auto;
+    line-height: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    border-right: 2px solid rgba(0,0,0,0.12);
+  }
+  .mb-r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
+  .mb-r2-wrap { width: 200px; height: 72px; position: relative; }
+  .mb-r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
+  .mb-r3-wrap { width: 290px; height: 144px; position: relative; }
+  .mb-r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; }
+  .mb-r4-wrap { width: 380px; position: relative; }
+
+  /* ─── Mobile bracket team box style ─── */
+  .mb-r1, .mb-r2, .mb-r3, .mb-r4 {
+    background: #fff;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-size: 10px;
+    margin: 1px 0;
+  }
+  .mb-r2, .mb-r3, .mb-r4 {
+    overflow: hidden;
+    font-size: 10px;
+    border-right: 2px solid rgba(0,0,0,0.12);
+    padding-left: 5px;
+    padding-right: 3px;
+  }
+  .mb-tname {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mb-pct {
+    display: block;
+    white-space: nowrap;
+    font-size: 9px;
+    color: #888;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  /* ─── Status indicator bar for R32+ ─── */
+  .mb-r2::before, .mb-r3::before, .mb-r4::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    border-radius: 1px;
+  }
+
+  /* ─── Matchup pairing anchoring ─── */
+  .mb-r3-wrap > .mb-r2-wrap:nth-child(2) > .mb-r2 { bottom: 0; }
+  .mb-r3-wrap > .mb-r2-wrap:nth-child(3) > .mb-r2 { top: 0; }
+  .mb-r4-wrap > .mb-r3-wrap:nth-child(2) > .mb-r3 { bottom: 0; }
+  .mb-r4-wrap > .mb-r3-wrap:nth-child(3) > .mb-r3 { top: 0; }
+  .mb-upper-half > .mb-r4 { bottom: 0; }
+  .mb-lower-half > .mb-r4 { top: 0; }
+
+  /* ─── Winner/loser/correct/incorrect for mobile bracket ─── */
+  #mobile-bracket .winner {
+    font-weight: 700;
+    color: #000;
+  }
+  .mb-r1.winner { border-left-color: #007AC3; }
+  .mb-r2.winner::before, .mb-r3.winner::before, .mb-r4.winner::before { background: #007AC3; }
+  #mobile-bracket .loser {
+    opacity: 0.5;
+    color: #555;
+  }
+  #mobile-bracket .correct { color: #090 !important; }
+  .mb-r1.correct { border-left-color: #090 !important; }
+  .mb-r2.correct::before, .mb-r3.correct::before, .mb-r4.correct::before { background: #090 !important; }
+  #mobile-bracket .incorrect { color: #900 !important; }
+  .mb-r1.incorrect { border-left-color: #900 !important; }
+  .mb-r2.incorrect::before, .mb-r3.incorrect::before, .mb-r4.incorrect::before { background: #900 !important; }
+
+  /* ─── RTL regions: flip borders ─── */
+  .region-wrap.rtol .mb-r1 {
+    border-right: none;
+  }
+  .region-wrap.rtol .mb-r2,
+  .region-wrap.rtol .mb-r3,
+  .region-wrap.rtol .mb-r4 {
+    border-right: none;
+    border-left: 2px solid rgba(0,0,0,0.12);
+    right: auto;
+    left: 0;
+  }
+
+  /* ─── Region label ─── */
+  .region-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #007AC3;
+    padding: 2px 0 4px;
+  }
+
+  /* ─── Round column headers ─── */
+  .round-headers {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+  .rh-r64 { width: 110px; }
+  .rh-r32, .rh-s16, .rh-e8 { width: 80px; }
+  .round-headers span {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #999;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* ─── Bracket connecting lines (gradient-based) ─── */
+  .mb-r2-wrap::before,
+  .mb-r3-wrap::before,
+  .mb-r4-wrap::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    width: 10px;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
+      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
+      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
+      linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15));
+    background-size: 7px 1px, 7px 1px, 1px 100%, 3px 1px;
+    background-position: 0 0, 0 100%, 6px 0, 7px 50%;
+    background-repeat: no-repeat;
+  }
+  .mb-r2-wrap::before { left: 110px; top: 16px; bottom: 23px; }
+  .mb-r3-wrap::before { left: 200px; top: 33px; bottom: 39px; }
+  .mb-r4-wrap::before { left: 290px; top: 69px; bottom: 75px; }
+
+  /* RTL bracket lines */
+  .region-wrap.rtol .mb-r2-wrap::before,
+  .region-wrap.rtol .mb-r3-wrap::before,
+  .region-wrap.rtol .mb-r4-wrap::before {
+    left: 80px;
+    background-position: 3px 0, 3px 100%, 3px 0, 0 50%;
+  }
+
+  /* ─── Float utilities for mobile bracket ─── */
+  .mb-fl { float: left; }
+  .mb-fr { float: right; }
+  .mb-cf::after { content: ''; display: block; clear: both; }
 }
 
 /* Phone */

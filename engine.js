@@ -237,6 +237,217 @@ function updateMiniConnector() {
     svg.innerHTML = '<path d="' + d + '" fill="none" stroke="#7ab8d4" stroke-width="2" stroke-linejoin="round"/>';
 }
 
+// ─── Mobile bracket: region-by-region view ───
+
+// Bracket structure: maps game/seed IDs to nested layout
+// Upper half: seeds 1/16,8/9 → game1,game2 → game9 → game3,game4(5/12,4/13) → game10 → game13
+// Lower half: seeds 6/11,3/14 → game5,game6 → game11 → game7,game8(7/10,2/15) → game12 → game14
+var mobileBracketBuilt = false;
+
+function buildMobileBracket() {
+    var container = document.getElementById('mobile-bracket');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var regionDirs = { south: 'ltr', east: 'ltr', west: 'rtol', midwest: 'rtol' };
+    var regionLabels = { south: 'South Region', east: 'East Region', west: 'West Region', midwest: 'Midwest Region' };
+
+    regions.forEach(function(regionName, idx) {
+        var rkey = regionName.toLowerCase();
+        var dir = regionDirs[rkey];
+        var panel = document.createElement('div');
+        panel.id = 'panel-' + rkey;
+        panel.className = 'region-panel' + (idx === 0 ? ' visible' : '');
+
+        var label = document.createElement('div');
+        label.className = 'region-label';
+        label.textContent = regionLabels[rkey];
+        panel.appendChild(label);
+
+        // Round headers
+        var headers = document.createElement('div');
+        headers.className = 'round-headers';
+        if (dir === 'ltr') {
+            headers.innerHTML = '<span class="rh-r64">R64</span><span class="rh-r32">R32</span><span class="rh-s16">S16</span><span class="rh-e8">E8</span>';
+        } else {
+            headers.innerHTML = '<span class="rh-e8">E8</span><span class="rh-s16">S16</span><span class="rh-r32">R32</span><span class="rh-r64">R64</span>';
+        }
+        panel.appendChild(headers);
+
+        // Build bracket content
+        var wrap = document.createElement('div');
+        if (dir === 'rtol') {
+            wrap.className = 'region-wrap rtol';
+        }
+        var upperHalf = buildR4Wrap(rkey, dir, 'upper',
+            'game13',
+            { game: 'game9',  top: { game: 'game1', seeds: ['seed1','seed16'] }, bottom: { game: 'game2', seeds: ['seed8','seed9'] } },
+            { game: 'game10', top: { game: 'game3', seeds: ['seed5','seed12'] }, bottom: { game: 'game4', seeds: ['seed4','seed13'] } }
+        );
+        var lowerHalf = buildR4Wrap(rkey, dir, 'lower',
+            'game14',
+            { game: 'game11', top: { game: 'game5', seeds: ['seed6','seed11'] }, bottom: { game: 'game6', seeds: ['seed3','seed14'] } },
+            { game: 'game12', top: { game: 'game7', seeds: ['seed7','seed10'] }, bottom: { game: 'game8', seeds: ['seed2','seed15'] } }
+        );
+        if (dir === 'rtol') {
+            wrap.appendChild(upperHalf);
+            wrap.appendChild(lowerHalf);
+            panel.appendChild(wrap);
+        } else {
+            panel.appendChild(upperHalf);
+            panel.appendChild(lowerHalf);
+        }
+        container.appendChild(panel);
+    });
+
+    mobileBracketBuilt = true;
+    initRegionNav();
+}
+
+function buildR4Wrap(region, dir, half, e8Game, s16Top, s16Bottom) {
+    var isLtr = dir === 'ltr';
+    var r4wrap = document.createElement('div');
+    r4wrap.className = 'mb-r4-wrap mb-cf ' + (half === 'upper' ? 'mb-upper-half' : 'mb-lower-half');
+
+    // E8 winner
+    var r4 = document.createElement('div');
+    r4.className = 'mb-r4 ' + (isLtr ? 'mb-fr' : 'mb-fl');
+    r4.setAttribute('data-src', region + e8Game);
+    r4wrap.appendChild(r4);
+
+    // Two S16 wraps
+    var s16t = buildR3Wrap(region, dir, s16Top, 2);
+    var s16b = buildR3Wrap(region, dir, s16Bottom, 3);
+    r4wrap.appendChild(s16t);
+    r4wrap.appendChild(s16b);
+
+    return r4wrap;
+}
+
+function buildR3Wrap(region, dir, s16Data, childIdx) {
+    var isLtr = dir === 'ltr';
+    var r3wrap = document.createElement('div');
+    r3wrap.className = 'mb-r3-wrap ' + (isLtr ? 'mb-fl' : 'mb-fr') + ' mb-cf';
+
+    // S16 winner
+    var r3 = document.createElement('div');
+    r3.className = 'mb-r3 ' + (isLtr ? 'mb-fr' : 'mb-fl');
+    r3.setAttribute('data-src', region + s16Data.game);
+    r3wrap.appendChild(r3);
+
+    // Two R32 wraps
+    var r32t = buildR2Wrap(region, dir, s16Data.top, 2);
+    var r32b = buildR2Wrap(region, dir, s16Data.bottom, 3);
+    r3wrap.appendChild(r32t);
+    r3wrap.appendChild(r32b);
+
+    return r3wrap;
+}
+
+function buildR2Wrap(region, dir, r32Data, childIdx) {
+    var isLtr = dir === 'ltr';
+    var r2wrap = document.createElement('div');
+    r2wrap.className = 'mb-r2-wrap ' + (isLtr ? 'mb-fl' : 'mb-fr') + ' mb-cf';
+
+    // R32 winner
+    var r2 = document.createElement('div');
+    r2.className = 'mb-r2 ' + (isLtr ? 'mb-fr' : 'mb-fl');
+    r2.setAttribute('data-src', region + r32Data.game);
+    r2wrap.appendChild(r2);
+
+    // Two R64 seeds — also store game ref for pct lookup
+    var r1a = document.createElement('div');
+    r1a.className = 'mb-r1 ' + (isLtr ? 'mb-fl' : 'mb-fr');
+    r1a.setAttribute('data-src', region + r32Data.seeds[0]);
+    r1a.setAttribute('data-game', region + r32Data.game);
+    r2wrap.appendChild(r1a);
+
+    var r1b = document.createElement('div');
+    r1b.className = 'mb-r1 ' + (isLtr ? 'mb-fl' : 'mb-fr');
+    r1b.setAttribute('data-src', region + r32Data.seeds[1]);
+    r1b.setAttribute('data-game', region + r32Data.game);
+    r2wrap.appendChild(r1b);
+
+    return r2wrap;
+}
+
+function syncMobileBracket() {
+    if (!mobileBracketBuilt) buildMobileBracket();
+    var container = document.getElementById('mobile-bracket');
+    if (!container) return;
+
+    // Sync all elements with data-src attributes
+    var els = container.querySelectorAll('[data-src]');
+    var classes = ['winner', 'loser', 'correct', 'incorrect'];
+    for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        var srcId = el.getAttribute('data-src');
+        var srcEl = document.getElementById(srcId);
+        if (!srcEl) continue;
+
+        var isSeed = srcId.indexOf('seed') !== -1;
+
+        if (isSeed) {
+            // R64 seed: show "Seed. Name" + pct from game element
+            var seedText = srcEl.textContent;
+            el.innerHTML = '';
+            el.appendChild(document.createTextNode(seedText + ' '));
+            // Get pct from the associated game element
+            var gameId = el.getAttribute('data-game');
+            if (gameId) {
+                var gameEl = document.getElementById(gameId);
+                if (gameEl && gameEl.textContent) {
+                    var gamePctMatch = gameEl.textContent.match(/(\d+)%$/);
+                    if (gamePctMatch) {
+                        var pctVal = parseInt(gamePctMatch[1], 10);
+                        var pct = document.createElement('span');
+                        pct.className = 'mb-pct';
+                        // Winner gets the game pct, loser gets the inverse
+                        pct.textContent = srcEl.classList.contains('winner') ? pctVal + '%' : (100 - pctVal) + '%';
+                        el.appendChild(pct);
+                    }
+                }
+            }
+        } else {
+            // Game element (R32+): split into tname + pct spans
+            var text = srcEl.textContent;
+            var pctMatch = text.match(/(\d+%)$/);
+            el.innerHTML = '';
+            var tname = document.createElement('span');
+            tname.className = 'mb-tname';
+            tname.textContent = pctMatch ? text.replace(/\s*\d+%$/, '') : text;
+            el.appendChild(tname);
+            if (pctMatch) {
+                var pct = document.createElement('span');
+                pct.className = 'mb-pct';
+                pct.textContent = pctMatch[1];
+                el.appendChild(pct);
+            }
+        }
+
+        // Sync classes
+        for (var j = 0; j < classes.length; j++) {
+            el.classList.toggle(classes[j], srcEl.classList.contains(classes[j]));
+        }
+    }
+}
+
+function initRegionNav() {
+    var navBtns = document.querySelectorAll('#region-nav .nav-btn');
+    if (!navBtns.length) return;
+    navBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var region = this.getAttribute('data-region');
+            navBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            var panels = document.querySelectorAll('#mobile-bracket .region-panel');
+            panels.forEach(function(p) { p.classList.remove('visible'); });
+            var target = document.getElementById('panel-' + region);
+            if (target) target.classList.add('visible');
+        });
+    });
+}
+
 function mouseUp(id) {
     submit(true);
 }
@@ -757,6 +968,7 @@ function submit(logEvent) {
         clearScoreDisplay();
     }
     weightsToURL();
+    syncMobileBracket();
     if (logEvent) {
         const payload = {
             action: 'render',
@@ -799,6 +1011,11 @@ function clear(setup) {
     });
     const connSvg = document.getElementById('mini-connector-svg');
     if (connSvg) { connSvg.innerHTML = ''; }
+
+    // Reset mobile bracket
+    mobileBracketBuilt = false;
+    var mbContainer = document.getElementById('mobile-bracket');
+    if (mbContainer) mbContainer.innerHTML = '';
 
     if (setup) {
         document.getElementById('upset').textContent = '0';
