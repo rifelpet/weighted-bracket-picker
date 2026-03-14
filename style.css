@@ -1657,6 +1657,42 @@ input[type=range]::-moz-focus-outer {
   .bracket-scroll-hint {
     display: none;
   }
+  /* Sliders: two balanced columns in landscape */
+  #sliders {
+    padding: 10px 8px !important;
+  }
+  .slider-grid-body {
+    display: block !important;
+    column-count: 2;
+    column-gap: 16px;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .slider-grid-body > div {
+    width: 100% !important;
+    box-sizing: border-box;
+    display: inline-block;
+    break-inside: avoid;
+    float: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+  }
+  .slider-grid-body > div.stat-category-divider {
+    border-left: none !important;
+  }
+  /* Remove uk-grid-divider vertical lines */
+  .slider-grid-body::before,
+  .slider-grid-body > div::before {
+    display: none !important;
+  }
+  .uk-list.uk-list-divider > li {
+    min-height: 36px;
+    padding: 2px 0;
+  }
+  .uk-list.uk-list-divider > li > .slider-label {
+    font-size: 16px;
+  }
 }
 
 /* Mini Final Four bracket — hidden on desktop */
