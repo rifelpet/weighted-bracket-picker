@@ -3,7 +3,6 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	padding:0;
 	border:0;
 	font-size:100%;
-/*font:inherit;*/
 	vertical-align:baseline;
 }
 
@@ -85,7 +84,6 @@ blockquote,q {
 }
 
 blockquote:before,blockquote:after,q:before,q:after {
-	content:'';
 	content:none;
 }
 
@@ -105,7 +103,6 @@ table {
 
 #table-contents > ul {
 	list-style:none;
-	list-style-type:none;
 	padding:0 30px;
 }
 
@@ -200,8 +197,6 @@ body {
 
 .slider-label {
 	line-height:2em;
-    /*float:left;
-	display:block;*/
 }
 
 /* Stat tooltip (hidden on desktop — title attr handles hover there) */
@@ -926,11 +921,14 @@ input[type=range]::-moz-focus-outer {
   border: 0;
 }
 
-/* Region nav + mobile bracket: hidden on desktop */
+/* Region nav + mobile bracket + mini final four: hidden on desktop */
 #region-nav {
     display: none;
 }
 #mobile-bracket {
+    display: none;
+}
+#mini-final-four {
     display: none;
 }
 
@@ -1695,13 +1693,6 @@ input[type=range]::-moz-focus-outer {
   }
   .uk-list.uk-list-divider > li > .slider-label {
     font-size: 16px;
-  }
-}
-
-/* Mini Final Four bracket — hidden on desktop */
-@media screen and (min-width: 1025px) {
-  #mini-final-four {
-      display: none;
   }
 }
 

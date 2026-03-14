@@ -84,8 +84,8 @@ function selectShare(inputTag) {
 }
 
 function selectYearAndActivity() {
-    currYear = document.querySelector('select[name="year"]').value;
-    currActivity = document.querySelector('select[name="activity"]').value;
+    currYear = document.getElementById('year').value;
+    currActivity = document.getElementById('activity').value;
 
     const currWeightCookie = Cookies.get('w');
     if (currWeightCookie !== undefined) {
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     currYear = latestYear;
 
     // Update description text with the latest year
-    var descYearEl = document.getElementById('description-year');
+    const descYearEl = document.getElementById('description-year');
     if (descYearEl) descYearEl.textContent = latestYear;
     currActivity = defaultActivity;
 
@@ -148,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     currYear = getDefaultYear(urlParams.hasOwnProperty('w') ? urlParams.w : '');
-    document.querySelector('select[name="year"]').value = currYear;
-    document.querySelector('select[name="activity"]').value = currActivity;
+    document.getElementById('year').value = currYear;
+    document.getElementById('activity').value = currActivity;
 
     selectYearAndActivity();
 
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // the threshold so the mini bracket only appears when the visible portion
                 // of the main bracket is smaller than the mini bracket itself.
                 if (!miniHeightMeasured && miniBracketEl) {
-                    var h = miniBracketEl.offsetHeight;
+                    const h = miniBracketEl.offsetHeight;
                     if (h > 0) {
                         miniHeightMeasured = true;
                         createTeamsObserver(-h);
@@ -250,49 +250,49 @@ function updateMiniConnector() {
 // Bracket structure: maps game/seed IDs to nested layout
 // Upper half: seeds 1/16,8/9 → game1,game2 → game9 → game3,game4(5/12,4/13) → game10 → game13
 // Lower half: seeds 6/11,3/14 → game5,game6 → game11 → game7,game8(7/10,2/15) → game12 → game14
-var mobileBracketBuilt = false;
+let mobileBracketBuilt = false;
 
 function buildMobileBracket() {
-    var container = document.getElementById('mobile-bracket');
+    const container = document.getElementById('mobile-bracket');
     if (!container) return;
     container.innerHTML = '';
 
-    var regionDirs = { south: 'ltr', east: 'ltr', west: 'rtol', midwest: 'rtol' };
-    var regionLabels = { south: 'South Region', east: 'East Region', west: 'West Region', midwest: 'Midwest Region' };
+    const regionDirs = { south: 'ltr', east: 'ltr', west: 'rtol', midwest: 'rtol' };
+    const regionLabels = { south: 'South Region', east: 'East Region', west: 'West Region', midwest: 'Midwest Region' };
 
     regions.forEach(function(regionName, idx) {
-        var rkey = regionName.toLowerCase();
-        var dir = regionDirs[rkey];
-        var panel = document.createElement('div');
+        const rkey = regionName.toLowerCase();
+        const dir = regionDirs[rkey];
+        const panel = document.createElement('div');
         panel.id = 'panel-' + rkey;
         panel.className = 'region-panel' + (idx === 0 ? ' visible' : '');
 
-        var label = document.createElement('div');
+        const label = document.createElement('div');
         label.className = 'region-label';
         label.textContent = regionLabels[rkey];
         panel.appendChild(label);
 
         // Round headers
-        var headers = document.createElement('div');
-        headers.className = 'round-headers';
+        const hdrs = document.createElement('div');
+        hdrs.className = 'round-headers';
         if (dir === 'ltr') {
-            headers.innerHTML = '<span class="rh-r64">R64</span><span class="rh-r32">R32</span><span class="rh-s16">S16</span><span class="rh-e8">E8</span>';
+            hdrs.innerHTML = '<span class="rh-r64">R64</span><span class="rh-r32">R32</span><span class="rh-s16">S16</span><span class="rh-e8">E8</span>';
         } else {
-            headers.innerHTML = '<span class="rh-e8">E8</span><span class="rh-s16">S16</span><span class="rh-r32">R32</span><span class="rh-r64">R64</span>';
+            hdrs.innerHTML = '<span class="rh-e8">E8</span><span class="rh-s16">S16</span><span class="rh-r32">R32</span><span class="rh-r64">R64</span>';
         }
-        panel.appendChild(headers);
+        panel.appendChild(hdrs);
 
         // Build bracket content
-        var wrap = document.createElement('div');
+        const wrap = document.createElement('div');
         if (dir === 'rtol') {
             wrap.className = 'region-wrap rtol';
         }
-        var upperHalf = buildR4Wrap(rkey, dir, 'upper',
+        const upperHalf = buildR4Wrap(rkey, dir, 'upper',
             'game13',
             { game: 'game9',  top: { game: 'game1', seeds: ['seed1','seed16'] }, bottom: { game: 'game2', seeds: ['seed8','seed9'] } },
             { game: 'game10', top: { game: 'game3', seeds: ['seed5','seed12'] }, bottom: { game: 'game4', seeds: ['seed4','seed13'] } }
         );
-        var lowerHalf = buildR4Wrap(rkey, dir, 'lower',
+        const lowerHalf = buildR4Wrap(rkey, dir, 'lower',
             'game14',
             { game: 'game11', top: { game: 'game5', seeds: ['seed6','seed11'] }, bottom: { game: 'game6', seeds: ['seed3','seed14'] } },
             { game: 'game12', top: { game: 'game7', seeds: ['seed7','seed10'] }, bottom: { game: 'game8', seeds: ['seed2','seed15'] } }
@@ -313,64 +313,64 @@ function buildMobileBracket() {
 }
 
 function buildR4Wrap(region, dir, half, e8Game, s16Top, s16Bottom) {
-    var isLtr = dir === 'ltr';
-    var r4wrap = document.createElement('div');
+    const isLtr = dir === 'ltr';
+    const r4wrap = document.createElement('div');
     r4wrap.className = 'mb-r4-wrap mb-cf ' + (half === 'upper' ? 'mb-upper-half' : 'mb-lower-half');
 
     // E8 winner
-    var r4 = document.createElement('div');
+    const r4 = document.createElement('div');
     r4.className = 'mb-r4 ' + (isLtr ? 'mb-fr' : 'mb-fl');
     r4.setAttribute('data-src', region + e8Game);
     r4wrap.appendChild(r4);
 
     // Two S16 wraps
-    var s16t = buildR3Wrap(region, dir, s16Top, 2);
-    var s16b = buildR3Wrap(region, dir, s16Bottom, 3);
+    const s16t = buildR3Wrap(region, dir, s16Top);
+    const s16b = buildR3Wrap(region, dir, s16Bottom);
     r4wrap.appendChild(s16t);
     r4wrap.appendChild(s16b);
 
     return r4wrap;
 }
 
-function buildR3Wrap(region, dir, s16Data, childIdx) {
-    var isLtr = dir === 'ltr';
-    var r3wrap = document.createElement('div');
+function buildR3Wrap(region, dir, s16Data) {
+    const isLtr = dir === 'ltr';
+    const r3wrap = document.createElement('div');
     r3wrap.className = 'mb-r3-wrap ' + (isLtr ? 'mb-fl' : 'mb-fr') + ' mb-cf';
 
     // S16 winner
-    var r3 = document.createElement('div');
+    const r3 = document.createElement('div');
     r3.className = 'mb-r3 ' + (isLtr ? 'mb-fr' : 'mb-fl');
     r3.setAttribute('data-src', region + s16Data.game);
     r3wrap.appendChild(r3);
 
     // Two R32 wraps
-    var r32t = buildR2Wrap(region, dir, s16Data.top, 2);
-    var r32b = buildR2Wrap(region, dir, s16Data.bottom, 3);
+    const r32t = buildR2Wrap(region, dir, s16Data.top);
+    const r32b = buildR2Wrap(region, dir, s16Data.bottom);
     r3wrap.appendChild(r32t);
     r3wrap.appendChild(r32b);
 
     return r3wrap;
 }
 
-function buildR2Wrap(region, dir, r32Data, childIdx) {
-    var isLtr = dir === 'ltr';
-    var r2wrap = document.createElement('div');
+function buildR2Wrap(region, dir, r32Data) {
+    const isLtr = dir === 'ltr';
+    const r2wrap = document.createElement('div');
     r2wrap.className = 'mb-r2-wrap ' + (isLtr ? 'mb-fl' : 'mb-fr') + ' mb-cf';
 
     // R32 winner
-    var r2 = document.createElement('div');
+    const r2 = document.createElement('div');
     r2.className = 'mb-r2 ' + (isLtr ? 'mb-fr' : 'mb-fl');
     r2.setAttribute('data-src', region + r32Data.game);
     r2wrap.appendChild(r2);
 
     // Two R64 seeds — also store game ref for pct lookup
-    var r1a = document.createElement('div');
+    const r1a = document.createElement('div');
     r1a.className = 'mb-r1 ' + (isLtr ? 'mb-fl' : 'mb-fr');
     r1a.setAttribute('data-src', region + r32Data.seeds[0]);
     r1a.setAttribute('data-game', region + r32Data.game);
     r2wrap.appendChild(r1a);
 
-    var r1b = document.createElement('div');
+    const r1b = document.createElement('div');
     r1b.className = 'mb-r1 ' + (isLtr ? 'mb-fl' : 'mb-fr');
     r1b.setAttribute('data-src', region + r32Data.seeds[1]);
     r1b.setAttribute('data-game', region + r32Data.game);
@@ -381,36 +381,36 @@ function buildR2Wrap(region, dir, r32Data, childIdx) {
 
 function syncMobileBracket() {
     if (!mobileBracketBuilt) buildMobileBracket();
-    var container = document.getElementById('mobile-bracket');
+    const container = document.getElementById('mobile-bracket');
     if (!container) return;
 
     // Sync all elements with data-src attributes
-    var els = container.querySelectorAll('[data-src]');
-    var classes = ['winner', 'loser', 'correct', 'incorrect'];
-    for (var i = 0; i < els.length; i++) {
-        var el = els[i];
-        var srcId = el.getAttribute('data-src');
-        var srcEl = document.getElementById(srcId);
+    const els = container.querySelectorAll('[data-src]');
+    const classes = ['winner', 'loser', 'correct', 'incorrect'];
+    for (let i = 0; i < els.length; i++) {
+        const el = els[i];
+        const srcId = el.getAttribute('data-src');
+        const srcEl = document.getElementById(srcId);
         if (!srcEl) continue;
 
-        var isSeed = srcId.indexOf('seed') !== -1;
+        const isSeed = srcId.indexOf('seed') !== -1;
 
         if (isSeed) {
             // R64 seed: show "Seed. Name" only (no pct)
-            var seedText = srcEl.textContent;
+            const seedText = srcEl.textContent;
             el.innerHTML = '';
             el.appendChild(document.createTextNode(seedText));
         } else {
             // Game element (R32+): read from tname/pct spans
-            var srcTname = srcEl.querySelector('.tname');
-            var srcPct = srcEl.querySelector('.pct');
+            const srcTname = srcEl.querySelector('.tname');
+            const srcPct = srcEl.querySelector('.pct');
             el.innerHTML = '';
-            var tname = document.createElement('span');
+            const tname = document.createElement('span');
             tname.className = 'mb-tname';
             tname.textContent = srcTname ? srcTname.textContent : srcEl.textContent;
             el.appendChild(tname);
             if (srcPct) {
-                var pct = document.createElement('span');
+                const pct = document.createElement('span');
                 pct.className = 'mb-pct';
                 pct.textContent = srcPct.textContent;
                 el.appendChild(pct);
@@ -418,23 +418,23 @@ function syncMobileBracket() {
         }
 
         // Sync classes
-        for (var j = 0; j < classes.length; j++) {
+        for (let j = 0; j < classes.length; j++) {
             el.classList.toggle(classes[j], srcEl.classList.contains(classes[j]));
         }
     }
 }
 
 function initRegionNav() {
-    var navBtns = document.querySelectorAll('#region-nav .nav-btn');
+    const navBtns = document.querySelectorAll('#region-nav .nav-btn');
     if (!navBtns.length) return;
     navBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            var region = this.getAttribute('data-region');
+            const region = this.getAttribute('data-region');
             navBtns.forEach(function(b) { b.classList.remove('active'); });
             this.classList.add('active');
-            var panels = document.querySelectorAll('#mobile-bracket .region-panel');
+            const panels = document.querySelectorAll('#mobile-bracket .region-panel');
             panels.forEach(function(p) { p.classList.remove('visible'); });
-            var target = document.getElementById('panel-' + region);
+            const target = document.getElementById('panel-' + region);
             if (target) target.classList.add('visible');
         });
     });
@@ -532,9 +532,9 @@ function parseData(cacheKey) {
     submit(false);
 }
 
-var statTooltipTimer = null;
+let statTooltipTimer = null;
 function showStatTooltip(name, text) {
-    var el = document.getElementById('stat-tooltip');
+    const el = document.getElementById('stat-tooltip');
     if (!el) return;
     el.innerHTML = '<div class="stat-tooltip-header"><div class="stat-tooltip-title">' + name + '</div><button class="stat-tooltip-close" aria-label="Close">&times;</button></div>' + text;
     el.querySelector('.stat-tooltip-close').addEventListener('click', function() {
@@ -547,7 +547,7 @@ function showStatTooltip(name, text) {
 }
 // Single global dismiss handler — hide tooltip when tapping anything that isn't a label or the tooltip
 document.addEventListener('click', function(e) {
-    var el = document.getElementById('stat-tooltip');
+    const el = document.getElementById('stat-tooltip');
     if (!el || !el.classList.contains('visible')) return;
     if (el.contains(e.target)) return;
     if (e.target.closest('.slider-label')) return;
@@ -706,7 +706,7 @@ function runMatchup(team1, team2, team1El, team2El) {
     for (const weightName in currentWeights) {
         const weight = currentWeights[weightName];
         if (team1.stats[weightName] === undefined) {
-            console.log('warning: missing stat for ' + team1.Name + ': ' + weightName);
+            // missing stat — skip
             continue;
         }
         if (weightName === 'Seed') {
@@ -1039,7 +1039,7 @@ function clear(setup) {
 
     // Reset mobile bracket
     mobileBracketBuilt = false;
-    var mbContainer = document.getElementById('mobile-bracket');
+    const mbContainer = document.getElementById('mobile-bracket');
     if (mbContainer) mbContainer.innerHTML = '';
 
     if (setup) {
@@ -1126,7 +1126,6 @@ function saveCookie() {
 }
 
 function URLToWeights(urlParams) {
-    console.log('URLToWeights', urlParams);
     const sortedWeights = [];
     for (const k in currentWeights) {
         sortedWeights.push(k);
