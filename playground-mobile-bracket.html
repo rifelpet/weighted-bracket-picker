@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Bracket Playground</title>
+<style>
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: trebuchet ms, arial, sans-serif; font-size: 13px;
+       background: #f0f4f8; color: #555; }
+
+/* ─── Sticky nav bar ─── */
+.sticky-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: #BAD7E5;
+  padding: 8px 8px 4px;
+}
+.controls-row {
+  display: flex; gap: 6px; align-items: center; margin-bottom: 4px;
+}
+.controls-row select {
+  flex: 1; padding: 4px;
+}
+.score-row {
+  display: flex; justify-content: space-around;
+  border-top: 1px solid rgba(0,0,0,0.15);
+  padding: 4px 0 2px;
+}
+.score-item { text-align: center; flex: 1; }
+.score-item .label { font-size: 10px; opacity: 0.7; text-transform: uppercase; }
+.score-item .value { font-size: 18px; font-weight: 700; }
+
+/* ─── Mini Final Four (always visible below score summary) ─── */
+.mini-ff-section {
+  background: #BAD7E5;
+  border-top: 1px solid #9dc2d4;
+  padding: 6px 12px 8px;
+}
+.mini-ff-header {
+  display: flex; margin-bottom: 3px;
+}
+.mini-ff-label {
+  flex: 1;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: #555;
+  padding-left: 4px;
+}
+.mini-ff-grid {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  grid-template-rows: auto auto 4px auto auto;
+  row-gap: 2px;
+}
+.mini-team {
+  background: #fff; border-radius: 3px; border-left: 3px solid transparent;
+  font-size: 11px; font-weight: 600; padding: 2px 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: #000; width: 100%;
+}
+.mini-team.mini-winner { font-weight: 700; }
+.mini-team.mini-loser  { opacity: 0.5; }
+.mini-team.correct { color: #090 !important; border-left-color: #090 !important; }
+.mini-team.incorrect { color: #900 !important; border-left-color: #900 !important; }
+.mini-connector {
+  grid-row: 1/6; grid-column: 2;
+  position: relative;
+}
+.mini-connector svg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible;
+}
+
+/* ─── Region Nav 2×2 mini-map ─── */
+#region-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 6px 8px 4px;
+  background: #BAD7E5;
+}
+.nav-btn {
+  border: 2px solid #7ab8d4;
+  background: #e8f4fb;
+  border-radius: 6px;
+  font-size: 12px; font-weight: 700;
+  color: #555; padding: 7px 4px;
+  cursor: pointer; text-align: center;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn.active {
+  background: #007AC3; border-color: #005a8e; color: #fff;
+}
+.nav-btn:active {
+  background: #005a8e; color: #fff;
+}
+/* Bracket corner hints */
+.nav-btn:nth-child(1), .nav-btn:nth-child(2) {
+  border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.nav-btn:nth-child(3), .nav-btn:nth-child(4) {
+  border-top-left-radius: 2px; border-top-right-radius: 2px;
+}
+
+/* ─── Bracket outer ─── */
+.bracket-outer {
+  padding: 8px;
+  overflow: hidden;
+}
+
+/* ─── Region panels ─── */
+.region-panel { display: none; }
+.region-panel.visible { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ─── LTR vs RTL region layout ─── */
+/* RTL: rounds go right-to-left (R64 on right, Elite 8 on left) */
+.region-wrap.rtol {
+  direction: rtl;
+}
+.region-wrap.rtol * {
+  direction: ltr;
+}
+
+/* ─── Float utilities ─── */
+.fl { float: left; }
+.fr { float: right; }
+.cf::after { content: ''; display: block; clear: both; }
+
+/* ─── Round sizing ─── */
+/* Seed slots: Round of 64 — two lines (name + pct), clipped if too long */
+.r1 {
+  width: 110px; height: 34px; line-height: normal;
+  overflow: hidden;
+}
+/* Later round team boxes: absolutely positioned so they shrink to text height.
+   The -wrap containers define the slot heights; boxes anchor top/bottom within. */
+.r2 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.r2-wrap { width: 200px; height: 72px; position: relative; } /* 110 + 10gap + 80; 72px = 2×36px r1 slots */
+.r3 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.r3-wrap { width: 290px; height: 144px; position: relative; } /* 200 + 10gap + 80 */
+.r4 { width: 80px; height: auto; line-height: normal; font-size: 10px; float: none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.r4-wrap { width: 380px;               position: relative; } /* 290 + 10gap + 80 */
+
+/* ─── Team box style: white box + colored border-left ─── */
+.r1, .r2, .r3, .r4 {
+  background: #fff;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 10px;
+  margin: 1px 0;
+}
+/* R64: name stays on one line (clip if long), pct on second line */
+.r1 {
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* Later rounds: name on line 1, pct on line 2 via .tname/.pct spans.
+   font-size must be here (after the base 12px rule) to actually take effect. */
+.r2, .r3, .r4 {
+  overflow: hidden;
+  font-size: 10px;
+}
+/* Team name: single line, clip with ellipsis if too long */
+.tname {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Win %: own line in R32+, dimmed; stays inline in R64 */
+.pct {
+  display: block;
+  white-space: nowrap;
+  font-size: 9px;
+  color: #888;
+  font-weight: 400;
+  line-height: 1.4;
+}
+/* R64 pct: same block/style as later rounds — second line, dimmed */
+/* R64: border-left spans the full slot height (same as the team box itself) */
+.r1 {
+  border-left: 3px solid transparent;
+  border-right: 2px solid rgba(0,0,0,0.12);
+}
+/* Later rounds also get a right-side tick toward the next round (LTR regions) */
+.r2, .r3, .r4 {
+  border-right: 2px solid rgba(0,0,0,0.12);
+}
+/* RTL regions: next round is to the LEFT, so flip the connecting tick */
+.region-wrap.rtol .r1 {
+  border-right: none;
+}
+.region-wrap.rtol .r2,
+.region-wrap.rtol .r3,
+.region-wrap.rtol .r4 {
+  border-right: none;
+  border-left: 2px solid rgba(0,0,0,0.12);
+  right: auto;
+  left: 0;
+}
+/* Status indicator bar — fills the auto-height box */
+.r2, .r3, .r4 {
+  padding-left: 5px;
+  padding-right: 3px;
+}
+.r2::before, .r3::before, .r4::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: transparent;
+  border-radius: 1px;
+}
+
+/* R32/S16/E8 teams are vertically centered via top:50%+transform on .r2/.r3/.r4 */
+.winner {
+  font-weight: 700;
+  color: #000;
+}
+.r1.winner { border-left-color: #007AC3; }
+.r2.winner::before, .r3.winner::before, .r4.winner::before { background: #007AC3; }
+.loser {
+  opacity: 0.5;
+  color: #555;
+}
+.correct { color: #090 !important; }
+.r1.correct { border-left-color: #090 !important; }
+.r2.correct::before, .r3.correct::before, .r4.correct::before { background: #090 !important; }
+.incorrect { color: #900 !important; }
+.r1.incorrect { border-left-color: #900 !important; }
+.r2.incorrect::before, .r3.incorrect::before, .r4.incorrect::before { background: #900 !important; }
+
+/* ─── Region label ─── */
+.region-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #007AC3;
+  padding: 2px 0 4px;
+}
+
+/* ─── Round column headers ─── */
+.round-headers {
+  display: flex;
+  gap: 10px; /* matches inter-round bracket line gap */
+  margin-bottom: 2px;
+}
+.rh-r64 { width: 110px; }
+.rh-r32, .rh-s16, .rh-e8 { width: 80px; }
+.rh-ff { display: none; }
+.round-headers span {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: #999; font-weight: 700; text-align: center;
+}
+
+/* ─── Bracket connecting lines ─── */
+/* Each matchup gets ONE tick from the vertical center of its pair (not one per team).
+   The vertical connects two adjacent matchups' ticks (those whose winners play next).
+   The midpoint horizontal goes right from the vertical to between the next round's pair.
+   Four gradient layers:
+     [0] upper tick  — 7px×1px at (0,   0)   upper matchup center going right
+     [1] lower tick  — 7px×1px at (0, 100%)  lower matchup center going right
+     [2] vertical    — 1px×100% at (6px, 0)  right end of ticks, connecting both
+     [3] midpoint →  — 3px×1px at (7px, 50%) from vertical midpoint right to next pair
+*/
+.r2-wrap::before,
+.r3-wrap::before,
+.r4-wrap::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  width: 10px;
+  background-image:
+    linear-gradient(#ccc, #ccc),
+    linear-gradient(#ccc, #ccc),
+    linear-gradient(#ccc, #ccc),
+    linear-gradient(#ccc, #ccc);
+  background-size: 7px 2px, 7px 2px, 2px 100%, 3px 2px;
+  background-position: 0 0, 0 100%, 6px 0, 7px 50%;
+  background-repeat: no-repeat;
+}
+/* top/bottom = centers of the teams being connected.
+   R64 slots are 36px each: centers at 18px, 54px → midpoint 36px = R32 center
+   R32 centers at 36px, 108px within r3-wrap → midpoint 72px = S16 center
+   S16 centers at 72px, 216px within r4-wrap → midpoint 144px = E8 center */
+.r2-wrap::before { left: 110px; top: 18px;  bottom: 18px; } /* R64 team centers */
+.r3-wrap::before { left: 200px; top: 36px;  bottom: 36px; } /* R32 team centers */
+.r4-wrap::before { left: 290px; top: 72px;  bottom: 72px; } /* S16 team centers */
+
+/* RTL: ticks on right (toward teams at x=90), vertical at x=3, midpoint goes left */
+.region-wrap.rtol .r2-wrap::before,
+.region-wrap.rtol .r3-wrap::before,
+.region-wrap.rtol .r4-wrap::before {
+  left: 80px;
+  background-position: 3px 0, 3px 100%, 3px 0, 0 50%;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     STICKY BAR: Controls + Score + Mini FF
+     ══════════════════════════════════════ -->
+<div class="sticky-bar">
+  <div class="controls-row">
+    <select><option>2025</option><option>2024</option><option>2023</option></select>
+    <select><option>NCAA Men's Bball</option><option>NCAA Women's Bball</option></select>
+    <button style="padding:5px 10px; font-weight:700; cursor:pointer;">Clear</button>
+  </div>
+  <div class="score-row">
+    <div class="score-item">
+      <div class="label">Correct</div>
+      <div class="value">18 / 32</div>
+    </div>
+    <div class="score-item">
+      <div class="label">Score</div>
+      <div class="value">74 / 192</div>
+    </div>
+    <div class="score-item">
+      <div class="label">Upsets</div>
+      <div class="value">7</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mini Final Four -->
+<div class="mini-ff-section">
+  <div class="mini-ff-header">
+    <div class="mini-ff-label">Final Four</div>
+    <div style="width:20px; flex-shrink:0;"></div>
+    <div class="mini-ff-label">Championship</div>
+  </div>
+  <div class="mini-ff-grid">
+    <div class="mini-team mini-winner correct"   style="grid-row:1;grid-column:1;">1. Houston</div>
+    <div class="mini-team mini-loser"            style="grid-row:2;grid-column:1;">2. Tennessee</div>
+    <div class="mini-team mini-loser incorrect"  style="grid-row:4;grid-column:1;">1. Duke</div>
+    <div class="mini-team mini-winner correct"   style="grid-row:5;grid-column:1;">2. Alabama</div>
+    <div class="mini-connector"                  style="grid-row:1/6;grid-column:2;">
+      <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <!-- drawn dynamically via JS in production; static approximation here -->
+        <path id="mini-conn-path" d="" fill="none" stroke="#7ab8d4" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="mini-team mini-winner correct"   style="grid-row:2;grid-column:3;">1. Houston</div>
+    <div class="mini-team mini-loser incorrect"  style="grid-row:4;grid-column:3;">2. Alabama</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     REGION NAV: 2×2 mini-map
+     ══════════════════════════════════════ -->
+<div id="region-nav">
+  <!-- Top row: top half of bracket (South on left side, West on right side) -->
+  <button class="nav-btn active" data-region="south">South</button>
+  <button class="nav-btn"        data-region="west">West</button>
+  <!-- Bottom row: bottom half of bracket (East on left side, Midwest on right side) -->
+  <button class="nav-btn"        data-region="east">East</button>
+  <button class="nav-btn"        data-region="midwest">Midwest</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BRACKET PANELS (one region at a time)
+     ══════════════════════════════════════ -->
+<div class="bracket-outer">
+
+  <!-- ────────────────────────────────────
+       SOUTH — Left-side, LTR (R64 → E8)
+       ──────────────────────────────────── -->
+  <div id="panel-south" class="region-panel visible">
+    <div class="region-label">South Region</div>
+    <div class="round-headers">
+      <span class="rh-r64">R64</span>
+      <span class="rh-r32">R32</span>
+      <span class="rh-s16">S16</span>
+      <span class="rh-e8">E8</span>
+      <span class="rh-ff" style="visibility:hidden;">FF</span>
+    </div>
+    <!-- Top half: seeds 1/16, 8/9, 5/12, 4/13 -->
+    <div class="r4-wrap cf upper-half">
+      <div class="r4 fr winner correct"><span class="tname">1. Houston</span><span class="pct">72%</span></div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr winner correct"><span class="tname">1. Houston</span><span class="pct">61%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner correct"><span class="tname">1. Houston</span><span class="pct">88%</span></div>
+          <div class="r1 fl winner correct">1. Houston <span class="pct">97%</span></div>
+          <div class="r1 fl loser">16. Longwood <span class="pct">3%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser incorrect"><span class="tname">8. Iowa St</span><span class="pct">47%</span></div>
+          <div class="r1 fl winner">8. Iowa St <span class="pct">55%</span></div>
+          <div class="r1 fl loser">9. Memphis <span class="pct">45%</span></div>
+        </div>
+      </div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr loser incorrect"><span class="tname">5. Clemson</span><span class="pct">55%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">5. Clemson</span><span class="pct">71%</span></div>
+          <div class="r1 fl winner">5. Clemson <span class="pct">65%</span></div>
+          <div class="r1 fl loser">12. McNeese <span class="pct">35%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">4. Auburn</span><span class="pct">58%</span></div>
+          <div class="r1 fl winner">4. Auburn <span class="pct">78%</span></div>
+          <div class="r1 fl loser">13. Vermont <span class="pct">22%</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom half: seeds 6/11, 3/14, 7/10, 2/15 -->
+    <div class="r4-wrap cf lower-half">
+      <div class="r4 fr loser"><span class="tname">2. Marquette</span><span class="pct">48%</span></div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr loser"><span class="tname">6. BYU</span><span class="pct">52%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">6. BYU</span><span class="pct">64%</span></div>
+          <div class="r1 fl winner">6. BYU <span class="pct">61%</span></div>
+          <div class="r1 fl loser">11. VCU <span class="pct">39%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">3. Wisconsin</span><span class="pct">55%</span></div>
+          <div class="r1 fl winner">3. Wisconsin <span class="pct">82%</span></div>
+          <div class="r1 fl loser">14. Montana <span class="pct">18%</span></div>
+        </div>
+      </div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr winner"><span class="tname">2. Marquette</span><span class="pct">67%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">7. Michigan St</span><span class="pct">53%</span></div>
+          <div class="r1 fl winner">7. Michigan St <span class="pct">57%</span></div>
+          <div class="r1 fl loser">10. New Mexico <span class="pct">43%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">2. Marquette</span><span class="pct">77%</span></div>
+          <div class="r1 fl winner">2. Marquette <span class="pct">93%</span></div>
+          <div class="r1 fl loser">15. UAB <span class="pct">7%</span></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-south -->
+
+  <!-- ────────────────────────────────────
+       WEST — Right-side, RTL (E8 → R64)
+       R64 appears on the RIGHT visually
+       ──────────────────────────────────── -->
+  <div id="panel-west" class="region-panel">
+    <div class="region-label">West Region</div>
+    <!-- Round headers in visual left→right order matching the RTL bracket layout -->
+    <div class="round-headers">
+      <span class="rh-e8">E8</span>
+      <span class="rh-s16">S16</span>
+      <span class="rh-r32">R32</span>
+      <span class="rh-r64">R64</span>
+      <span class="rh-ff" style="visibility:hidden;">FF</span>
+    </div>
+    <div class="region-wrap rtol">
+      <!-- Top half -->
+      <div class="r4-wrap cf upper-half">
+        <div class="r4 fl winner"><span class="tname">1. Duke</span><span class="pct">68%</span></div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl winner"><span class="tname">1. Duke</span><span class="pct">77%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner correct"><span class="tname">1. Duke</span><span class="pct">91%</span></div>
+            <div class="r1 fr winner correct">1. Duke <span class="pct">97%</span></div>
+            <div class="r1 fr loser">16. App St <span class="pct">3%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">8. Baylor</span><span class="pct">54%</span></div>
+            <div class="r1 fr winner">8. Baylor <span class="pct">54%</span></div>
+            <div class="r1 fr loser">9. Missouri <span class="pct">46%</span></div>
+          </div>
+        </div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl loser"><span class="tname">5. Oregon</span><span class="pct">49%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">5. Oregon</span><span class="pct">60%</span></div>
+            <div class="r1 fr winner">5. Oregon <span class="pct">66%</span></div>
+            <div class="r1 fr loser">12. Liberty <span class="pct">34%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">4. Arizona</span><span class="pct">55%</span></div>
+            <div class="r1 fr winner">4. Arizona <span class="pct">77%</span></div>
+            <div class="r1 fr loser">13. Akron <span class="pct">23%</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom half -->
+      <div class="r4-wrap cf lower-half">
+        <div class="r4 fl loser"><span class="tname">3. Kentucky</span><span class="pct">51%</span></div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl loser"><span class="tname">6. Iowa</span><span class="pct">48%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">6. Iowa</span><span class="pct">66%</span></div>
+            <div class="r1 fr winner">6. Iowa <span class="pct">62%</span></div>
+            <div class="r1 fr loser">11. Duquesne <span class="pct">38%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">3. Kentucky</span><span class="pct">58%</span></div>
+            <div class="r1 fr winner">3. Kentucky <span class="pct">83%</span></div>
+            <div class="r1 fr loser">14. Oakland <span class="pct">17%</span></div>
+          </div>
+        </div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl winner"><span class="tname">3. Kentucky</span><span class="pct">53%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">7. Nevada</span><span class="pct">57%</span></div>
+            <div class="r1 fr winner">7. Nevada <span class="pct">57%</span></div>
+            <div class="r1 fr loser">10. Yale <span class="pct">43%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">2. Gonzaga</span><span class="pct">73%</span></div>
+            <div class="r1 fr winner">2. Gonzaga <span class="pct">92%</span></div>
+            <div class="r1 fr loser">15. W. Kentucky <span class="pct">8%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-west -->
+
+  <!-- ────────────────────────────────────
+       EAST — Left-side, LTR (same as South)
+       ──────────────────────────────────── -->
+  <div id="panel-east" class="region-panel">
+    <div class="region-label">East Region</div>
+    <div class="round-headers">
+      <span class="rh-r64">R64</span>
+      <span class="rh-r32">R32</span>
+      <span class="rh-s16">S16</span>
+      <span class="rh-e8">E8</span>
+      <span class="rh-ff" style="visibility:hidden;">FF</span>
+    </div>
+    <div class="r4-wrap cf upper-half">
+      <div class="r4 fr winner"><span class="tname">2. Alabama</span><span class="pct">66%</span></div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr winner"><span class="tname">2. Alabama</span><span class="pct">74%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">2. Alabama</span><span class="pct">84%</span></div>
+          <div class="r1 fl winner">2. Alabama <span class="pct">93%</span></div>
+          <div class="r1 fl loser">15. S. Dakota St <span class="pct">7%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">7. Dayton</span><span class="pct">42%</span></div>
+          <div class="r1 fl winner">7. Dayton <span class="pct">58%</span></div>
+          <div class="r1 fl loser">10. Providence <span class="pct">42%</span></div>
+        </div>
+      </div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr loser"><span class="tname">3. Illinois</span><span class="pct">53%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">6. Washington St</span><span class="pct">61%</span></div>
+          <div class="r1 fl winner">6. Washington St <span class="pct">60%</span></div>
+          <div class="r1 fl loser">11. NC State <span class="pct">40%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">3. Illinois</span><span class="pct">59%</span></div>
+          <div class="r1 fl winner">3. Illinois <span class="pct">82%</span></div>
+          <div class="r1 fl loser">14. Morehead St <span class="pct">18%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="r4-wrap cf lower-half">
+      <div class="r4 fr loser incorrect"><span class="tname">1. North Carolina</span><span class="pct">44%</span></div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr winner"><span class="tname">5. San Diego St</span><span class="pct">56%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">5. San Diego St</span><span class="pct">67%</span></div>
+          <div class="r1 fl winner">5. San Diego St <span class="pct">65%</span></div>
+          <div class="r1 fl loser">12. UAB <span class="pct">35%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">4. Kansas</span><span class="pct">55%</span></div>
+          <div class="r1 fl winner">4. Kansas <span class="pct">77%</span></div>
+          <div class="r1 fl loser">13. Samford <span class="pct">23%</span></div>
+        </div>
+      </div>
+      <div class="r3-wrap fl cf">
+        <div class="r3 fr winner incorrect"><span class="tname">1. North Carolina</span><span class="pct">62%</span></div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr winner"><span class="tname">8. Mississippi St</span><span class="pct">51%</span></div>
+          <div class="r1 fl winner">8. Mississippi St <span class="pct">51%</span></div>
+          <div class="r1 fl loser">9. Michigan St <span class="pct">49%</span></div>
+        </div>
+        <div class="r2-wrap fl cf">
+          <div class="r2 fr loser"><span class="tname">1. North Carolina</span><span class="pct">79%</span></div>
+          <div class="r1 fl winner">1. North Carolina <span class="pct">97%</span></div>
+          <div class="r1 fl loser">16. Howard <span class="pct">3%</span></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-east -->
+
+  <!-- ────────────────────────────────────
+       MIDWEST — Right-side, RTL (same as West)
+       ──────────────────────────────────── -->
+  <div id="panel-midwest" class="region-panel">
+    <div class="region-label">Midwest Region</div>
+    <div class="round-headers">
+      <span class="rh-e8">E8</span>
+      <span class="rh-s16">S16</span>
+      <span class="rh-r32">R32</span>
+      <span class="rh-r64">R64</span>
+      <span class="rh-ff" style="visibility:hidden;">FF</span>
+    </div>
+    <div class="region-wrap rtol">
+      <div class="r4-wrap cf upper-half">
+        <div class="r4 fl winner correct"><span class="tname">1. Kansas</span><span class="pct">71%</span></div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl winner correct"><span class="tname">1. Kansas</span><span class="pct">79%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner correct"><span class="tname">1. Kansas</span><span class="pct">90%</span></div>
+            <div class="r1 fr winner correct">1. Kansas <span class="pct">97%</span></div>
+            <div class="r1 fr loser">16. Howard <span class="pct">3%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">8. Arkansas</span><span class="pct">46%</span></div>
+            <div class="r1 fr winner">8. Arkansas <span class="pct">54%</span></div>
+            <div class="r1 fr loser">9. Illinois <span class="pct">46%</span></div>
+          </div>
+        </div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl loser"><span class="tname">4. Virginia</span><span class="pct">48%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">5. San Diego St</span><span class="pct">57%</span></div>
+            <div class="r1 fr winner">5. San Diego St <span class="pct">64%</span></div>
+            <div class="r1 fr loser">12. VCU <span class="pct">36%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">4. Virginia</span><span class="pct">55%</span></div>
+            <div class="r1 fr winner">4. Virginia <span class="pct">77%</span></div>
+            <div class="r1 fr loser">13. Furman <span class="pct">23%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="r4-wrap cf lower-half">
+        <div class="r4 fl loser"><span class="tname">3. Xavier</span><span class="pct">50%</span></div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl loser"><span class="tname">6. TCU</span><span class="pct">44%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">6. TCU</span><span class="pct">62%</span></div>
+            <div class="r1 fr winner">6. TCU <span class="pct">60%</span></div>
+            <div class="r1 fr loser">11. ASU / Nevada <span class="pct">40%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">3. Xavier</span><span class="pct">60%</span></div>
+            <div class="r1 fr winner">3. Xavier <span class="pct">83%</span></div>
+            <div class="r1 fr loser">14. Kennesaw <span class="pct">17%</span></div>
+          </div>
+        </div>
+        <div class="r3-wrap fr cf">
+          <div class="r3 fl winner"><span class="tname">3. Xavier</span><span class="pct">53%</span></div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl winner"><span class="tname">7. Missouri</span><span class="pct">55%</span></div>
+            <div class="r1 fr winner">7. Missouri <span class="pct">57%</span></div>
+            <div class="r1 fr loser">10. Utah St <span class="pct">43%</span></div>
+          </div>
+          <div class="r2-wrap fr cf">
+            <div class="r2 fl loser"><span class="tname">2. Texas</span><span class="pct">71%</span></div>
+            <div class="r1 fr winner">2. Texas <span class="pct">92%</span></div>
+            <div class="r1 fr loser">15. Colgate <span class="pct">8%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-midwest -->
+
+</div><!-- .bracket-outer -->
+
+<script>
+// Region navigation
+(function() {
+  var panels = {
+    south:   document.getElementById('panel-south'),
+    west:    document.getElementById('panel-west'),
+    east:    document.getElementById('panel-east'),
+    midwest: document.getElementById('panel-midwest')
+  };
+  var navBtns = document.querySelectorAll('.nav-btn');
+
+  navBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var region = this.getAttribute('data-region');
+      navBtns.forEach(function(b) { b.classList.remove('active'); });
+      Object.keys(panels).forEach(function(k) { panels[k].classList.remove('visible'); });
+      this.classList.add('active');
+      if (panels[region]) panels[region].classList.add('visible');
+    });
+  });
+
+  // Draw the mini-connector SVG (same logic as production engine.js)
+  function drawMiniConnector() {
+    var svg = document.querySelector('.mini-connector svg');
+    var path = document.getElementById('mini-conn-path');
+    if (!svg || !path) return;
+    var svgRect = svg.getBoundingClientRect();
+    var W = svgRect.width, H = svgRect.height;
+    if (!W || !H) return;
+
+    var rows = svg.closest('.mini-ff-grid').querySelectorAll('.mini-team');
+    var r1 = rows[0].getBoundingClientRect(); // ff-left-1
+    var r2 = rows[1].getBoundingClientRect(); // ff-left-2
+    var r3 = rows[2].getBoundingClientRect(); // ff-right-1
+    var r4 = rows[3].getBoundingClientRect(); // ff-right-2
+    var top = svgRect.top;
+    var y1 = (r1.bottom + r2.top) / 2 - top;
+    var y2 = (r3.bottom + r4.top) / 2 - top;
+    var xMid = (W / 2).toFixed(1);
+    var yMid = ((y1 + y2) / 2).toFixed(1);
+    path.setAttribute('d',
+      'M 0 ' + y1.toFixed(1) + ' H ' + xMid +
+      ' V ' + y2.toFixed(1) + ' H 0' +
+      ' M ' + xMid + ' ' + yMid + ' H ' + W.toFixed(1)
+    );
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+  }
+
+  requestAnimationFrame(drawMiniConnector);
+  window.addEventListener('resize', drawMiniConnector);
+})();
+</script>
+</body>
+</html>
