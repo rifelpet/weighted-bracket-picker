@@ -290,7 +290,7 @@ function buildMobileBracket() {
     container.innerHTML = '';
 
     const regionDirs = { south: 'ltr', east: 'ltr', west: 'rtol', midwest: 'rtol' };
-    const regionLabels = { south: 'South Region', east: 'East Region', west: 'West Region', midwest: 'Midwest Region' };
+    const regionLabels = { south: 'Top Left Region', east: 'Bottom Left Region', west: 'Top Right Region', midwest: 'Bottom Right Region' };
 
     regions.forEach(function(regionName, idx) {
         const rkey = regionName.toLowerCase();
