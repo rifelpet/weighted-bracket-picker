@@ -1019,12 +1019,13 @@ function submit(logEvent) {
             const miniLoseEl = isTeam1Winner ? miniEl2 : miniEl1;
             miniEl1.textContent = team1.stats.Seed + '. ' + team1.Name;
             miniEl2.textContent = team2.stats.Seed + '. ' + team2.Name;
-            miniLoseEl.classList.remove('correct', 'incorrect', 'mini-winner');
+            miniLoseEl.classList.remove('mini-winner');
             miniLoseEl.classList.add('mini-loser');
             miniWinEl.classList.remove('mini-loser');
             miniWinEl.classList.add('mini-winner');
             ['correct', 'incorrect'].forEach(function(cls) {
                 miniWinEl.classList.toggle(cls, sideEl.classList.contains(cls));
+                miniLoseEl.classList.toggle(cls, sideEl.classList.contains(cls));
             });
         }
         regionID += 2;
@@ -1068,12 +1069,13 @@ function submit(logEvent) {
         const miniChampLoseEl = isLeftWinner ? miniChamp2El : miniChamp1El;
         miniChamp1El.textContent = championship.left.stats.Seed + '. ' + championship.left.Name;
         miniChamp2El.textContent = championship.right.stats.Seed + '. ' + championship.right.Name;
-        miniChampLoseEl.classList.remove('correct', 'incorrect', 'mini-winner');
+        miniChampLoseEl.classList.remove('mini-winner');
         miniChampLoseEl.classList.add('mini-loser');
         miniChampWinEl.classList.remove('mini-loser');
         miniChampWinEl.classList.add('mini-winner');
         ['correct', 'incorrect'].forEach(function(cls) {
             miniChampWinEl.classList.toggle(cls, champEl.classList.contains(cls));
+            miniChampLoseEl.classList.toggle(cls, champEl.classList.contains(cls));
         });
         requestAnimationFrame(updateMiniConnector);
     }
