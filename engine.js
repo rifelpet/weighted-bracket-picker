@@ -1205,10 +1205,8 @@ function weightsToURL() {
     }
 
     document.getElementById('share').value = path;
-    document.getElementById('twitter-share').innerHTML = '<a class="twitter-share-button social-link" data-text="Check out my #Algebracket!" data-url="' + path + '">Tweet</a>';
-    if (typeof twttr !== 'undefined' && twttr.widgets !== undefined) {
-        twttr.widgets.load();
-    }
+    const shareParams = new URLSearchParams({ text: 'Check out my #Algebracket!', url: path });
+    document.getElementById('twitter-share-link').href = 'https://x.com/intent/post?' + shareParams;
     return path;
 }
 
